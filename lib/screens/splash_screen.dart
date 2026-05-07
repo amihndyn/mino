@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:mino/screens/on_boarding1.dart';
 import 'login_screens.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
     // 🔥 Animasi controller
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
 
     // 🔥 Pindah ke login setelah render pertama
@@ -41,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
+        builder: (context) => const OnBoarding1(),
       ),
     );
   }
