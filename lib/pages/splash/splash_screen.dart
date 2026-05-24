@@ -1,7 +1,8 @@
-import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:mino/core/data/datasource/auth_local_datasource.dart';
 import 'package:mino/pages/auth/login_page.dart';
+import 'package:mino/pages/home/home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,30 +19,31 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // 🔥 Animasi controller
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
 
-    // 🔥 Pindah ke login setelah render pertama
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _goToLogin();
+      _navigate();
     });
   }
 
-  // 🔥 Function pindah screen
-  void _goToLogin() async {
+  void _navigate() async {
     await Future.delayed(const Duration(seconds: 3));
 
     if (!mounted) return;
 
-    _controller.stop(); // optional
+    _controller.stop();
+
+    final isLogin = await AuthLocalDatasource().isLogin();
+
+    if (!mounted) return;
 
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const LoginPage(),
+        builder: (_) => isLogin ? const HomePage() : const LoginPage(),
       ),
     );
   }
@@ -57,21 +59,18 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: Stack(
         children: [
-          // 🔥 BACKGROUND
+          // BACKGROUND
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF33211C),
-                  Color(0xFF5A463E),
-                ],
+                colors: [Color(0xFF33211C), Color(0xFF5A463E)],
               ),
             ),
           ),
 
-          // 🔥 GLOW
+          // GLOW
           Center(
             child: Container(
               width: 370,
@@ -80,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF00BBFF).withOpacity(0.5),
+                    Color(0xFF00BBFF).withValues(alpha: 0.5),
                     Colors.transparent,
                   ],
                 ),
@@ -88,7 +87,6 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
 
-          // 
           Center(
             child: SizedBox(
               width: 300,
@@ -101,12 +99,7 @@ class _SplashScreenState extends State<SplashScreen>
                   _buildAnimatedDot(left: 70, bottom: 90, size: 5, delay: 0.8),
                   _buildAnimatedDot(right: 80, bottom: 70, size: 4, delay: 2.2),
                   _buildAnimatedDot(left: 140, top: 50, size: 3, delay: 1.0),
-
-                  // 🔥 LOGO
-                  Image.asset(
-                    "assets/images/logo.png",
-                    width: 160,
-                  ),
+                  Image.asset('assets/images/logo.png', width: 160),
                 ],
               ),
             ),
@@ -116,7 +109,6 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  // 🔥 DOT ANIMATION
   Widget _buildAnimatedDot({
     double? left,
     double? right,
@@ -128,12 +120,9 @@ class _SplashScreenState extends State<SplashScreen>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        final animationValue = _controller.value;
-        final dy =
-            math.sin((animationValue * 2 * math.pi) + delay) * 8;
-
-        final glow =
-            (math.sin((animationValue * 2 * math.pi) + delay) + 1) / 2;
+        final v = _controller.value;
+        final dy = math.sin((v * 2 * math.pi) + delay) * 8;
+        final glow = (math.sin((v * 2 * math.pi) + delay) + 1) / 2;
 
         return Positioned(
           left: left,
@@ -148,10 +137,9 @@ class _SplashScreenState extends State<SplashScreen>
               color: const Color(0xFFE5A84F),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFE5A84F)
-                      .withOpacity(0.3 + (glow * 0.5)),
-                  blurRadius: 4 + (glow * 6),
-                  spreadRadius: 1 + (glow * 2),
+                  color: Color(0xFFE5A84F).withValues(alpha: 0.3 + glow * 0.5),
+                  blurRadius: 4 + glow * 6,
+                  spreadRadius: 1 + glow * 2,
                 ),
               ],
             ),

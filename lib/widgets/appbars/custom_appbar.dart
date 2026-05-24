@@ -1,69 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/core/constants/app_sizes.dart';
+import 'package:mino/core/constants/app_text_styles.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final bool showBackButton;
+  final List<Widget>? actions;
 
   const CustomAppBar({
     super.key,
     required this.title,
+    this.showBackButton = true,
+    this.actions,
   });
 
   @override
+  Size get preferredSize => const Size.fromHeight(AppSizes.appBarHeight);
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 24,
-        left: 24,
-        right: 24,
-        bottom: 16,
+    return Container(
+      height: AppSizes.appBarHeight,
+      padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+      decoration: BoxDecoration(
+        color: AppColors.coklat900,
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.coklat700.withValues(alpha: 0.5),
+            width: 1,
+          ),
+        ),
       ),
-      child: Row(
-        children: [
-
-          // BACK BUTTON
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.1),
+      child: SafeArea(
+        child: Row(
+          children: [
+            if (showBackButton)
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: AppColors.coklat800,
+                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    border: Border.all(color: AppColors.coklat600, width: 1),
+                  ),
+                  child: const Icon(
+                    Icons.chevron_left_rounded,
+                    color: AppColors.orange200,
+                    size: 22,
+                  ),
                 ),
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Colors.white,
-                size: 18,
-              ),
-            ),
-          ),
-
-          const Spacer(),
-
-          // TITLE
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.3,
-            ),
-          ),
-
-          const Spacer(),
-
-          // BALANCER
-          const SizedBox(
-            width: 40,
-            height: 40,
-          ),
-        ],
+              )
+            else
+              const SizedBox(width: 36),
+            const SizedBox(width: AppSizes.sm),
+            Expanded(child: Text(title, style: AppTextStyles.pageTitleBold)),
+            if (actions != null) ...actions!,
+          ],
+        ),
       ),
     );
   }

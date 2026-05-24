@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_sizes.dart';
-
+import 'package:mino/pages/home/widgets/quick_action.dart';
 import 'widgets/greeting_section.dart';
 import 'widgets/daily_activity.dart';
 import 'widgets/quick_action.dart';

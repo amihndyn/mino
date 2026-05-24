@@ -4,95 +4,149 @@ import 'package:mino/core/constants/app_sizes.dart';
 import 'package:mino/core/constants/app_text_styles.dart';
 
 class JournalCard extends StatelessWidget {
-  final String title;
-  final String content;
-  final String date;
-  final VoidCallback? onTap;
+  final String dayName;
+  final int dayNumber;
+  final String moodLabel;
+  final String moodEmoji;
+  final Color moodColor;
+  final VoidCallback? onSeeNote;
 
   const JournalCard({
     super.key,
-    required this.title,
-    required this.content,
-    required this.date,
-    this.onTap,
+    required this.dayName,
+    required this.dayNumber,
+    required this.moodLabel,
+    required this.moodEmoji,
+    this.moodColor = AppColors.orange400,
+    this.onSeeNote,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-
-      child: Container(
-        width: double.infinity,
-
-        padding: const EdgeInsets.all(
-          AppSizes.lg,
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.coklat800,
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        border: Border.all(
+          color: AppColors.orange900.withValues(alpha: 0.5),
+          width: 1,
         ),
-
-        decoration: BoxDecoration(
-          color: AppColors.coklat800,
-
-          borderRadius: BorderRadius.circular(
-            AppSizes.cardRadius,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.orange900.withValues(alpha: 0.15),
+            blurRadius: 12,
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header — day name + number
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSizes.md,
+              AppSizes.md,
+              AppSizes.md,
+              AppSizes.sm,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  '$dayName  ',
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.coklat200,
+                    fontSize: 13,
+                  ),
+                ),
+                Text(
+                  '$dayNumber',
+                  style: AppTextStyles.displayBold.copyWith(
+                    fontSize: 28,
+                    color: AppColors.orange100,
+                  ),
+                ),
+              ],
+            ),
           ),
 
-          border: Border.all(
-            color: AppColors.coklat600,
+          // Mood box
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
+              decoration: BoxDecoration(
+                color: AppColors.coklat700,
+                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Mood',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.orange300,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.sm),
+                  Text(moodEmoji, style: const TextStyle(fontSize: 40)),
+                  const SizedBox(height: AppSizes.sm),
+                  Text(
+                    moodLabel,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: moodColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
 
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(
-                0.12,
-              ),
-
-              blurRadius: 14,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-
-          children: [
-            Text(
-              title,
-
-              style:
-                  AppTextStyles.sectionTitleBold,
-            ),
-
-            const SizedBox(height: AppSizes.sm),
-
-            Text(
-              content,
-
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-
-              style:
-                  AppTextStyles.secondaryMedium
-                      .copyWith(
-                height: 1.6,
-              ),
-            ),
-
-            const SizedBox(height: AppSizes.lg),
-
-            Align(
-              alignment: Alignment.centerRight,
-
-              child: Text(
-                date,
-
-                style:
-                    AppTextStyles.caption,
+          // See my note button
+          Padding(
+            padding: const EdgeInsets.all(AppSizes.sm),
+            child: GestureDetector(
+              onTap: onSeeNote,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSizes.sm,
+                  horizontal: AppSizes.md,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.coklat700,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                  border: Border.all(color: AppColors.coklat500, width: 1),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'See my note',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.coklat200,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppColors.coklat200,
+                      size: 16,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

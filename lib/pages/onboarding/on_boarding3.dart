@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mino/screens/home_page.dart';
+import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 
 class OnBoarding3 extends StatelessWidget {
@@ -10,56 +10,41 @@ class OnBoarding3 extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // 🔵 BACKGROUND IMAGE
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
-
-          // 🔥 IMAGE UTAMA (OB2)
           Positioned.fill(
             child: Image.asset(
               'assets/images/ob3.png',
-              fit: BoxFit.cover, // ⬅️ ini penting biar ga gepeng
+              fit: BoxFit.cover,
               alignment: Alignment.center,
             ),
           ),
-
-          // 🌫 OVERLAY DARI BAWAH (INI YANG KAMU MAU)
           Positioned.fill(
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0x006B3414), // transparan
-                    Color(0x666B3414), // mulai gelap (~40%)
-                    Color(0xCC6B3414), // lebih gelap (~80%)
-                    Color(0xFF6B3414), // solid                 // bawah solid
+                    Color(0x006B3414),
+                    Color(0x666B3414),
+                    Color(0xCC6B3414),
+                    Color(0xFF6B3414),
                   ],
                   stops: [0.4, 0.65, 0.85, 1.0],
                 ),
               ),
             ),
           ),
-
-          // 🔵 CONTENT
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 80,
-                right: 80,
-                bottom: 30,
-              ),
+              padding: const EdgeInsets.only(left: 80, right: 80, bottom: 30),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // 📝 TITLE
                   const Text(
-                    "Find your diamond",
+                    'Find your diamond',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 32,
@@ -67,12 +52,9 @@ class OnBoarding3 extends StatelessWidget {
                       color: Color(0xFFE6A84A),
                     ),
                   ),
-
                   const SizedBox(height: 10),
-
-                  // 📝 DESC
                   const Text(
-                    "Discover the rewards of your persistence",
+                    'Discover the rewards of your persistence',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
@@ -80,35 +62,24 @@ class OnBoarding3 extends StatelessWidget {
                       color: Color(0xFFE6A84A),
                     ),
                   ),
-
                   const SizedBox(height: 40),
-
-                  // 🔘 DOT INDICATOR
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      dot(false),
-                      dot(false),
-                      dot(true),
-                    ],
+                    children: [dot(false), dot(false), dot(true)],
                   ),
-
                   const SizedBox(height: 20),
-
-                  // 🔘 BUTTON
                   SizedBox(
                     width: double.infinity,
                     child: CustomButton(
-                    text: "Let’s Get Started",
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => HomePage(),
-                        ),
-                      );
-                    },
-                  )
+                      text: "Let's Get Started",
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const HomePage()),
+                          (route) => false,
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -119,7 +90,6 @@ class OnBoarding3 extends StatelessWidget {
     );
   }
 
-  // 🔘 DOT INDICATOR
   static Widget dot(bool active) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
