@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:mino/core/data/datasource/auth_local_datasource.dart';
 import 'package:mino/pages/auth/login_page.dart';
 import 'package:mino/pages/home/home_page.dart';
+import 'package:mino/pages/journal/journal_page.dart';
+import 'package:mino/pages/profile/profile_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => isLogin ? const HomePage() : const LoginPage(),
+        builder: (_) => isLogin ? const HomePage() : const JournalPage(),
       ),
     );
   }
