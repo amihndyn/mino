@@ -93,61 +93,13 @@ class JournalBanner extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Container(
-                            width: 24,
-                            height: 2,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.orange500,
-                                  AppColors.orange300,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Your journal timeline',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.orange200.withValues(alpha: 0.8),
-                            ),
-                          ),
-                        ],
-                      ),
+
                     ],
                   ),
                 ),
 
                 // Decorative icon
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: AppColors.coklat800.withValues(alpha: 0.6),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.orange700.withValues(alpha: 0.4),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.orange900.withValues(alpha: 0.3),
-                        blurRadius: 10,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.auto_stories_rounded,
-                    color: AppColors.orange300,
-                    size: 22,
-                  ),
-                ),
+
               ],
             ),
           ),

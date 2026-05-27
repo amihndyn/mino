@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  percent_indicator: ^4.2.3
   connectivity_plus: ^7.1.1
   dartz: ^0.10.1
   esc_pos_utils_plus: ^2.0.4

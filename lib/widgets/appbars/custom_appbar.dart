@@ -24,7 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       height: AppSizes.appBarHeight,
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
       decoration: BoxDecoration(
-        color: AppColors.coklat900,
+        color: Colors.transparent,
         border: Border(
           bottom: BorderSide(
             color: AppColors.coklat700.withValues(alpha: 0.5),
@@ -39,17 +39,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: AppColors.coklat800,
-                    borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                    border: Border.all(color: AppColors.coklat600, width: 1),
-                  ),
+                  width: 55,
+                  height: 55,
+
                   child: const Icon(
                     Icons.chevron_left_rounded,
                     color: AppColors.orange200,
-                    size: 22,
+                    size: 45,
                   ),
                 ),
               )

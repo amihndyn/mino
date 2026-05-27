@@ -146,6 +146,7 @@ class _JournalTabSwitchState extends State<JournalTabSwitch>
                 label: 'Progress',
                 isSelected: widget.selectedIndex == 1,
                 onTap: () => widget.onChanged(1),
+                
               ),
             ],
           ),

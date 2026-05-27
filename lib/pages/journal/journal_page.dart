@@ -4,7 +4,9 @@ import 'package:mino/core/constants/app_sizes.dart';
 import 'package:mino/pages/journal/widgets/journal_banner.dart';
 import 'package:mino/pages/journal/widgets/journal_card.dart';
 import 'package:mino/pages/journal/widgets/journal_tab_switch.dart';
+import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/navbar/bottom_navbar.dart';
+import 'package:mino/pages/journal/simpan_jurnal_page.dart'; // sesuaikan path-nya
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -106,7 +108,9 @@ class _JournalPageState extends State<JournalPage>
             child: Column(
               children: [
                 // APPBAR
-                _buildAppBar(),
+                  const CustomAppBar(
+                    title: 'Journal',
+                  ),
 
                 // SCROLLABLE CONTENT
                 Expanded(
@@ -159,69 +163,7 @@ class _JournalPageState extends State<JournalPage>
     );
   }
 
-  Widget _buildAppBar() {
-    return Container(
-      height: AppSizes.appBarHeight,
-      padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-      decoration: BoxDecoration(
-        color: AppColors.coklat900.withValues(alpha: 0.8),
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.coklat700.withValues(alpha: 0.5),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.coklat800.withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                border: Border.all(
-                  color: AppColors.coklat600,
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.chevron_left_rounded,
-                color: AppColors.orange200,
-                size: 24,
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSizes.md),
-          Expanded(
-            child: Text(
-              'Journal',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.orange100,
-                shadows: [
-                  Shadow(
-                    color: AppColors.orange500.withValues(alpha: 0.5),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildJournalGrid() {
     return GridView.builder(
@@ -246,40 +188,9 @@ class _JournalPageState extends State<JournalPage>
     );
   }
 
-  Widget _buildProgressPlaceholder() {
-    return Container(
-      height: 300,
-      decoration: BoxDecoration(
-        color: AppColors.coklat800.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-        border: Border.all(
-          color: AppColors.orange900.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.analytics_outlined,
-              size: 48,
-              color: AppColors.orange400.withValues(alpha: 0.6),
-            ),
-            const SizedBox(height: AppSizes.md),
-            Text(
-              'Progress coming soon...',
-              style: TextStyle(
-                color: AppColors.orange200.withValues(alpha: 0.8),
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+Widget _buildProgressPlaceholder() {
+  return const ProgressPage();
+}
 }
 
 class JournalEntry {
