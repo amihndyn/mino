@@ -16,15 +16,8 @@ class JournalBanner extends StatelessWidget {
       height: 100,
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.orange900.withValues(alpha: 0.3),
-            blurRadius: 20,
-            spreadRadius: 1,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        
+
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
@@ -36,32 +29,10 @@ class JournalBanner extends StatelessWidget {
             fit: BoxFit.cover,
           ),
 
-          // Gradient overlay
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  AppColors.coklat900.withValues(alpha: 0.9),
-                  AppColors.coklat900.withValues(alpha: 0.6),
-                  Colors.transparent,
-                ],
-              ),
-            ),
-          ),
+
 
           // Inner glow border
-          Container(
-            margin: const EdgeInsets.all(1),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppSizes.cardRadius - 2),
-              border: Border.all(
-                color: AppColors.orange700.withValues(alpha: 0.3),
-                width: 1,
-              ),
-            ),
-          ),
+
 
           // Content
           Padding(
