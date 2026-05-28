@@ -1,83 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/core/constants/app_sizes.dart';
-import 'package:mino/core/constants/app_text_styles.dart';
+
+import 'streak_card.dart';
 
 class GreetingSection extends StatelessWidget {
   const GreetingSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSizes.lg),
-
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          AppSizes.radiusLg,
-        ),
-
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-
-          colors: [
-            AppColors.coklat700,
-            AppColors.coklat900,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              "Hi, Keysha",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              "Wednesday, April 22 2026",
+              style: TextStyle(
+                color: Color(0xffE6A84A),
+                fontSize: 14,
+              ),
+            ),
           ],
         ),
 
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.orange500.withOpacity(0.12),
-            blurRadius: 30,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
+        Row(
+          children: [
+            const StreakCard(),
+            const SizedBox(width: 12),
 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: [
-          Text(
-            'Good Evening ✨',
-            style: AppTextStyles.pageTitleBold,
-          ),
-
-          const SizedBox(height: AppSizes.sm),
-
-          Text(
-            'Ready to improve yourself today?',
-            style: AppTextStyles.secondaryMedium,
-          ),
-
-          const SizedBox(height: AppSizes.lg),
-
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-
-                decoration: BoxDecoration(
-                  color: AppColors.orange500.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-
-                child: Text(
-                  '7 Days Streak 🔥',
-                  style: AppTextStyles.secondaryMedium.copyWith(
-                    color: AppColors.orange300,
-                  ),
-                ),
+            CircleAvatar(
+              radius: 24,
+              backgroundImage: NetworkImage(
+                "https://i.pravatar.cc/150",
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        )
+      ],
     );
   }
 }

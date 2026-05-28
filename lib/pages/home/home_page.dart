@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/core/constants/app_sizes.dart';
-import 'package:mino/pages/home/widgets/quick_action.dart';
-import 'widgets/greeting_section.dart';
-import 'widgets/daily_activity.dart';
-import 'widgets/quick_action.dart';
+
+import '../../widgets/navbar/bottom_navbar.dart';
+
+import 'widgets/home_header.dart';
+import 'widgets/reflection_card.dart';
+import 'widgets/daily_activities_section.dart';
+import 'widgets/challenge_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,33 +13,39 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.coklat900,
+      backgroundColor: const Color(0xff2B1B12),
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.lg),
+      body: Column(
+        children: [
+          const HomeHeader(),
 
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(18),
 
-            children: [
-              // GREETING
-              const GreetingSection(),
+              child: Column(
+                children: const [
+                  ReflectionCard(),
 
-              const SizedBox(height: AppSizes.lg),
+                  SizedBox(height: 24),
 
-              // ACTIVITY
-              const DailyActivity(),
+                  DailyActivitiesSection(),
 
-              const SizedBox(height: AppSizes.lg),
+                  SizedBox(height: 24),
 
-              // QUICK ACTION
-              const QuickAction(),
+                  ChallengeSection(),
 
-              const SizedBox(height: AppSizes.xl),
-            ],
+                  SizedBox(height: 40),
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
+      ),
+
+      bottomNavigationBar:
+          const BottomNavbar(
+        currentIndex: 0,
       ),
     );
   }
