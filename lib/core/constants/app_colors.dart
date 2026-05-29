@@ -37,6 +37,39 @@ class AppColors {
   static const biru200 = Color(0xFFA5E2FF);
   static const biru100 = Color(0xFFD4F2FF);
 
+  // ================= NEUTRAL =================
+
   static const grey = Color(0xFF424242);
-  
+
+  static const white = Color(0xFFFFFFFF);
+
+  static const black = Color(0xFF1A1A1A);
+
+  // =========================================================
+  // HABIT PAGE COLORS
+  // =========================================================
+
+  // background sheet
+  static const habitBackground = Color(0xFFF5EBDD);
+
+  // card normal
+  static const habitCard = Color(0xFFFFF8F0);
+
+  // unique card
+  static const habitPrimary = Color(0xFFE6CEA7);
+
+  // unique arrow bg
+  static const habitPrimaryDark = Color(0xFFDDB98A);
+
+  // selected habit
+  static const habitSelected = Color(0xFFFFD58D);
+
+  // border
+  static const habitBorder = Color(0xFFF1E4D2);
+
+  // subtitle
+  static const habitTextSecondary = Color(0xFF8B8B8B);
+
+  // top background
+  static const habitTopBackground = Color(0xFF5B3420);
 }

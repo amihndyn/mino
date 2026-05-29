@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'app_colors.dart';
 
 class AppTextStyles {
@@ -60,5 +61,46 @@ class AppTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.normal,
     color: AppColors.grey,
+  );
+
+  // =========================================================
+  // HABIT PAGE
+  // =========================================================
+
+  static const habitHeading = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.w800,
+    color: AppColors.black,
+    height: 1.2,
+  );
+
+  static const habitSubHeading = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: AppColors.habitTextSecondary,
+  );
+
+  static const habitSectionTitle = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    color: AppColors.black,
+  );
+
+  static const habitCardTitle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColors.black,
+  );
+
+  static const habitHeader = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    color: AppColors.black,
+  );
+
+  static const habitCancel = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    color: AppColors.habitTextSecondary,
   );
 }

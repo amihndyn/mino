@@ -9,6 +9,7 @@ import 'package:mino/core/constants/app_sizes.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/pages/journal/widgets/journal_tab_switch.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:mino/pages/journal/journal_page.dart';
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -97,7 +98,7 @@ class _ProgressPageState extends State<ProgressPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // BACKGROUND
@@ -112,24 +113,6 @@ class _ProgressPageState extends State<ProgressPage>
                 // APPBAR
                 CustomAppBar(
                   title: 'Progress',
-                  actions: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Done',
-                          style: TextStyle(
-                            color: AppColors.orange200,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
 
                 // SCROLLABLE CONTENT
@@ -137,7 +120,7 @@ class _ProgressPageState extends State<ProgressPage>
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: AppSizes.md,
+                      horizontal: 50,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,6 +266,7 @@ class _ProgressPageState extends State<ProgressPage>
             border: Border.all(
               color: AppColors.orange700.withValues(alpha: 0.35),
             ),
+            
           ),
           child: Row(
             children: [

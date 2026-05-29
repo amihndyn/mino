@@ -5,11 +5,7 @@ class JournalCard extends StatefulWidget {
   final JournalEntry entry;
   final VoidCallback? onSeeNote;
 
-  const JournalCard({
-    super.key,
-    required this.entry,
-    this.onSeeNote,
-  });
+  const JournalCard({super.key, required this.entry, this.onSeeNote});
 
   @override
   State<JournalCard> createState() => _JournalCardState();
@@ -44,10 +40,7 @@ class _JournalCardState extends State<JournalCard> {
 
         child: Container(
           // Padding diperkecil supaya tinggi card lebih compact
-          padding: const EdgeInsets.symmetric(
-            vertical: 16,
-            horizontal: 12,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 23),
 
           decoration: BoxDecoration(
             // Background transparan
@@ -72,23 +65,30 @@ class _JournalCardState extends State<JournalCard> {
               // =====================
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
+
+                // Ubah jadi center biar posisi sejajar tengah
+                crossAxisAlignment: CrossAxisAlignment.center,
+
                 children: [
                   Text(
-                    '${widget.entry.dayName} ',
+                    '${widget.entry.dayName}',
+
                     style: TextStyle(
-                      // Ukuran teks hari diperkecil
+                      // Ukuran hari diperkecil
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: textDayLight,
                     ),
                   ),
 
+                  // Tambah jarak antara hari & tanggal
+                  const SizedBox(width: 8),
+
                   Text(
                     '${widget.entry.dayNumber}',
+
                     style: TextStyle(
-                      // Ukuran angka tanggal diperkecil
+                      // Ukuran tanggal lebih besar
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
                       color: textDayDark,

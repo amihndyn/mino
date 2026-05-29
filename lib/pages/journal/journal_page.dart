@@ -208,6 +208,10 @@ class _JournalPageState extends State<JournalPage>
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+      horizontal: 20,
+      vertical: 20,
+    ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         // Kasih jarak antar card
@@ -215,7 +219,7 @@ class _JournalPageState extends State<JournalPage>
         mainAxisSpacing: 16,
 
         // KECILIN ratio biar card makin tinggi
-        childAspectRatio: 0.58,
+        childAspectRatio: 0.62,
       ),
       itemCount: _entries.length,
       itemBuilder: (context, index) {
