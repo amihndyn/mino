@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'challenge_progress_card.dart';
 
 class ChallengeSection extends StatelessWidget {
@@ -8,21 +7,37 @@ class ChallengeSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
         Text(
           "Challenge",
           style: TextStyle(
-            color: Color(0xffE6A84A),
-            fontSize: 20,
+            color: Color(0xffF2CD94), // Warna emas/krem disesuaikan
+            fontSize: 22,
             fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
           ),
         ),
-
+        
         SizedBox(height: 16),
 
-        ChallengeProgressCard(),
+        // Kartu Pertama
+        ChallengeProgressCard(
+          title: "Release tension in your body",
+          emoji: "📋", // Bisa diganti dengan Image asset jika punya
+          currentProgress: 12,
+          totalProgress: 30,
+        ),
+        
+        SizedBox(height: 12),
+
+        // Kartu Kedua
+        ChallengeProgressCard(
+          title: "Clean your home",
+          emoji: "🧹", 
+          currentProgress: 5,
+          totalProgress: 30,
+        ),
       ],
     );
   }

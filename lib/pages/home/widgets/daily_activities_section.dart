@@ -1,45 +1,44 @@
 import 'package:flutter/material.dart';
-
 import 'activity_item_card.dart';
 
-class DailyActivitiesSection
-    extends StatelessWidget {
+class DailyActivitiesSection extends StatelessWidget {
   const DailyActivitiesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Warna teks judul sesuai dengan tema emas/krem di atasnya
+    const Color titleColor = Color(0xffF2CD94);
+
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
         Text(
           "Daily Activities",
           style: TextStyle(
-            color: Color(0xffE6A84A),
-            fontSize: 20,
+            color: titleColor,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
           ),
         ),
-
         SizedBox(height: 16),
 
+        // Menggunakan emoji berupa String agar sama persis dengan tampilan visualnya
         ActivityItemCard(
           title: "Take a deep breath",
-          icon: Icons.air,
+          emoji: "📔", 
         ),
-
-        SizedBox(height: 12),
+        SizedBox(height: 14),
 
         ActivityItemCard(
           title: "Smile for a few seconds",
-          icon: Icons.emoji_emotions,
+          emoji: "😊",
         ),
-
-        SizedBox(height: 12),
+        SizedBox(height: 14),
 
         ActivityItemCard(
           title: "Fix your posture",
-          icon: Icons.accessibility_new,
+          emoji: "🧘",
         ),
       ],
     );

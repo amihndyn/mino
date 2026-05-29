@@ -12,29 +12,16 @@ class HomeHeader extends StatelessWidget {
       width: double.infinity,
 
       padding: const EdgeInsets.fromLTRB(
-        18,
         20,
+        35,
         18,
         28,
       ),
 
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(28),
-          bottomRight: Radius.circular(28),
-        ),
-
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xff3A2417),
-            Color(0xff2B1B12),
-          ],
-        ),
-      ),
-
       child: const Column(
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
+
         children: [
           GreetingSection(),
 

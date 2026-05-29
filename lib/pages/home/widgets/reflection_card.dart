@@ -1,19 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:mino/pages/journal/journal_page.dart';
+import 'package:mino/widgets/button/custom_button.dart';
 
 class ReflectionCard extends StatelessWidget {
   const ReflectionCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // WARNA
+    const Color darkBrownColor =
+        Color(0xff422E22);
+
+    const Color cardBorderColor =
+        Color(0xffFFF2D4);
+
     return Container(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(20),
 
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(24),
+
+        border: Border.all(
+          color: cardBorderColor.withOpacity(
+            0.6,
+          ),
+          width: 1.5,
+        ),
 
         gradient: const LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+
           colors: [
-            Color(0xffFF9800),
+            Color(0xffFF9D00),
+            Color(0xffFFFDFB),
             Color(0xffFFD799),
           ],
         ),
@@ -21,17 +41,24 @@ class ReflectionCard extends StatelessWidget {
 
       child: Row(
         children: [
+          // LEFT CONTENT
           Expanded(
             child: Column(
               crossAxisAlignment:
                   CrossAxisAlignment.start,
+
+              mainAxisSize: MainAxisSize.min,
+
               children: [
                 const Text(
                   "Add Reflection",
+
                   style: TextStyle(
-                    color: Color(0xff59463D),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    color: darkBrownColor,
+                    fontSize: 24,
+                    fontWeight:
+                        FontWeight.bold,
+                    letterSpacing: 0.3,
                   ),
                 ),
 
@@ -39,35 +66,68 @@ class ReflectionCard extends StatelessWidget {
 
                 const Text(
                   "How are you feeling today?",
+
                   style: TextStyle(
-                    color: Color(0xff59463D),
+                    color: darkBrownColor,
+                    fontSize: 16,
+                    fontWeight:
+                        FontWeight.w500,
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 18),
 
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color(0xff59463D),
+                // CUSTOM BUTTON
+                SizedBox(
+                  width: 150,
+
+                  child: CustomButton(
+                    text: "Add",
+
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const JournalPage(),
+                        ),
+                      );
+                    },
                   ),
-                  onPressed: () {},
-                  child: const Text("Add"),
-                )
+                ),
               ],
             ),
           ),
 
-          const SizedBox(width: 20),
+          const SizedBox(width: 12),
 
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              "https://picsum.photos/200",
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-            ),
+          // RIGHT IMAGE
+          Image.asset(
+            'assets/images/reflection.png',
+
+            width: 113,
+            height: 93,
+
+            fit: BoxFit.contain,
+
+            errorBuilder:
+                (
+                  context,
+                  error,
+                  stackTrace,
+                ) {
+                  return const SizedBox(
+                    width: 113,
+                    height: 93,
+
+                    child: Icon(
+                      Icons
+                          .sentiment_satisfied_alt,
+
+                      size: 64,
+                      color: darkBrownColor,
+                    ),
+                  );
+                },
           ),
         ],
       ),

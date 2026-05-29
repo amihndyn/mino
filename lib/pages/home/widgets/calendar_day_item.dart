@@ -14,39 +14,47 @@ class CalendarDayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Palet warna disesuaikan dengan gambar referensi
+    const Color goldBorderColor = Color(0xffD2A146);
+    const Color creamColor = Color(0xffFBF1E3);
+    const Color darkBrownColor = Color(0xff422E22);
+
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
+        // 1. Label Nama Hari (Sun, Mon, Tue, dst.)
         Text(
           day,
-          style: TextStyle(
-            color: isSelected
-                ? const Color(0xffE6A84A)
-                : Colors.white,
+          style: const TextStyle(
+            color: creamColor,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.2,
           ),
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
 
+        // 2. Lingkaran Angka Tanggal
         Container(
-          padding: const EdgeInsets.all(12),
+          width: 52, // Menjaga dimensi tetap lingkaran sempurna
+          height: 52,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xffE6A84A)
-                : Colors.transparent,
-
-            borderRadius: BorderRadius.circular(16),
-
-            border: Border.all(
-              color: const Color(0xffE6A84A),
-            ),
+            shape: BoxShape.circle,
+            color: isSelected ? creamColor : Colors.transparent,
+            border: isSelected
+                ? null // Hilangkan border jika terpilih untuk efek solid penuh
+                : Border.all(
+                    color: goldBorderColor,
+                    width: 1.5,
+                  ),
           ),
           child: Text(
             date,
             style: TextStyle(
-              color: isSelected
-                  ? const Color(0xff59463D)
-                  : const Color(0xffE6A84A),
-
+              color: isSelected ? darkBrownColor : creamColor,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),

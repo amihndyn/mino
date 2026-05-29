@@ -13,39 +13,52 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff2B1B12),
-
-      body: Column(
+      body: Stack(
         children: [
-          const HomeHeader(),
+          // BACKGROUND
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
+            ),
+          ),
 
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(18),
+          // CONTENT
+          SafeArea(
+            child: Column(
+              children: [
+                const HomeHeader(),
 
-              child: Column(
-                children: const [
-                  ReflectionCard(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(18),
 
-                  SizedBox(height: 24),
+                    child: Column(
+                      children: const [
+                        ReflectionCard(),
 
-                  DailyActivitiesSection(),
+                        SizedBox(height: 24),
 
-                  SizedBox(height: 24),
+                        DailyActivitiesSection(),
 
-                  ChallengeSection(),
+                        SizedBox(height: 24),
 
-                  SizedBox(height: 40),
-                ],
-              ),
+                        ChallengeSection(),
+
+                        SizedBox(height: 40),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
 
-      bottomNavigationBar:
-          const BottomNavbar(
+      bottomNavigationBar: BottomNavbar(
         currentIndex: 0,
+        onTap: (index) {},
       ),
     );
   }
