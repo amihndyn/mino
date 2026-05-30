@@ -5,7 +5,7 @@ import 'package:mino/pages/auth/login_page.dart';
 import 'package:mino/pages/habit/pilih_habit_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/journal/journal_page.dart';
-import 'package:mino/pages/profile/profile_page.dart';
+import 'package:mino/pages/mood/mood_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

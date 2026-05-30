@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 
 class BottomNavbar extends StatelessWidget {
   final int currentIndex;
+// <<<<<<< HEAD
+//   final ValueChanged<int>? onTap;
+// =======
   final Function(int) onTap;
+// >>>>>>> 25f8fce0a86ee8235e3d2c4627e73019441ff8fc
 
   const BottomNavbar({
     super.key,
     required this.currentIndex,
+// <<<<<<< HEAD
+//     this.onTap,
+// =======
     required this.onTap,
+// >>>>>>> 25f8fce0a86ee8235e3d2c4627e73019441ff8fc
   });
 
   @override
@@ -137,6 +145,30 @@ class BottomNavbar extends StatelessWidget {
         : accentColor.withOpacity(0.6);
 
     return GestureDetector(
+// <<<<<<< HEAD
+//       onTap: onTap != null ? () => onTap!(index) : null,
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           Icon(
+//             icon,
+//             color: isActive
+//                 ? const Color(0xffE6A84A)
+//                 : Colors.white54,
+//           ),
+
+//           const SizedBox(height: 6),
+
+//           Text(
+//             label,
+//             style: TextStyle(
+//               color: isActive
+//                   ? const Color(0xffE6A84A)
+//                   : Colors.white54,
+
+//               fontSize: 12,
+//               fontWeight: FontWeight.w500,
+// =======
       onTap: () => onTap(index),
       behavior: HitTestBehavior.opaque, // Agar area di sekitar ikon juga bisa diklik
       child: Column(
@@ -156,6 +188,7 @@ class BottomNavbar extends StatelessWidget {
               fontSize: 12,
               fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
               letterSpacing: 0.5,
+// >>>>>>> 25f8fce0a86ee8235e3d2c4627e73019441ff8fc
             ),
           ),
         ],

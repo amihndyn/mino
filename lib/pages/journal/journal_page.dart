@@ -27,7 +27,8 @@ class _JournalPageState extends State<JournalPage>
       dayName: 'Thursday',
       dayNumber: 30,
       noteTitle: 'Challenging Day',
-      noteContent: 'Today was really tough.\n\nI struggled with staying focused on my tasks. But I learned that it\'s okay to have bad days. Tomorrow is a new opportunity to do better.',
+      noteContent:
+          'Today was really tough.\n\nI struggled with staying focused on my tasks. But I learned that it\'s okay to have bad days. Tomorrow is a new opportunity to do better.',
       fullDate: 'Thursday, 30 May 2026',
       moodLabel: 'Bad',
       moodEmoji: '😩',
@@ -37,7 +38,8 @@ class _JournalPageState extends State<JournalPage>
       dayName: 'Sunday',
       dayNumber: 26,
       noteTitle: 'Amazing Progress',
-      noteContent: 'Had an incredible productive day today!\n\nManaged to complete all my tasks ahead of schedule. Feeling motivated and ready for the week ahead.',
+      noteContent:
+          'Had an incredible productive day today!\n\nManaged to complete all my tasks ahead of schedule. Feeling motivated and ready for the week ahead.',
       fullDate: 'Sunday, 26 May 2026',
       moodLabel: 'Amazing',
       moodEmoji: '😁',
@@ -47,7 +49,8 @@ class _JournalPageState extends State<JournalPage>
       dayName: 'Wednesday',
       dayNumber: 15,
       noteTitle: 'Learning New Things',
-      noteContent: 'Started learning Flutter today.\n\nThe journey has been challenging but rewarding. Each line of code brings me closer to building something amazing.',
+      noteContent:
+          'Started learning Flutter today.\n\nThe journey has been challenging but rewarding. Each line of code brings me closer to building something amazing.',
       fullDate: 'Wednesday, 15 May 2026',
       moodLabel: 'Bad',
       moodEmoji: '😢',
@@ -57,7 +60,8 @@ class _JournalPageState extends State<JournalPage>
       dayName: 'Saturday',
       dayNumber: 18,
       noteTitle: 'Great Vibes',
-      noteContent: 'Saturday project work went smoothly.\n\nCompleted the design mockups and started implementation. Feeling creative and inspired.',
+      noteContent:
+          'Saturday project work went smoothly.\n\nCompleted the design mockups and started implementation. Feeling creative and inspired.',
       fullDate: 'Saturday, 18 May 2026',
       moodLabel: 'Good',
       moodEmoji: '😊',
@@ -67,7 +71,8 @@ class _JournalPageState extends State<JournalPage>
       dayName: 'Monday',
       dayNumber: 12,
       noteTitle: 'Breakthrough Moment',
-      noteContent: 'Finally fixed that tricky bug!\n\nIt took hours of debugging but the satisfaction of solving it was worth every minute. Learning so much every day.',
+      noteContent:
+          'Finally fixed that tricky bug!\n\nIt took hours of debugging but the satisfaction of solving it was worth every minute. Learning so much every day.',
       fullDate: 'Monday, 12 May 2026',
       moodLabel: 'Amazing',
       moodEmoji: '🤩',
@@ -77,7 +82,8 @@ class _JournalPageState extends State<JournalPage>
       dayName: 'Friday',
       dayNumber: 8,
       noteTitle: 'Steady Progress',
-      noteContent: 'Another week of steady work.\n\nNothing spectacular but consistent progress. Sometimes the quiet days are the most valuable.',
+      noteContent:
+          'Another week of steady work.\n\nNothing spectacular but consistent progress. Sometimes the quiet days are the most valuable.',
       fullDate: 'Friday, 8 May 2026',
       moodLabel: 'Okay',
       moodEmoji: '😐',
@@ -113,9 +119,10 @@ class _JournalPageState extends State<JournalPage>
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
                 const ProgressPage(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
             transitionDuration: const Duration(milliseconds: 300),
           ),
         ).then((_) {
@@ -134,10 +141,7 @@ class _JournalPageState extends State<JournalPage>
         children: [
           // BACKGROUND
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
 
           // CONTENT
@@ -145,9 +149,7 @@ class _JournalPageState extends State<JournalPage>
             child: Column(
               children: [
                 // APPBAR
-                  const CustomAppBar(
-                    title: 'Journal',
-                  ),
+                const CustomAppBar(title: 'Journal'),
 
                 // SCROLLABLE CONTENT
                 Expanded(
@@ -202,17 +204,22 @@ class _JournalPageState extends State<JournalPage>
     );
   }
 
-
-
   Widget _buildJournalGrid() {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+      horizontal: 20,
+      vertical: 20,
+    ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: AppSizes.md,
-        mainAxisSpacing: AppSizes.md,
-        childAspectRatio: 0.75,
+        // Kasih jarak antar card
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+
+        // KECILIN ratio biar card makin tinggi
+        childAspectRatio: 0.58,
       ),
       itemCount: _entries.length,
       itemBuilder: (context, index) {

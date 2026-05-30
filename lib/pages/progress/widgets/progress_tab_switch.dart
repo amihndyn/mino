@@ -8,7 +8,7 @@ class ProgressTabSwitch extends StatelessWidget {
 
   const ProgressTabSwitch({
     Key? key,
-    required this.isLeftSelected,
+    required this.isLeftSelected ,
     required this.leftLabel,
     required this.rightLabel,
     required this.onTabChanged,

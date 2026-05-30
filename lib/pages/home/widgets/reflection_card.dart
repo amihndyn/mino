@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mino/pages/journal/journal_page.dart';
+import 'package:mino/pages/mood/mood_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 
 class ReflectionCard extends StatelessWidget {
@@ -88,7 +89,7 @@ class ReflectionCard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const JournalPage(),
+                          builder: (_) => const MoodPage(),
                         ),
                       );
                     },
