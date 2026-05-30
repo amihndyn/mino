@@ -10,6 +10,7 @@ import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/pages/journal/widgets/journal_tab_switch.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:mino/pages/journal/journal_page.dart';
+import 'package:mino/widgets/navbar/bottom_navbar.dart';
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -20,7 +21,8 @@ class ProgressPage extends StatefulWidget {
 
 class _ProgressPageState extends State<ProgressPage>
     with SingleTickerProviderStateMixin {
-  int _tabIndex = 1; // Start with "Progress" selected
+  int _tabIndex = 1; 
+    int _navIndex = 1;// Start with "Progress" selected
   bool _isWeekly = true;
   String _selectedMonth = 'May 2026';
 
@@ -111,16 +113,14 @@ class _ProgressPageState extends State<ProgressPage>
             child: Column(
               children: [
                 // APPBAR
-                CustomAppBar(
-                  title: 'Progress',
-                ),
+                CustomAppBar(title: 'Progress'),
 
                 // SCROLLABLE CONTENT
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 50,
+                      horizontal: AppSizes.md,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,6 +179,10 @@ class _ProgressPageState extends State<ProgressPage>
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavbar(
+      currentIndex: _navIndex,
+      onTap: (i) => setState(() => _navIndex = i),
+    ),
     );
   }
 
@@ -206,6 +210,7 @@ class _ProgressPageState extends State<ProgressPage>
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 250),
                       height: 3,
+                      width: double.infinity,
                       color: _isWeekly
                           ? AppColors.orange500
                           : Colors.transparent,
@@ -233,6 +238,7 @@ class _ProgressPageState extends State<ProgressPage>
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 250),
                       height: 3,
+                      width: double.infinity,
                       color: !_isWeekly
                           ? AppColors.orange500
                           : Colors.transparent,
@@ -254,64 +260,80 @@ class _ProgressPageState extends State<ProgressPage>
         : _currentMonthData;
     final percentLabel = '${(data.goalPercent * 100).toInt()}%';
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(28),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            color: AppColors.coklat900.withValues(alpha: 0.35),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: AppColors.orange700.withValues(alpha: 0.35),
-            ),
-            
+    // 🌟 BUNGKUS DENGAN CONTAINER UNTUK MEMBERIKAN SHADOW
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.orange700.withValues(
+              alpha: 0.15,
+            ), // Efek glow orange halus melingkar
+            blurRadius: 20,
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _isWeekly ? 'Weekly Goal' : 'Monthly Goal',
-                      style: TextStyle(
-                        color: AppColors.coklat300,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      "You're getting\ncloser to your\ndiamond.",
-                      style: TextStyle(
-                        color: AppColors.orange200,
-                        fontSize: 18,
-                        height: 1.4,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            padding: const EdgeInsets.all(22),
+            decoration: BoxDecoration(
+              color: AppColors.coklat900.withValues(alpha: 0.35),
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: AppColors.orange900.withValues(alpha: 0.35),
               ),
-              CircularPercentIndicator(
-                radius: 42,
-                lineWidth: 8,
-                percent: data.goalPercent,
-                circularStrokeCap: CircularStrokeCap.round,
-                progressColor: AppColors.orange300,
-                backgroundColor: AppColors.orange900.withValues(alpha: 0.25),
-                center: Text(
-                  percentLabel,
-                  style: TextStyle(
-                    color: AppColors.orange300,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _isWeekly ? 'Weekly Goal' : 'Monthly Goal',
+                        style: TextStyle(
+                          color: AppColors.coklat300,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "You're getting\ncloser to your\ndiamond.",
+                        style: TextStyle(
+                          color: AppColors.orange700,
+                          fontSize: 18,
+                          height: 1.3,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                CircularPercentIndicator(
+                  radius: 42,
+                  lineWidth: 8,
+                  percent: data.goalPercent,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  progressColor: AppColors.orange300,
+                  backgroundColor: AppColors.orange900.withValues(alpha: 0.25),
+                  center: Text(
+                    percentLabel,
+                    style: TextStyle(
+                      color: AppColors.orange700,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -350,7 +372,7 @@ class _ProgressPageState extends State<ProgressPage>
                           style: TextStyle(
                             color: AppColors.orange100,
                             fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w200,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -359,9 +381,9 @@ class _ProgressPageState extends State<ProgressPage>
                               ? 'Your habit consistency\nthis week'
                               : 'Your habit consistency\nin $_selectedMonth',
                           style: TextStyle(
-                            color: AppColors.orange600,
+                            color: AppColors.orange800,
                             fontSize: 15,
-                            height: 1.5,
+                            fontWeight: FontWeight.w200,
                           ),
                         ),
                       ],
@@ -422,89 +444,143 @@ class _ProgressPageState extends State<ProgressPage>
 
   Widget _buildWeeklyChart(List<double> weeklyData) {
     final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: List.generate(
-        weeklyData.length,
-        (index) => Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              width: 28,
-              height: weeklyData[index] * 40,
-              decoration: BoxDecoration(
-                color: AppColors.orange700,
-                borderRadius: BorderRadius.circular(10),
+    final yAxisLabels = ['4', '3', '2', '1', '0'];
+
+    // Gunakan IntrinsicHeight agar tinggi Column angka mengikuti tinggi total grafik di kanannya
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 🌟 INDIKATOR ANGKA DI SEBELAH KIRI
+          Column(
+            mainAxisAlignment: MainAxisAlignment
+                .spaceBetween, // Ini akan memaksa angka 0 berada di paling bawah
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: yAxisLabels.map((label) {
+              return Text(
+                label,
+                style: TextStyle(
+                  color: AppColors.coklat300,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            }).toList(),
+          ),
+
+          // Jarak horizontal antara kolom angka dan grafik batang
+          const SizedBox(width: 16),
+
+          // 🌟 GRAFIK BATANG UTAMA
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(
+                weeklyData.length,
+                (index) => Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 400),
+                      width: 28,
+                      height: weeklyData[index] * 40,
+                      decoration: BoxDecoration(
+                        color: AppColors.orange800,
+
+                        // 🌟 UBAH DI SINI: Hanya rounded di bagian atas (top)
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(7),
+                        ),
+                      ),
+                    ),
+                    // Jarak antara batang dan tulisan hari
+                    const SizedBox(height: 10),
+                    Text(
+                      days[index],
+                      style: TextStyle(
+                        color: AppColors.orange100,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              days[index],
-              style: TextStyle(color: AppColors.orange100, fontSize: 13),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildMonthlyChart(List<double> barData) {
-    final labels = ['week 1', 'week 2', 'week 3', 'week 4'];
-    final maxValue = 4.0;
+  final days = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'];
+    final yAxisLabels = ['4', '3', '2', '1', '0'];
 
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
+    // Gunakan IntrinsicHeight agar tinggi Column angka mengikuti tinggi total grafik di kanannya
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 🌟 INDIKATOR ANGKA DI SEBELAH KIRI
+          Column(
+            mainAxisAlignment: MainAxisAlignment
+                .spaceBetween, // Ini akan memaksa angka 0 berada di paling bawah
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(
-              barData.length,
-              (index) => Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: FractionallySizedBox(
-                      heightFactor: (barData[index] / maxValue).clamp(
-                        0.05,
-                        1.0,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(6),
-                          ),
-                          gradient: LinearGradient(
-                            colors: [AppColors.orange500, AppColors.orange700],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
+            children: yAxisLabels.map((label) {
+              return Text(
+                label,
+                style: TextStyle(
+                  color: AppColors.coklat300,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            }).toList(),
+          ),
+
+          // Jarak horizontal antara kolom angka dan grafik batang
+          const SizedBox(width: 16),
+
+          // 🌟 GRAFIK BATANG UTAMA
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(
+                barData.length,
+                (index) => Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 400),
+                      width: 50,
+                      height: barData[index] * 40,
+                      decoration: BoxDecoration(
+                        color: AppColors.orange800,
+
+                        // 🌟 UBAH DI SINI: Hanya rounded di bagian atas (top)
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(7),
                         ),
                       ),
                     ),
-                  ),
+                    // Jarak antara batang dan tulisan hari
+                    const SizedBox(height: 10),
+                    Text(
+                      days[index],
+                      style: TextStyle(
+                        color: AppColors.orange100,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: labels
-              .map(
-                (l) => Expanded(
-                  child: Text(
-                    l,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: AppColors.orange100, fontSize: 11),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -512,178 +588,189 @@ class _ProgressPageState extends State<ProgressPage>
   // NEW: STATS GRID
   // =========================================
 
-  Widget _buildStatsGrid() {
-    final stats = [
-      _StatData(label: 'Habits Completed', value: '128', icon: null),
-      _StatData(
-        label: 'Focus Hours',
-        value: '42h',
-        icon: Icons.emoji_events_rounded,
-      ),
-      _StatData(
-        label: 'Challenge\ncompleted',
-        value: '21 Days',
-        icon: Icons.diamond_rounded,
-      ),
-      _StatData(label: 'Diamonds Earned', value: '16', icon: null),
-    ];
+Widget _buildStatsGrid() {
+  final stats = [
+    _StatData(
+      label: 'Habits Completed',
+      value: '128',
+      icon: Icons.track_changes_rounded, // Menggantikan icon target/bullseye
+    ),
+    _StatData(
+      label: 'Focus Hours',
+      value: '42h',
+      icon: Icons.emoji_events_rounded, // Icon piala
+    ),
+    _StatData(
+      label: 'Challenge completed', // Dihapus \n nya karena space sudah otomatis nge-wrap lewat Text widget jika kurang
+      value: '21 Days',
+      icon: Icons.diamond_rounded, // Icon diamond
+    ),
+    _StatData(
+      label: 'Diamonds Earned',
+      value: '16',
+      icon: Icons.diamond_rounded, // Icon diamond
+    ),
+  ];
 
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 1.35,
-      children: stats.map((stat) => _buildStatCard(stat)).toList(),
-    );
-  }
+  return GridView.count(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    crossAxisCount: 2,
+    crossAxisSpacing: 16, // Sedikit diperlebar agar seimbang dengan gambar
+    mainAxisSpacing: 16,
+    childAspectRatio: 1.4, // Rasio disesuaikan agar card terlihat persegi panjang pas
+    children: stats.map((stat) => _buildStatCard(stat)).toList(),
+  );
+}
 
-  Widget _buildStatCard(_StatData stat) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 14, 14, 16),
-          decoration: BoxDecoration(
-            color: AppColors.coklat900.withValues(alpha: 0.35),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AppColors.orange700.withValues(alpha: 0.35),
-            ),
-          ),
-          child: Stack(
-            children: [
-              // Icon kanan atas
-              if (stat.icon != null)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Icon(
-                    stat.icon,
-                    color: AppColors.orange400.withValues(alpha: 0.85),
-                    size: 26,
-                  ),
-                ),
-              // Label + Value
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    stat.label,
-                    style: TextStyle(
-                      color: AppColors.coklat300,
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w500,
-                      height: 1.4,
-                    ),
-                  ),
-                  Text(
-                    stat.value,
-                    style: TextStyle(
-                      color: AppColors.orange300,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+Widget _buildStatCard(_StatData stat) {
+  return Container(
+    // Padding bagian dalam card dibuat seimbang
+    padding: const EdgeInsets.all(16), 
+    decoration: BoxDecoration(
+      // Menggunakan warna solid kecoklatan/abu-abu hangat sesuai gambar
+      color: AppColors.coklat900, 
+      borderRadius: BorderRadius.circular(24), // Sudut melengkung halus sesuai gambar
+    ),
+    child: Stack(
+      children: [
+        // Icon di pojok kanan atas dengan opasitas tipis/warna emas pudar
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Icon(
+            stat.icon,
+            color: AppColors.orange400.withValues(alpha: 0.4), // Dibuat agak transparan melengkapi desain gambar
+            size: 32, // Ukuran diperbesar sedikit agar proporsional
           ),
         ),
-      ),
-    );
-  }
+        // Label + Value disusun vertikal
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              stat.label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: AppColors.coklat300.withValues(alpha: 0.7), // Warna teks abu-abu muda hangat
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                height: 1.2,
+              ),
+            ),
+            const Spacer(), // Dorong value ke paling bawah card secara dinamis
+            Text(
+              stat.value,
+              style: TextStyle(
+                color: AppColors.orange300, // Warna orange/emas khas di gambar
+                fontSize: 28,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
 
   // =========================================
   // NEW: WEEKLY ACHIEVEMENTS
   // =========================================
 
-  Widget _buildWeeklyAchievements() {
-    final achievements = [
-      _AchievementData(emoji: '🎯', title: 'Focus Master'),
-      _AchievementData(emoji: '🌤️', title: 'Early Riser'),
-      _AchievementData(emoji: '💡', title: 'Consistency\nMaster'),
-    ];
+Widget _buildWeeklyAchievements() {
+  final achievements = [
+    _AchievementData(emoji: '🎯', title: 'Focus Master'),
+    _AchievementData(emoji: '🌤️', title: 'Early Riser'),
+    _AchievementData(emoji: '💎', title: 'Consistency\nMiner'),
+    _AchievementData(emoji: '⛏️', title: 'Deep Worker'),
+  ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Weekly Achievements',
-          style: TextStyle(
-            color: AppColors.orange100,
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
+  const double gap = 12.0; // Jarak antar kotak
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'Weekly Achievements',
+        style: TextStyle(
+          color: AppColors.orange100,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
         ),
-        const SizedBox(height: 14),
-        SizedBox(
-          height: 105,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: achievements.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 10),
-            itemBuilder: (context, index) {
-              final item = achievements[index];
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
+      ),
+      const SizedBox(height: 14),
+      
+      LayoutBuilder(
+        builder: (context, constraints) {
+          // Hitungan presisi untuk memunculkan 2 kotak utuh & 1 kotak terpotong seperempat
+          final double cardWidth = (constraints.maxWidth - (2 * gap)) / 2.25;
+          final double cardHeight = cardWidth; // Square sempurna
 
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                    child: Container(
-                      width: 98,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.coklat900.withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: AppColors.biru200.withValues(alpha: 0.35),
-                          width: 1.0,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            item.emoji,
-                            style: const TextStyle(fontSize: 28),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            item.title,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: AppColors.orange100,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              height: 1.3,
-                            ),
-                          ),
-                        ],
-                      ),
+          return SizedBox(
+            height: cardHeight,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemCount: achievements.length,
+              separatorBuilder: (_, __) => const SizedBox(width: gap),
+              itemBuilder: (context, index) {
+                final item = achievements[index];
+                return Container(
+                  width: cardWidth,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.coklat900,
+                    borderRadius: BorderRadius.circular(26), // Sudut bulat yang lebih besar
+                    // Menambahkan border rounded berwarna biru
+                    border: Border.all(
+                      color: Colors.blue.withValues(alpha: 0.5), // Ganti dengan AppColors.biru Anda jika ada
+                      width: 1.5,
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
+                  // Menggunakan Center + Column untuk memastikan semua konten berada di tengah
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min, // Mengunci column agar tingginya pas dengan konten
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Ukuran gambar emoji diperbesar lagi
+                        Text(
+                          item.emoji,
+                          style: const TextStyle(fontSize: 42), 
+                        ),
+                        const SizedBox(height: 12), // Jarak antara emoji dan tulisan
+                        // Ukuran tulisan diperbesar dan diposisikan di tengah
+                        Text(
+                          item.title,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.coklat300.withValues(alpha: 0.9),
+                            fontSize: 14, // Ukuran teks diperbesar lagi agar lebih jelas
+                            fontWeight: FontWeight.bold, // Dibuat tebal agar makin menonjol
+                            height: 1.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    ],
+  );
+}
   // =========================================
   // NEW: WEEKLY REFLECTION
   // =========================================

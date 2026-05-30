@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/core/constants/app_sizes.dart';
 
-class JournalTabSwitch extends StatelessWidget {
+class JournalTabSwitch extends StatefulWidget {
   final int selectedIndex;
   final ValueChanged<int> onChanged;
 
@@ -11,92 +13,140 @@ class JournalTabSwitch extends StatelessWidget {
   });
 
   @override
+  State<JournalTabSwitch> createState() => _JournalTabSwitchState();
+}
+
+class _JournalTabSwitchState extends State<JournalTabSwitch>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    _slideAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    if (widget.selectedIndex == 1) {
+      _animationController.value = 1.0;
+    }
+  }
+
+  @override
+  void didUpdateWidget(JournalTabSwitch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedIndex != widget.selectedIndex) {
+      if (widget.selectedIndex == 1) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: 48,
+      height: 52,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: const Color(0xFF332622),
-        borderRadius: BorderRadius.circular(24),
+        color: AppColors.coklat900.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
         border: Border.all(
-          color: const Color(0xFF4A3831),
-          width: 1.5,
+          color: AppColors.coklat600.withValues(alpha: 0.5),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Stack(
         children: [
-          // SLIDING INDICATOR DENGAN CUSTOM SHAPE
-          AnimatedAlign(
-            alignment: selectedIndex == 0
-                ? Alignment.centerLeft
-                : Alignment.centerRight,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-            // Menggunakan 54% agar ujung lengkungnya menutupi area tengah dengan sempurna
-            child: FractionallySizedBox(
-              widthFactor: 0.54, 
-              heightFactor: 1.0,
-              child: CustomPaint(
-                painter: _TabIndicatorPainter(isLeft: selectedIndex == 0),
-              ),
-            ),
+          // SLIDING BACKGROUND
+          AnimatedBuilder(
+            animation: _slideAnimation,
+            builder: (context, child) {
+              return Positioned.fill(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final width = constraints.maxWidth / 2 - 4;
+                    return Stack(
+                      children: [
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOutCubic,
+                          left: 4 + (_slideAnimation.value * (width + 0)),
+                          top: 4,
+                          child: Container(
+                            width: width,
+                            height: constraints.maxHeight - 8,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColors.orange800,
+                                  AppColors.orange900,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                AppSizes.radiusMd,
+                              ),
+                              border: Border.all(
+                                color: AppColors.orange600.withValues(alpha: 0.5),
+                                width: 1,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.orange700.withValues(alpha: 0.4),
+                                  blurRadius: 12,
+                                  spreadRadius: 1,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              );
+            },
           ),
 
           // TAB BUTTONS
           Row(
             children: [
-              // JOURNAL
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => onChanged(0),
-                  behavior: HitTestBehavior.opaque,
-                  child: Center(
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 250),
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        letterSpacing: 0.5,
-                        color: selectedIndex == 0
-                            ? Colors.white
-                            : const Color(0xFFB09D8E),
-                      ),
-                      child: const Text('Journal'),
-                    ),
-                  ),
-                ),
+              _TabButton(
+                label: 'Journal',
+                isSelected: widget.selectedIndex == 0,
+                onTap: () => widget.onChanged(0),
               ),
-
-              // PROGRESS
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => onChanged(1),
-                  behavior: HitTestBehavior.opaque,
-                  child: Center(
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 250),
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        letterSpacing: 0.5,
-                        color: selectedIndex == 1
-                            ? Colors.white
-                            : const Color(0xFFB09D8E),
-                      ),
-                      child: const Text('Progress'),
-                    ),
-                  ),
-                ),
+              _TabButton(
+                label: 'Progress',
+                isSelected: widget.selectedIndex == 1,
+                onTap: () => widget.onChanged(1),
+                
               ),
             ],
           ),
@@ -106,71 +156,49 @@ class JournalTabSwitch extends StatelessWidget {
   }
 }
 
-/// Custom Painter untuk menggambar bentuk miring asimetris ala UI Game
-class _TabIndicatorPainter extends CustomPainter {
-  final bool isLeft;
+class _TabButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
 
-  _TabIndicatorPainter({required this.isLeft});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = Path();
-    final double r = 20.0; // Radius sudut membulat standar
-
-    // Menggambar Jalur (Path) asimetris
-    if (isLeft) {
-      // Bentuk tab Kiri (Potongan miring di sisi kanan)
-      path.moveTo(r, 0);
-      path.lineTo(size.width - 24, 0);
-      path.quadraticBezierTo(size.width - 16, 0, size.width - 12, 8); // Lengkungan atas
-      path.lineTo(size.width - 4, size.height - 8); // Garis miring menurun
-      path.quadraticBezierTo(size.width, size.height, size.width - 12, size.height); // Lengkungan bawah
-      path.lineTo(r, size.height);
-      path.quadraticBezierTo(0, size.height, 0, size.height - r);
-      path.lineTo(0, r);
-      path.quadraticBezierTo(0, 0, r, 0);
-    } else {
-      // Bentuk tab Kanan (Potongan miring di sisi kiri, cerminan dari tab kiri)
-      path.moveTo(12, 0);
-      path.quadraticBezierTo(0, 0, 4, 8);
-      path.lineTo(16, size.height - 8);
-      path.quadraticBezierTo(20, size.height, 28, size.height);
-      path.lineTo(size.width - r, size.height);
-      path.quadraticBezierTo(size.width, size.height, size.width, size.height - r);
-      path.lineTo(size.width, r);
-      path.quadraticBezierTo(size.width, 0, size.width - r, 0);
-    }
-    path.close();
-
-    // 1. Gambar Drop Shadow terlebih dahulu agar berada di belakang
-    final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.3)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
-    canvas.drawPath(path.shift(const Offset(0, 2)), shadowPaint);
-
-    // 2. Gambar Warna Latar Bergradasi (Gradient)
-    final fillPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFFC0864B),
-          Color(0xFF865120),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.fill;
-    canvas.drawPath(path, fillPaint);
-
-    // 3. Gambar Border Emas (Stroke luar)
-    final borderPaint = Paint()
-      ..color = const Color(0xFFDCA971).withOpacity(0.5)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-    canvas.drawPath(path, borderPaint);
-  }
+  const _TabButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
-  bool shouldRepaint(covariant _TabIndicatorPainter oldDelegate) {
-    return oldDelegate.isLeft != isLeft;
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          ),
+          alignment: Alignment.center,
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              color: isSelected ? AppColors.orange100 : AppColors.coklat300,
+              shadows: isSelected
+                  ? [
+                      Shadow(
+                        color: AppColors.orange500.withValues(alpha: 0.5),
+                        blurRadius: 8,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Text(label),
+          ),
+        ),
+      ),
+    );
   }
 }

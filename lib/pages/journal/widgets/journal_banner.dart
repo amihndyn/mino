@@ -13,7 +13,7 @@ class JournalBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 90,
       width: double.infinity,
       decoration: BoxDecoration(
         

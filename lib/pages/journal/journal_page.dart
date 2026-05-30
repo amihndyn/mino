@@ -219,7 +219,7 @@ class _JournalPageState extends State<JournalPage>
         mainAxisSpacing: 16,
 
         // KECILIN ratio biar card makin tinggi
-        childAspectRatio: 0.62,
+        childAspectRatio: 0.58,
       ),
       itemCount: _entries.length,
       itemBuilder: (context, index) {
