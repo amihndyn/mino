@@ -28,9 +28,12 @@ class HabitOptionCard extends StatelessWidget {
           vertical: 8, // Ukuran vertical mengecil agar proporsional seperti kapsul
         ),
         decoration: BoxDecoration(
-          // PERBAIKAN DI SINI: Menggunakan format 0xFF untuk warna hex
-          color: isSelected ? AppColors.biru500 : const Color(0xFFFFF8EC), 
-          borderRadius: BorderRadius.circular(15),
+          color: isSelected ? AppColors.orange200 : Colors.white, // Latar putih saat tidak dipilih
+          borderRadius: BorderRadius.circular(30), // Pill-shaped / Kapsul sempurna
+          border: Border.all(
+            color: isSelected ? AppColors.orange700 : Colors.transparent,
+            width: 1.5,
+          ),
           boxShadow: [
             if (!isSelected)
               BoxShadow(
