@@ -1,16 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:mino/core/data/datasource/auth_local_datasource.dart';
+import 'package:mino/pages/auth/confirm_password_screen.dart';
 import 'package:mino/pages/auth/login_page.dart';
-import 'package:mino/pages/habit/pilih_habit_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/journal/journal_page.dart';
-import 'package:mino/pages/mood/mood_page.dart';
-<<<<<<< HEAD
-import 'package:mino/pages/onboarding/on_boarding1.dart';
-=======
-import 'package:mino/pages/timer/timer_page.dart';
->>>>>>> origin/sausan-2
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -53,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen>
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => 
-            isLogin ? const JournalPage() : const HomePage(),
+            isLogin ? const JournalPage() : const ConfirmPassword4(),
         transitionDuration: const Duration(milliseconds: 800), // Durasi fade bisa disesuaikan
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
