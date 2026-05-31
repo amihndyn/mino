@@ -5,6 +5,10 @@ import 'package:mino/pages/auth/confirm_password_screen.dart';
 import 'package:mino/pages/auth/login_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/journal/journal_page.dart';
+import 'package:mino/pages/journal/journal_parent_screen.dart';
+import 'package:mino/pages/journal/progress_page.dart';
+import 'package:mino/pages/onboarding/on_boarding1.dart';
+import 'package:mino/pages/profile/profile_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -47,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => 
-            isLogin ? const JournalPage() : const ConfirmPassword4(),
+            isLogin ? const JournalParentScreen() : const JournalParentScreen(),
         transitionDuration: const Duration(milliseconds: 800), // Durasi fade bisa disesuaikan
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);

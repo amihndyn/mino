@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_text_styles.dart';
-import 'package:mino/pages/journal/journal_page.dart';
+import 'package:mino/models/journal_entry_model.dart.dart';
 
 
 class JournalCard extends StatefulWidget {

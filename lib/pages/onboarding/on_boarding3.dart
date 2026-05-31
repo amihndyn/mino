@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mino/pages/auth/login_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 
@@ -78,7 +79,7 @@ class OnBoarding3 extends StatelessWidget {
                         Navigator.pushAndRemoveUntil(
                           context,
                           PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => const HomePage(),
+                            pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
                             transitionsBuilder: (context, animation, secondaryAnimation, child) {
                               return FadeTransition(opacity: animation, child: child);
                             },
