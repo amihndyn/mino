@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mino/pages/timer/running_timer_page.dart';
 import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
@@ -90,12 +91,21 @@ class _TimerPageState extends State<TimerPage> {
                   padding: const EdgeInsets.only(bottom: 30),
                   child: SizedBox(
                     width: 200, 
-                    child: CustomButton(
-                      text: 'Next',
-                      onTap: () {
-                        print('Mulai timer selama ${_timerValue.toInt()} menit');
-                      },
-                    ),
+                    child: // Di dalam timer_page.dart bagian tombol Next
+                      CustomButton(
+                        text: 'Next',
+                        onTap: () {
+                          // _timerValue berasal dari nilai Slider milikmu sebelumnya
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RunningTimerPage(
+                                minutes: _timerValue.toInt(), 
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                   ),
                 ),
               ],
