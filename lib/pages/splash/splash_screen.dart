@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => isLogin ? const JournalPage() : const PilihHabitPage(),
+        builder: (_) => isLogin ? const JournalPage() : const LoginPage(),
       ),
     );
   }
@@ -60,15 +60,17 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black, // Warna dasar untuk transisi mulus
       body: Stack(
         children: [
-          // BACKGROUND
+          // PERBAIKAN: Mengganti LinearGradient menjadi gambar Background 
           Container(
+            width: double.infinity,
+            height: double.infinity,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF33211C), Color(0xFF5A463E)],
+              image: DecorationImage(
+                image: AssetImage('assets/images/bg_login.png'), // Sesuaikan jika ada aset khusus splash
+                fit: BoxFit.cover, // Memastikan gambar menutupi layar penuh
               ),
             ),
           ),
@@ -82,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Color(0xFF00BBFF).withValues(alpha: 0.5),
+                    const Color(0xFF00BBFF).withValues(alpha: 0.5),
                     Colors.transparent,
                   ],
                 ),
@@ -90,6 +92,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
 
+          // LOGO DAN ANIMASI TITIK
           Center(
             child: SizedBox(
               width: 300,
@@ -140,7 +143,7 @@ class _SplashScreenState extends State<SplashScreen>
               color: const Color(0xFFE5A84F),
               boxShadow: [
                 BoxShadow(
-                  color: Color(0xFFE5A84F).withValues(alpha: 0.3 + glow * 0.5),
+                  color: const Color(0xFFE5A84F).withValues(alpha: 0.3 + glow * 0.5),
                   blurRadius: 4 + glow * 6,
                   spreadRadius: 1 + glow * 2,
                 ),

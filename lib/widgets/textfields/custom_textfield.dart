@@ -7,7 +7,7 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller;
   final int maxLines;
-   final bool isPassword;
+  final bool isPassword;
 
   const CustomTextField({
     super.key,
@@ -21,46 +21,42 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      maxLines: maxLines,
+      // Karena obscureText true tidak bisa digabung dengan maxLines > 1
+      // Kita set maxLines ke 1 secara paksa jika ini adalah password
+      maxLines: isPassword ? 1 : maxLines, 
+      
+      // INI KUNCI PERBAIKANNYA ⬇️
+      obscureText: isPassword, 
 
       style: AppTextStyles.bodyRegular,
 
       decoration: InputDecoration(
         hintText: hintText,
-
         hintStyle: AppTextStyles.secondaryMedium,
-
         filled: true,
         fillColor: AppColors.coklat800,
-
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSizes.md,
           vertical: AppSizes.md,
         ),
-
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(
             AppSizes.radiusLg,
           ),
-
           borderSide: BorderSide.none,
         ),
-
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(
             AppSizes.radiusLg,
           ),
-
           borderSide: BorderSide(
             color: AppColors.coklat600,
           ),
         ),
-
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(
             AppSizes.radiusLg,
           ),
-
           borderSide: BorderSide(
             color: AppColors.orange400,
             width: 1.5,

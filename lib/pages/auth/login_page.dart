@@ -66,141 +66,158 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
       child: Scaffold(
-        body: Center(
-          child: Container(
-            width: 412,
-            height: 917,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'),
-                fit: BoxFit.cover,
-              ),
+        backgroundColor: Colors.black,
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bg_login.png'),
+              fit: BoxFit.cover, 
             ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 20,
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 40),
-                      SvgPicture.asset('assets/icons/diamond.svg', height: 100),
-                      const SizedBox(height: 30),
-                      const Text(
-                        'Welcome Back',
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 24, // Disesuaikan agar margin pinggir lebih lega
+                  right: 24,
+                  top: 20,
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 40),
+                    SvgPicture.asset('assets/icons/diamond.svg', height: 100),
+                    const SizedBox(height: 30),
+                    const Text(
+                      'Welcome Back',
+                      style: TextStyle(
+                        fontSize: 36, // Dikecilkan sedikit agar rapi
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Continue your journey',
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                      const SizedBox(height: 30),
-                      CustomTextField(
-                        hintText: 'Email',
-                        controller: _emailController,
-                      ),
-                      const SizedBox(height: 15),
-                      CustomTextField(
-                        hintText: 'Password',
-                        isPassword: true,
-                        controller: _passwordController,
-                      ),
-                      const SizedBox(height: 20),
-                      BlocBuilder<LoginBloc, LoginState>(
-                        builder: (context, state) {
-                          final isLoading = state.maybeWhen(
-                            loading: () => true,
-                            orElse: () => false,
-                          );
-                          return SizedBox(
-                            width: 358,
-                            height: 47,
-                            child: isLoading
-                                ? const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.orange,
-                                    ),
-                                  )
-                                : CustomButton(
-                                    text: 'Login',
-                                    onTap: _onLoginTap,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Continue your journey',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                    const SizedBox(height: 40),
+                    
+                    CustomTextField(
+                      hintText: 'Email',
+                      controller: _emailController,
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    CustomTextField(
+                      hintText: 'Password',
+                      isPassword: true, // Pastikan ini true
+                      controller: _passwordController,
+                    ),
+                    
+                    const SizedBox(height: 24),
+                    
+                    BlocBuilder<LoginBloc, LoginState>(
+                      builder: (context, state) {
+                        final isLoading = state.maybeWhen(
+                          loading: () => true,
+                          orElse: () => false,
+                        );
+                        return SizedBox(
+                          // PERBAIKAN: Gunakan double.infinity agar lebar tombol sama persis dengan input
+                          width: double.infinity, 
+                          height: 50, // Disamakan tingginya dengan tombol Google
+                          child: isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.orange,
                                   ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Text(
-                          'Forget the password?',
-                          style: TextStyle(
-                            color: Colors.orange,
-                            fontWeight: FontWeight.bold,
-                          ),
+                                )
+                              : CustomButton(
+                                  text: 'Login',
+                                  onTap: _onLoginTap,
+                                ),
+                        );
+                      },
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: () {},
+                      child: const Text(
+                        'Forget the password?',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: const [
-                          Expanded(child: Divider(color: Colors.white30)),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              'Or',
-                              style: TextStyle(color: Colors.white54),
-                            ),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: const [
+                        Expanded(child: Divider(color: Colors.white30)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'Or',
+                            style: TextStyle(color: Colors.white54),
                           ),
-                          Expanded(child: Divider(color: Colors.white30)),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30),
                         ),
+                        Expanded(child: Divider(color: Colors.white30)),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    
+                    // PERBAIKAN: Tombol Google dibuat sejajar dengan double.infinity
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        onPressed: () {},
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset('assets/images/google.png', height: 20),
                             const SizedBox(width: 10),
-                            const Text('Continue with google'),
+                            const Text(
+                              'Continue with google',
+                              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w500),
+                            ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const RegisterPage(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          "Don't have an account? Sign up",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFFE6A84A),
+                    ),
+                    
+                    const SizedBox(height: 40),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const RegisterPage(),
                           ),
+                        );
+                      },
+                      child: const Text(
+                        "Don't have an account? Sign up",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFE6A84A),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
             ),
