@@ -5,6 +5,7 @@ import 'package:mino/pages/auth/login_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/mood/mood_page.dart';
+import 'package:mino/pages/timer/timer_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -45,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => isLogin ? const HomePage() : const MoodPage(),
+        builder: (_) => isLogin ? const HomePage() : const TimerPage(),
       ),
     );
   }

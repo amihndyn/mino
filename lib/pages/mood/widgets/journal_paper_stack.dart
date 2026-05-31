@@ -1,3 +1,4 @@
+import 'dart:math' as math; // Perlu import ini untuk nilai math.pi
 import 'package:flutter/material.dart';
 
 class JournalPaperStack extends StatelessWidget {
@@ -15,46 +16,35 @@ class JournalPaperStack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.center, // Memastikan semua tumpukan mulai dari titik tengah
       children: [
-        // Kertas belakang (efek tumpukan paling bawah)
-        Positioned(
-          top: 8,
-          left: 10,
-          right: 0,
-          bottom: 0,
+        // ── 1. Kertas Paling Belakang (Miring ke Kiri) ─────────────────
+        Transform.rotate(
+          angle: -8 * (math.pi / 180), // Miring -3 derajat ke kiri
           child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: const Color(0xFFF0DFC0),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white12, width: 0.5),
             ),
           ),
         ),
         
-        // Kertas belakang kedua (lapisan tengah)
-        Positioned(
-          top: 4,
-          left: 5,
-          right: 5,
-          bottom: 4,
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5E8D0),
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-        ),
+
         
-        // Kertas utama (area tulis paling atas)
+        // ── 3. Kertas Utama Paling Atas (Tegak Lurus untuk Ngetik) ─────
         Container(
-          margin: const EdgeInsets.only(right: 10, bottom: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
             color: const Color(0xFFFAF0DC),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                blurRadius: 16,
+                spreadRadius: -2,
+                offset: const Offset(0, 8), // Bayangan jatuh ke bawah
               ),
             ],
           ),
@@ -66,16 +56,16 @@ class JournalPaperStack extends StatelessWidget {
             textAlignVertical: TextAlignVertical.top,
             style: const TextStyle(
               color: Color(0xFF3D2B1F),
-              fontSize: 15,
-              height: 1.7,
+              fontSize: 16,
+              height: 1.6,
             ),
             decoration: const InputDecoration(
               hintText: 'Enter topic',
               hintStyle: TextStyle(
                 color: Color(0xFFB8956A),
-                fontSize: 15,
+                fontSize: 16,
               ),
-              contentPadding: EdgeInsets.all(20),
+              contentPadding: EdgeInsets.all(24),
               border: InputBorder.none,
             ),
             onChanged: onChanged,

@@ -1,148 +1,107 @@
 import 'package:flutter/material.dart';
-import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/core/constants/app_sizes.dart';
-import 'package:mino/core/constants/app_text_styles.dart';
+import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart.dart';
+import 'package:mino/widgets/appbars/custom_appbar.dart';
+import 'package:mino/widgets/button/custom_button.dart';
 
-import '../../widgets/appbars/custom_appbar.dart';
+import 'widgets/balloon_slider.dart';
 
-class TimerPage extends StatelessWidget {
+class TimerPage extends StatefulWidget {
   const TimerPage({super.key});
+
+  @override
+  State<TimerPage> createState() => _TimerPageState();
+}
+
+class _TimerPageState extends State<TimerPage> {
+  int _selectedTabIndex = 1; 
+  double _timerValue = 10.0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.coklat900,
-
-      appBar: const CustomAppBar(
-        title: 'Focus Timer',
-        showBackButton: false,
-      ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(AppSizes.lg),
-
-        child: Column(
-          children: [
-            const Spacer(),
-
-            // TIMER CIRCLE
-            Container(
-              width: 260,
-              height: 260,
-
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-
-                  colors: [
-                    AppColors.orange700,
-                    AppColors.coklat700,
-                  ],
-                ),
-
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.orange500
-                        .withOpacity(0.18),
-
-                    blurRadius: 40,
-                    spreadRadius: 4,
-                  ),
-                ],
-              ),
-
-              child: Center(
-                child: Text(
-                  '25:00',
-
-                  style:
-                      AppTextStyles.displayBold.copyWith(
-                    fontSize: 52,
-                  ),
-                ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/bg_login.png'),
+                fit: BoxFit.cover,
               ),
             ),
+          ),
 
-            const SizedBox(height: AppSizes.xl),
-
-            Text(
-              'Stay focused and productive ✨',
-
-              style: AppTextStyles.secondaryMedium,
-            ),
-
-            const Spacer(),
-
-            // BUTTONS
-            Row(
+          SafeArea(
+            child: Column(
               children: [
-                Expanded(
-                  child: _TimerButton(
-                    title: 'Start',
-                    isPrimary: true,
+                const SizedBox(height: 10),
+                
+                // ── KUNCI PERUBAHAN: Menggunakan CustomAppBar milikmu ──
+                const CustomAppBar(
+                  title: 'Pomodoro', // Sesuaikan parameter ini jika CustomAppBar mu butuh properti lain
+                ),
+                
+                const SizedBox(height: 20),
+
+                PomodoroTabMenu(
+                  selectedIndex: _selectedTabIndex,
+                  onTabChanged: (index) {
+                    setState(() {
+                      _selectedTabIndex = index;
+                    });
+                  },
+                ),
+                const SizedBox(height: 40),
+
+                BalloonSlider(
+                  initialValue: _timerValue,
+                  onChanged: (val) {
+                    _timerValue = val;
+                  },
+                ),
+                
+                const SizedBox(height: 60),
+
+                Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFF4A3424), 
+                      width: 4,
+                    ),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/crystal_cave.png'), 
+                      fit: BoxFit.cover,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                      )
+                    ],
                   ),
                 ),
 
-                const SizedBox(width: AppSizes.md),
+                const Spacer(),
 
-                Expanded(
-                  child: _TimerButton(
-                    title: 'Reset',
-                    isPrimary: false,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: SizedBox(
+                    width: 200, 
+                    child: CustomButton(
+                      text: 'Next',
+                      onTap: () {
+                        print('Mulai timer selama ${_timerValue.toInt()} menit');
+                      },
+                    ),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TimerButton extends StatelessWidget {
-  final String title;
-  final bool isPrimary;
-
-  const _TimerButton({
-    required this.title,
-    required this.isPrimary,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 56,
-
-      decoration: BoxDecoration(
-        color: isPrimary
-            ? AppColors.orange500
-            : AppColors.coklat800,
-
-        borderRadius: BorderRadius.circular(
-          AppSizes.radiusLg,
-        ),
-
-        border: Border.all(
-          color: AppColors.coklat600,
-        ),
-      ),
-
-      alignment: Alignment.center,
-
-      child: Text(
-        title,
-
-        style: AppTextStyles.bodyMedium.copyWith(
-          color: isPrimary
-              ? AppColors.coklat900
-              : AppColors.orange100,
-
-          fontWeight: FontWeight.bold,
-        ),
+          ),
+        ],
       ),
     );
   }

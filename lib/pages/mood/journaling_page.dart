@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/mood/widgets/journal_prompt_view.dart';
 import 'package:mino/pages/mood/widgets/journal_writing_view.dart';
 import 'package:mino/widgets/button/custom_button.dart';
@@ -27,7 +28,11 @@ class _JournalingPageState extends State<JournalingPage> {
 
   void _onSaveAndSkip() {
     // Logika simpan atau lewatkan ke halaman HomeScreen
-    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()), // Membuka HomePage baru
+      (route) => false, // Menghapus semua riwayat halaman sebelumnya secara bersih
+    );
   }
 
   @override
