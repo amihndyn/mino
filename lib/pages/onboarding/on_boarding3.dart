@@ -8,6 +8,7 @@ class OnBoarding3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black, // Mencegah kedip putih
       body: Stack(
         children: [
           Positioned.fill(
@@ -73,9 +74,15 @@ class OnBoarding3 extends StatelessWidget {
                     child: CustomButton(
                       text: "Let's Get Started",
                       onTap: () {
+                        // Transisi Fade yang mulus sebelum ke HomePage
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (_) => const HomePage()),
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => const HomePage(),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(opacity: animation, child: child);
+                            },
+                          ),
                           (route) => false,
                         );
                       },

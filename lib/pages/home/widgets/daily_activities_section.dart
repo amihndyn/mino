@@ -26,19 +26,19 @@ class DailyActivitiesSection extends StatelessWidget {
         // Menggunakan emoji berupa String agar sama persis dengan tampilan visualnya
         ActivityItemCard(
           title: "Take a deep breath",
-          emoji: "📔", 
+          imageAsset: 'assets/images/book.png',
         ),
         SizedBox(height: 14),
 
         ActivityItemCard(
           title: "Smile for a few seconds",
-          emoji: "😊",
+          imageAsset: 'assets/images/smile.png',
         ),
         SizedBox(height: 14),
 
         ActivityItemCard(
           title: "Fix your posture",
-          emoji: "🧘",
+          imageAsset: 'assets/images/exercise.png',
         ),
       ],
     );

@@ -6,6 +6,7 @@ import 'package:mino/pages/habit/pilih_habit_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/mood/mood_page.dart';
+import 'package:mino/pages/onboarding/on_boarding1.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,10 +44,16 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
+    // PERBAIKAN: Menggunakan PageRouteBuilder dengan FadeTransition
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => isLogin ? const JournalPage() : const LoginPage(),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => 
+            isLogin ? const JournalPage() : const HomePage(),
+        transitionDuration: const Duration(milliseconds: 800), // Durasi fade bisa disesuaikan
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
       ),
     );
   }
@@ -63,14 +70,13 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: Colors.black, // Warna dasar untuk transisi mulus
       body: Stack(
         children: [
-          // PERBAIKAN: Mengganti LinearGradient menjadi gambar Background 
           Container(
             width: double.infinity,
             height: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'), // Sesuaikan jika ada aset khusus splash
-                fit: BoxFit.cover, // Memastikan gambar menutupi layar penuh
+                image: AssetImage('assets/images/bg_login.png'), 
+                fit: BoxFit.cover, 
               ),
             ),
           ),

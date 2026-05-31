@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 class ActivityItemCard extends StatelessWidget {
   final String title;
-  final String emoji;
-  final bool isCompleted; // Menyiapkan state jika nanti ingin diubah menjadi tercentang
+  final String? emoji; // Buat jadi opsional
+  final String? imageAsset; // Untuk menampung gambar dari assets
+  final bool isCompleted; // Menambahkan variabel state untuk checklist
 
   const ActivityItemCard({
     super.key,
     required this.title,
-    required this.emoji,
-    this.isCompleted = false,
+    this.emoji,
+    this.imageAsset,
+    this.isCompleted = false, // Default false agar tidak error jika tidak diisi
   });
 
   @override
@@ -17,6 +19,24 @@ class ActivityItemCard extends StatelessWidget {
     // Definisi palet warna berdasarkan gambar referensi
     const Color cardBgColor = Color(0xffF6E5CD); // Latar belakang krem lembut
     const Color darkBrownColor = Color(0xff422E22); // Warna teks dan border lingkaran
+
+    // Logika untuk menampilkan Gambar Asset atau Emoji
+    Widget iconWidget;
+    if (imageAsset != null) {
+      iconWidget = Image.asset(
+        imageAsset!,
+        width: 30, // Sesuaikan dengan ukuran emoji
+        height: 30,
+        fit: BoxFit.contain,
+      );
+    } else if (emoji != null) {
+      iconWidget = Text(
+        emoji!,
+        style: const TextStyle(fontSize: 30),
+      );
+    } else {
+      iconWidget = const SizedBox(width: 30, height: 30); // Fallback
+    }
 
     return Container(
       width: double.infinity,
@@ -27,13 +47,9 @@ class ActivityItemCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // 1. Emoji / Ikon di Sisi Kiri
-          Text(
-            emoji,
-            style: const TextStyle(
-              fontSize: 30, // Mengatur ukuran emoji agar proporsional
-            ),
-          ),
+          // 1. Emoji / Ikon Gambar di Sisi Kiri
+          iconWidget,
+          
           const SizedBox(width: 16),
 
           // 2. Judul Aktivitas di Tengah
@@ -64,10 +80,10 @@ class ActivityItemCard extends StatelessWidget {
             child: isCompleted
                 ? const Icon(
                     Icons.check,
-                    color: cardBgColor,
+                    color: cardBgColor, // Warna centang (mengikuti warna krem)
                     size: 18,
                   )
-                : null,
+                : null, // Kosong jika belum complete
           ),
         ],
       ),

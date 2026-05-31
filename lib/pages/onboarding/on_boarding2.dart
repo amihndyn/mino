@@ -8,6 +8,7 @@ class OnBoarding2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black, // Mencegah kedip putih
       body: Stack(
         children: [
           Positioned.fill(
@@ -73,10 +74,14 @@ class OnBoarding2 extends StatelessWidget {
                     child: CustomButton(
                       text: 'Next',
                       onTap: () {
+                        // Transisi Fade yang mulus
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const OnBoarding3(),
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => const OnBoarding3(),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(opacity: animation, child: child);
+                            },
                           ),
                         );
                       },
