@@ -6,7 +6,11 @@ import 'package:mino/pages/habit/pilih_habit_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/mood/mood_page.dart';
+<<<<<<< HEAD
 import 'package:mino/pages/onboarding/on_boarding1.dart';
+=======
+import 'package:mino/pages/timer/timer_page.dart';
+>>>>>>> origin/sausan-2
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -53,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen>
         transitionDuration: const Duration(milliseconds: 800), // Durasi fade bisa disesuaikan
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
-        },
+        }
       ),
     );
   }
