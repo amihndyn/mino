@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mino/widgets/button/custom_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -21,7 +22,7 @@ class PilihHabitPage extends StatelessWidget {
           return Scaffold(
             body: Stack(
               children: [
-                /// 1. Background
+                /// 1. Background Image
                 Positioned.fill(
                   child: Image.asset(
                     'assets/images/bg_login.png',
@@ -31,7 +32,7 @@ class PilihHabitPage extends StatelessWidget {
 
                 /// 2. Content (Scrollable)
                 SafeArea(
-                  bottom: false, // Biar container orange mentok sampai bawah layar
+                  bottom: false,
                   child: Column(
                     children: [
                       const Spacer(),
@@ -39,19 +40,15 @@ class PilihHabitPage extends StatelessWidget {
                         flex: 14,
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 24,
-                          ),
                           decoration: const BoxDecoration(
-                            color: AppColors.orange100,
+                            color: AppColors.orange100, // Warna solid base konten
                             borderRadius: BorderRadius.vertical(
                               top: Radius.circular(32),
                             ),
                           ),
                           child: SingleChildScrollView(
-                            // Beri padding bawah ekstra agar konten paling bawah tidak tertutup oleh tombol melayang
-                            padding: const EdgeInsets.only(bottom: 100),
+                            // Padding ekstra di bawah agar konten terakhir tidak tertutup tombol
+                            padding: const EdgeInsets.only(left: 20, right: 20, top: 24, bottom: 120),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -120,43 +117,40 @@ class PilihHabitPage extends StatelessWidget {
                   ),
                 ),
 
-                /// 3. FLOATING BUTTON (Persis Sesuai Desain)
+                /// 3. FLOATING BUTTON dengan efek Fade/Solid Background
                 if (provider.selectedHabits.isNotEmpty)
                   Positioned(
-                    left: 24,
-                    right: 24,
-                    bottom: 34, // Mengambang pas di atas area home indicator HP
-                    child: SafeArea(
-                      child: GestureDetector(
-                        onTap: () {
-                          print("Pilihan: ${provider.selectedHabits}");
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: BoxDecoration(
-                            // Warna cokelat gelap/charcoal mewah sesuai desain gambar
-                            color: const Color(0xFF33221C), 
-                            borderRadius: BorderRadius.circular(30), // Bentuk Kapsul/Pill
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              )
-                            ],
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Habit selected",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      // Gunakan gradient untuk transisi halus, menutupi item list di belakangnya
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColors.orange100.withOpacity(0.0), // Transparan di atas
+                            AppColors.orange100.withOpacity(0.8),
+                            AppColors.orange100, // Solid di bawah
+                            AppColors.orange100, // Pastikan benar-benar solid
+                          ],
+                          stops: const [0.0, 0.2, 0.5, 1.0],
+                        ),
+                      ),
+                      padding: const EdgeInsets.only(
+                        left: 24,
+                        right: 24,
+                        top: 32, // Jarak ekstra di atas tombol untuk efek fade
+                        bottom: 34,
+                      ),
+                      child: SafeArea(
+                        top: false,
+                        child: CustomButton(
+                          text: "Habit selected",
+                          onTap: () {
+                            print("Pilihan: ${provider.selectedHabits}");
+                          },
                         ),
                       ),
                     ),

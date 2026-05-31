@@ -79,7 +79,9 @@ class _CreateUniqueHabitPageState extends State<CreateUniqueHabitPage> {
                               onTap: () => Navigator.pop(context),
                               child: Text(
                                 "Cancel",
-                                style: AppTextStyles.secondaryMedium,
+                                style: AppTextStyles.secondaryMedium.copyWith(
+                                  color: const Color(0xFFA7A7A7),
+                                ),
                               ),
                             ),
                           ],

@@ -29,8 +29,8 @@ class UniqueHabitCard extends StatelessWidget {
           children: [
             Image.asset(
               'assets/images/stars.png',
-              width: 26,
-              height: 26,
+              width: 50,
+              height: 50,
             ),
             
             Expanded(

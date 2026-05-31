@@ -15,25 +15,26 @@ class CreateHabitCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.orange300,
+        color: AppColors.orange200,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
+        // Menyejajarkan gambar di kiri dan form di kanan dengan pas
+        crossAxisAlignment: CrossAxisAlignment.center, 
         children: [
-          // Kotak pembungkus gambar asset
+          // Kotak pembungkus gambar asset (Kotak Putih di sebelah kiri)
           Container(
             width: 70,
             height: 70,
-            padding: const EdgeInsets.all(6), // Padding agar asset gambar terlihat rapi
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: AppColors.orange100,
               borderRadius: BorderRadius.circular(14),
             ),
             child: Image.asset(
-              'assets/images/note.png', // PERBAIKAN: Menggunakan gambar asset sesuai request
+              'assets/images/note.png',
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
-                // Cadangan jika file note.png belum di-register di pubspec.yaml
                 return const Icon(Icons.edit_note_rounded, size: 38, color: AppColors.coklat600);
               },
             ),
@@ -41,16 +42,32 @@ class CreateHabitCard extends StatelessWidget {
 
           const SizedBox(width: 14),
 
+          // Area Teks Input di Sebelah Kanan Gambar
           Expanded(
             child: TextField(
               controller: controller,
-              maxLines: 2,
+              maxLines: null, // Agar text otomatis membungkus ke bawah jika panjang (multi-line fleksibel)
               decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: "Release tension in your body",
+                // PERBAIKAN: Mengaktifkan garis bawah bawaan TextField (Underline)
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: AppColors.coklat600, // Warna garis estetik di bawah teks sesuai desain
+                    width: 1.0,
+                  ),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: AppColors.coklat600, // Tetap gunakan warna coklat saat aktif mengetik
+                    width: 1.5,
+                  ),
+                ),
+                border: UnderlineInputBorder(),
+                hintText: "Add your habit",
+                // Mengatur padding dalam agar teks agak turun sedikit mendekati garis bawah
+                contentPadding: EdgeInsets.only(bottom: 4, top: 8), 
               ),
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.coklat800,
+                color: AppColors.coklat800, // Warna teks inputan utama
               ),
             ),
           ),
