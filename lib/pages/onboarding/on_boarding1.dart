@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mino/pages/onboarding/on_boarding2.dart';
 import 'package:mino/widgets/button/custom_button.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class OnBoarding1 extends StatelessWidget {
   const OnBoarding1({super.key});
@@ -8,14 +9,15 @@ class OnBoarding1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black, // Mencegah kedip putih
       body: Stack(
         children: [
           Positioned.fill(
             child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/ob1.png',
+            child: SvgPicture.asset(
+              'assets/images/boarding/ob1.svg',
               fit: BoxFit.cover,
               alignment: Alignment.center,
             ),
@@ -73,10 +75,14 @@ class OnBoarding1 extends StatelessWidget {
                     child: CustomButton(
                       text: 'Next',
                       onTap: () {
+                        // Transisi Fade yang mulus
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const OnBoarding2(),
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => const OnBoarding2(),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(opacity: animation, child: child);
+                            },
                           ),
                         );
                       },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mino/pages/mood/write_journal_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
 
 class JournalPromptView extends StatelessWidget {
@@ -39,10 +40,10 @@ class JournalPromptView extends StatelessWidget {
             'Do you want to write down\neverything in your heart?',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color(0xFF2A1A0E), 
-              fontSize: 17,
+              color: AppColors.coklat900, 
+              fontSize: 16,
               fontWeight: FontWeight.bold,
-              height: 1.3,
+              
             ),
           ),
           
@@ -52,7 +53,7 @@ class JournalPromptView extends StatelessWidget {
             "It's not mandatory, but this will be very helpful",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color(0xFF7A5C3E), 
+              color: AppColors.coklat900, // Warna teks soft cream kustom
               fontSize: 12,
             ),
           ),

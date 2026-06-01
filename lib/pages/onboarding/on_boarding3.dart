@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 class OnBoarding3 extends StatelessWidget {
   const OnBoarding3({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black, // Mencegah kedip putih
       body: Stack(
         children: [
           Positioned.fill(
             child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/ob3.png',
+            child: SvgPicture.asset(
+              'assets/images/boarding/ob3.svg',
               fit: BoxFit.cover,
               alignment: Alignment.center,
             ),
@@ -73,9 +74,15 @@ class OnBoarding3 extends StatelessWidget {
                     child: CustomButton(
                       text: "Let's Get Started",
                       onTap: () {
+                        // Transisi Fade yang mulus sebelum ke HomePage
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (_) => const HomePage()),
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => const HomePage(),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(opacity: animation, child: child);
+                            },
+                          ),
                           (route) => false,
                         );
                       },

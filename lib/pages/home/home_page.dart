@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/navbar/bottom_navbar.dart';
-
 import 'widgets/home_header.dart';
 import 'widgets/reflection_card.dart';
 import 'widgets/daily_activities_section.dart';
@@ -13,52 +12,51 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // BACKGROUND
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+      extendBody: true, // Wajib agar background tembus ke bawah navbar
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent, // Wajib agar scaffold transparan
+
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg_login.png'),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const HomeHeader(),
 
-          // CONTENT
-          SafeArea(
-            child: Column(
-              children: [
-                const HomeHeader(),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    children: const [
+                      ReflectionCard(),
+                      SizedBox(height: 24),
 
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(18),
+                      DailyActivitiesSection(),
+                      SizedBox(height: 24),
 
-                    child: Column(
-                      children: const [
-                        ReflectionCard(),
+                      ChallengeSection(),
 
-                        SizedBox(height: 24),
-
-                        DailyActivitiesSection(),
-
-                        SizedBox(height: 24),
-
-                        ChallengeSection(),
-
-                        SizedBox(height: 40),
-                      ],
-                    ),
+                      // Ruang ekstra di bawah agar konten terakhir tidak tertutup navbar
+                      SizedBox(height: 120),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
 
       bottomNavigationBar: BottomNavbar(
         currentIndex: 0,
-        onTap: (index) {},
+        onTap: (index) {
+          // Tambahkan logika perpindahan tab di sini
+        },
       ),
     );
   }

@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:mino/pages/home/home_page.dart'; 
+import 'package:mino/pages/home/home_page.dart';
+import 'package:mino/pages/mood/widgets/journal_paper_stack.dart';
 import 'package:mino/widgets/button/custom_button.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
 class WriteJournalScreen extends StatefulWidget {
   const WriteJournalScreen({super.key});
@@ -13,7 +15,7 @@ class WriteJournalScreen extends StatefulWidget {
 class _WriteJournalScreenState extends State<WriteJournalScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  
+
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _contentFocusNode = FocusNode();
 
@@ -54,11 +56,8 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const Color darkBrownBorder = Color(0xFF2A1A0E);
-    const double borderWidth = 1.8;
-
     return Scaffold(
-      resizeToAvoidBottomInset: false, 
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // ── 1. Background Gambar Full Screen ─────────────────────────
@@ -76,149 +75,94 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                
+                const SizedBox(height: 70),
 
-                // ── 3. Input Judul / Topic (Kursor Aktif Otomatis) ───────────
+                // ── 2. Input Judul / Topic ───────────────────────────────────
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 28),
                   child: TextField(
                     controller: _titleController,
                     focusNode: _titleFocusNode,
-                    autofocus: true, // 1. MEMBUAT KURSOR KEDAP-KEDIP OTOMATIS SAAT BUKA HALAMAN
-                    cursorColor: const Color(0xFFE6D5C3), // 2. KUSTOMISASI WARNA GARIS KEDAP-KEDIP
-                    cursorWidth: 2.5, // Mengatur ketebalan garis kursor agar lebih terlihat
-                    cursorRadius: const Radius.circular(2), // Membuat ujung kursor sedikit tumpul bulat
+                    autofocus: true,
+                    cursorColor: AppColors.coklat100,
+                    cursorWidth: 1.5,
+                    cursorRadius: const Radius.circular(2),
                     textInputAction: TextInputAction.next,
                     style: const TextStyle(
-                      color: Color(0xFFE6D5C3), 
-                      fontSize: 28,
+                      color: AppColors.coklat100,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                     decoration: const InputDecoration(
                       hintText: 'Enter topic',
                       hintStyle: TextStyle(
-                        color: Color(0xFF9A8675), 
-                        fontSize: 28,
+                        color: AppColors.coklat100,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
+                      // ── Ubah di bagian ini ──
+                      contentPadding: EdgeInsets.only(
+                        left: 16,
+                        top: 2,
+                        bottom: 4,
+                      ),
                     ),
                   ),
                 ),
 
                 const Spacer(),
 
-                // ── 4. Komponen Kertas Numpuk + Border Cokelat ───────────────
+                // ── 3. Komponen Kertas Numpuk (Menggunakan Widget Baru) ───────
+                Center(
+                  child: JournalPaperStack(
+                    controller: _contentController,
+                    focusNode: _contentFocusNode,
+                    onChanged: (value) => _validateInputs(),
+                  ),
+                ),
+
+                const Spacer(),
+
+                // ── 4. Logika Tombol Bawah (Cancel / Save) ───────────────────
                 Center(
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.85, 
-                    height: MediaQuery.of(context).size.height * 0.48, 
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        // Lapisan Kertas Belakang
-                        Transform.rotate(
-                          angle: -6 * (math.pi / 180), 
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 12, right: 8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF2E2C9),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: darkBrownBorder, width: borderWidth),
-                            ),
-                          ),
-                        ),
-                        
-
-                        
-                        // Kertas Utama Paling Atas (Input Isi Jurnal)
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF7EAD3), 
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: darkBrownBorder, width: borderWidth),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            controller: _contentController,
-                            focusNode: _contentFocusNode,
-                            cursorColor: const Color(0xFF423125), // Kursor warna cokelat tua saat mengetik di kertas jurnal
-                            cursorWidth: 2.0,
-                            maxLines: null,
-                            expands: true,
-                            textAlignVertical: TextAlignVertical.top,
-                            style: const TextStyle(
-                              color: Color(0xFF423125),
-                              fontSize: 16,
-                              height: 1.5,
-                            ),
-                            decoration: const InputDecoration(
-                              hintText: 'Enter topic',
-                              hintStyle: TextStyle(
-                                color: Colors.black26, 
-                                fontSize: 16,
-                              ),
-                              contentPadding: EdgeInsets.all(24),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const Spacer(),
-
-                // ── 5. Logika Tombol Bawah Menggunakan Cukup Ukuran Saja ──────
-                // ── 5. Logika Tombol Bawah Menggunakan Cukup Ukuran Saja ──────
-Center(
-                  child: SizedBox(
-                    height: 40, // Memberikan ruang cukup agar bayangan tombol tidak terpotong
+                    height:
+                        50, // Dinaikkan sedikit jadi 50 agar bayangan CustomButton aman
                     child: Center(
                       child: AnimatedCrossFade(
                         duration: const Duration(milliseconds: 200),
                         crossFadeState: _isButtonsRowVisible
                             ? CrossFadeState.showSecond
                             : CrossFadeState.showFirst,
-                        
+
                         // Kondisi Kosong: Tombol Tunggal (Cancel)
                         firstChild: SizedBox(
+                          height: 100,
                           width: 150,
-                          // height: 50, <── Dihapus agar bayangan (glow) bisa melebar sempurna
                           child: CustomButton(
                             text: 'Cancel',
-                            onTap: () => Navigator.pop(context), 
+                            onTap: () => Navigator.pop(context),
                           ),
                         ),
-                        
+
                         // Kondisi Terisi: Tombol Cancel & Save Berdampingan
                         secondChild: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
                               width: 150,
-                              // height: 50, <── Dihapus agar bayangan (glow) bisa melebar sempurna
                               child: CustomButton(
                                 text: 'Cancel',
-                                onTap: () => Navigator.pop(context), 
+                                onTap: () => Navigator.pop(context),
                               ),
                             ),
                             const SizedBox(width: 16),
                             SizedBox(
                               width: 150,
-                              // height: 50, <── Dihapus agar bayangan (glow) bisa melebar sempurna
                               child: CustomButton(
                                 text: 'Save',
-                                onTap: _handleSave, 
+                                onTap: _handleSave,
                               ),
                             ),
                           ],

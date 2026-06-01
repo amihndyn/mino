@@ -1,79 +1,83 @@
 import 'package:flutter/material.dart';
+import 'package:mino/widgets/cards/add_menu_popup.dart';
 
 class BottomNavbar extends StatelessWidget {
   final int currentIndex;
-// <<<<<<< HEAD
-//   final ValueChanged<int>? onTap;
-// =======
   final Function(int) onTap;
-// >>>>>>> 25f8fce0a86ee8235e3d2c4627e73019441ff8fc
 
   const BottomNavbar({
     super.key,
     required this.currentIndex,
-// <<<<<<< HEAD
-//     this.onTap,
-// =======
     required this.onTap,
-// >>>>>>> 25f8fce0a86ee8235e3d2c4627e73019441ff8fc
   });
+
+  // Fungsi untuk memunculkan Pop Up Menu dengan animasi yang lebih smooth
+  // Fungsi untuk memunculkan Pop Up Menu
+  void _showAddMenu(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Dismiss',
+      barrierColor: Colors.black.withOpacity(0.6), 
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        // Panggil widget AddMenuPopup dari file yang baru kamu buat!
+        return const AddMenuPopup(); 
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutBack,
+          ),
+          alignment: const Alignment(0.0, 0.8),
+          child: child,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Warna dasar disesuaikan dengan palet pada gambar
-    const Color bgColor = Color(0xff462F21); 
-    const Color accentColor = Color(0xffF2CD94); 
+    const Color bgColor = Color(0xff462F21);
+    const Color accentColor = Color(0xffF2CD94);
 
-    return SizedBox(
-      height: 100, // Total tinggi ditingkatkan untuk memberi ruang tombol tengah
+    return Container(
+      color: Colors.transparent,
+      height: 100,
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomCenter,
         children: [
-          // 1. Background utama Bottom Nav
-          Container(
-            height: 80,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 10,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
-          ),
-
-          // 2. Lengkungan (Bump) untuk latar belakang tombol tengah
+          // 1. Background utama Bottom Nav (Kotak Coklat)
           Positioned(
-            top: 2,
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: Container(
-              width: 86,
-              height: 86,
+              height: 80,
               decoration: const BoxDecoration(
                 color: bgColor,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(28),
+                  topRight: Radius.circular(28),
+                ),
               ),
             ),
           ),
 
-          // 3. Tombol Plus (Biru) di tengah
+          // 2. Tombol Plus (Biru) di tengah
           Positioned(
-            top: 10,
+            top: 8,
             child: GestureDetector(
               onTap: () {
-                // Tambahkan aksi untuk tombol tengah (Plus) di sini
+                _showAddMenu(context);
               },
               child: Container(
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  color: const Color(0xff00C4FF), // Biru cyan terang
+                  color: const Color(0xff18C3F7),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: accentColor,
@@ -89,7 +93,7 @@ class BottomNavbar extends StatelessWidget {
             ),
           ),
 
-          // 4. Deretan Menu Navigasi
+          // 3. Deretan Menu Navigasi
           SizedBox(
             height: 80,
             child: Row(
@@ -97,28 +101,27 @@ class BottomNavbar extends StatelessWidget {
               children: [
                 _buildItem(
                   icon: Icons.home_rounded,
-                  label: "Today", // Diubah dari Home menjadi Today
+                  label: "Today",
                   index: 0,
                   accentColor: accentColor,
                 ),
                 _buildItem(
-                  icon: Icons.list_alt_rounded, // Ikon list/jurnal
+                  icon: Icons.list_alt_rounded,
                   label: "Journal",
                   index: 1,
                   accentColor: accentColor,
                 ),
                 
-                // Ruang kosong di tengah agar tidak tertutup tombol biru
-                const SizedBox(width: 75), 
+                const SizedBox(width: 75), // Jarak kosong agar tidak tertutup tombol biru
                 
                 _buildItem(
-                  icon: Icons.flag_rounded, // Ikon bendera
+                  icon: Icons.flag_rounded,
                   label: "Challenge",
                   index: 2,
                   accentColor: accentColor,
                 ),
                 _buildItem(
-                  icon: Icons.account_circle_rounded, // Ikon profil
+                  icon: Icons.account_circle_rounded,
                   label: "Profile",
                   index: 3,
                   accentColor: accentColor,
@@ -138,60 +141,35 @@ class BottomNavbar extends StatelessWidget {
     required Color accentColor,
   }) {
     final bool isActive = currentIndex == index;
-    
-    // Warna teks & ikon (Terang saat aktif, sedikit redup saat tidak aktif)
-    final Color itemColor = isActive 
-        ? accentColor 
+
+    final Color itemColor = isActive
+        ? accentColor
         : accentColor.withOpacity(0.6);
 
     return GestureDetector(
-// <<<<<<< HEAD
-//       onTap: onTap != null ? () => onTap!(index) : null,
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Icon(
-//             icon,
-//             color: isActive
-//                 ? const Color(0xffE6A84A)
-//                 : Colors.white54,
-//           ),
-
-//           const SizedBox(height: 6),
-
-//           Text(
-//             label,
-//             style: TextStyle(
-//               color: isActive
-//                   ? const Color(0xffE6A84A)
-//                   : Colors.white54,
-
-//               fontSize: 12,
-//               fontWeight: FontWeight.w500,
-// =======
       onTap: () => onTap(index),
-      behavior: HitTestBehavior.opaque, // Agar area di sekitar ikon juga bisa diklik
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: itemColor,
-            size: 28,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: TextStyle(
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: 65,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
               color: itemColor,
-              fontSize: 12,
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
-              letterSpacing: 0.5,
-// >>>>>>> 25f8fce0a86ee8235e3d2c4627e73019441ff8fc
+              size: 28,
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: itemColor,
+                fontSize: 12,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

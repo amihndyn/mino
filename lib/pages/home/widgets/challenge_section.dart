@@ -24,7 +24,7 @@ class ChallengeSection extends StatelessWidget {
         // Kartu Pertama
         ChallengeProgressCard(
           title: "Release tension in your body",
-          emoji: "📋", // Bisa diganti dengan Image asset jika punya
+          imageAsset: 'assets/images/note.png',// Bisa diganti dengan Image asset jika punya
           currentProgress: 12,
           totalProgress: 30,
         ),
@@ -34,7 +34,7 @@ class ChallengeSection extends StatelessWidget {
         // Kartu Kedua
         ChallengeProgressCard(
           title: "Clean your home",
-          emoji: "🧹", 
+          imageAsset: 'assets/images/clean_home.png',
           currentProgress: 5,
           totalProgress: 30,
         ),

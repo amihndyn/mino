@@ -2,10 +2,15 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:mino/core/data/datasource/auth_local_datasource.dart';
 import 'package:mino/pages/auth/login_page.dart';
+import 'package:mino/pages/habit/pilih_habit_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/mood/mood_page.dart';
-import 'package:mino/pages/timer/timer_page.dart';
+
+import 'package:mino/pages/onboarding/on_boarding1.dart';
+
+// import 'package:mino/pages/timer/timer_page.dart';
+// >>>>>>> origin/sausan-2
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,10 +48,16 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
+    // PERBAIKAN: Menggunakan PageRouteBuilder dengan FadeTransition
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => isLogin ? const HomePage() : const TimerPage(),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => 
+            isLogin ? const JournalPage() : const MoodPage(),
+        transitionDuration: const Duration(milliseconds: 800), // Durasi fade bisa disesuaikan
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        }
       ),
     );
   }
@@ -60,15 +71,16 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black, // Warna dasar untuk transisi mulus
       body: Stack(
         children: [
-          // BACKGROUND
           Container(
+            width: double.infinity,
+            height: double.infinity,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF33211C), Color(0xFF5A463E)],
+              image: DecorationImage(
+                image: AssetImage('assets/images/bg_login.png'), 
+                fit: BoxFit.cover, 
               ),
             ),
           ),
@@ -82,7 +94,7 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Color(0xFF00BBFF).withValues(alpha: 0.5),
+                    const Color(0xFF00BBFF).withValues(alpha: 0.5),
                     Colors.transparent,
                   ],
                 ),
@@ -90,6 +102,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
 
+          // LOGO DAN ANIMASI TITIK
           Center(
             child: SizedBox(
               width: 300,
@@ -140,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen>
               color: const Color(0xFFE5A84F),
               boxShadow: [
                 BoxShadow(
-                  color: Color(0xFFE5A84F).withValues(alpha: 0.3 + glow * 0.5),
+                  color: const Color(0xFFE5A84F).withValues(alpha: 0.3 + glow * 0.5),
                   blurRadius: 4 + glow * 6,
                   spreadRadius: 1 + glow * 2,
                 ),

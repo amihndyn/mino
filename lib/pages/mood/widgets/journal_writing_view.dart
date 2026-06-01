@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class JournalWritingView extends StatelessWidget {
   final TextEditingController noteController;
@@ -20,7 +21,7 @@ class JournalWritingView extends StatelessWidget {
       children: [
         Row(
           children: [
-            Image.asset('assets/images/blogjurnal.png', height: 40),
+            SvgPicture.asset('assets/images/blog.svg', height: 40),
             const SizedBox(width: 12),
             const Text(
               "Today's note",

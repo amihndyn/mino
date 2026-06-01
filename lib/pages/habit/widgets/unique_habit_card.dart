@@ -15,54 +15,36 @@ class UniqueHabitCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                const CreateUniqueHabitPage(),
+            builder: (_) => const CreateUniqueHabitPage(),
           ),
         );
       },
-
       child: Container(
-        padding: const EdgeInsets.all(14),
-
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: AppColors.orange200,
           borderRadius: BorderRadius.circular(18),
         ),
-
         child: Row(
           children: [
-            Container(
-              width: 56,
-              height: 56,
-
-              decoration: BoxDecoration(
-                color: AppColors.orange100,
-                borderRadius: BorderRadius.circular(14),
-              ),
-
-              child: const Icon(
-                Icons.auto_awesome,
-                color: AppColors.coklat700,
-              ),
+            Image.asset(
+              'assets/images/stars.png',
+              width: 50,
+              height: 50,
             ),
-
-            const SizedBox(width: 14),
-
+            
             Expanded(
               child: Text(
                 "Create a unique habit",
-                style:
-                    AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.coklat700,
+                textAlign: TextAlign.center, // Memastikan teks rata tengah
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: const Color(0xFF707070), // Format penulisan warna diperbaiki
                 ),
               ),
             ),
-
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 18,
-              color: AppColors.coklat500,
-            ),
+            
+            // Penyeimbang ukuran gambar bintang agar teks persis di tengah Container
+            const SizedBox(width: 26), 
           ],
         ),
       ),

@@ -92,10 +92,14 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       },
       child: Scaffold(
+        backgroundColor: Colors.black, // Tambahan untuk transisi yang mulus
         resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
+            // PERBAIKAN: Background dipaksa melar menutupi seluruh layar
             Container(
+              width: double.infinity,
+              height: double.infinity,
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/bg_login.png'),
@@ -108,8 +112,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
+                    left: 24, // Disamakan dengan halaman Login
+                    right: 24,
                     top: 20,
                     bottom: MediaQuery.of(context).viewInsets.bottom,
                   ),
@@ -121,7 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const Text(
                         'Join Mino',
                         style: TextStyle(
-                          fontSize: 40,
+                          fontSize: 36, // Sedikit disesuaikan agar rapi
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -131,7 +135,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         'Start your journey',
                         style: TextStyle(color: Colors.white70),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 40),
+                      
                       CustomTextField(
                         hintText: 'Your name',
                         controller: _nameController,
@@ -153,7 +158,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         isPassword: true,
                         controller: _confirmPasswordController,
                       ),
-                      const SizedBox(height: 20),
+                      
+                      const SizedBox(height: 24),
                       BlocBuilder<RegisterBloc, RegisterState>(
                         builder: (context, state) {
                           final isLoading = state.maybeWhen(
@@ -161,8 +167,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             orElse: () => false,
                           );
                           return SizedBox(
-                            width: 358,
-                            height: 47,
+                            // PERBAIKAN: Lebar tombol jadi double.infinity
+                            width: double.infinity,
+                            height: 50,
                             child: isLoading
                                 ? const Center(
                                     child: CircularProgressIndicator(
@@ -181,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: const [
                           Expanded(child: Divider(color: Colors.white30)),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Text(
                               'Or',
                               style: TextStyle(color: Colors.white54),
@@ -191,21 +198,36 @@ class _RegisterPageState extends State<RegisterPage> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Container(
+                      
+                      // PERBAIKAN: Tombol Google dibuat konsisten dengan LoginPage
+                      SizedBox(
+                        width: double.infinity,
                         height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset('assets/images/google.png', height: 20),
-                            const SizedBox(width: 10),
-                            const Text('Continue with google'),
-                          ],
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset('assets/images/google.png', height: 20),
+                              const SizedBox(width: 10),
+                              const Text(
+                                'Continue with google',
+                                style: TextStyle(
+                                  color: Colors.black87, 
+                                  fontWeight: FontWeight.w500
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                      
                       const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
