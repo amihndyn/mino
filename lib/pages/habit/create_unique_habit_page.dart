@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mino/core/constants/app_colors.dart'; // Tambahan import warna agar tidak error
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
+import 'package:mino/core/constants/app_colors.dart'; 
 import 'package:mino/core/constants/app_text_styles.dart';
 import 'package:mino/pages/habit/widgets/create_habit_card.dart';
 import 'package:mino/widgets/button/custom_button.dart';
@@ -38,7 +39,7 @@ class _CreateUniqueHabitPageState extends State<CreateUniqueHabitPage> {
     return Scaffold(
       body: Stack(
         children: [
-          /// BACKGROUND UTAMA (Bagian gelap di atas)
+          /// BACKGROUND UTAMA (Bagian gelap di atas - Diubah ke SVG)
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',

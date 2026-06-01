@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/mood/widgets/journal_prompt_view.dart';
 import 'package:mino/pages/mood/widgets/journal_writing_view.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:provider/provider.dart';
 import 'package:mino/providers/moodjournal_provider.dart'; // Sesuaikan path provider-mu
-// TODO: Jangan lupa import widget tulisan / view kustom milikmu:
-// import 'package:mino/pages/mood/widgets/journal_prompt_view.dart';
-// import 'package:mino/pages/mood/widgets/journal_writing_view.dart';
 
 class JournalingPage extends StatefulWidget {
   const JournalingPage({super.key});
@@ -45,13 +43,11 @@ class _JournalingPageState extends State<JournalingPage> {
       resizeToAvoidBottomInset: true, // Biar tidak tertutup keyboard saat ngetik
       body: Stack(
         children: [
-          // ── 1. Background Utama Aplikasi ────────────────────────
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'),
-                fit: BoxFit.cover,
-              ),
+          // ── 1. Background Utama Aplikasi (Diubah ke SVG) ─────────
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
             ),
           ),
 
@@ -114,30 +110,30 @@ class _JournalingPageState extends State<JournalingPage> {
                     // ── 3. Card Konten Inner (Prompt / Area Tulis) ────
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
-child: Container(
-  padding: const EdgeInsets.symmetric(horizontal: 24),
-  child: _isWriting
-      ? JournalWritingView(
-          noteController: _noteController,
-          onClose: () => setState(() => _isWriting = false),
-          // FIX ERROR 1: Ubah menjadi fungsi tanpa parameter kosongan ()
-          onSave: () {
-            // Ambil teks langsung dari _noteController
-            context.read<MoodJournalProvider>().setNote(_noteController.text);
-            _onSaveAndSkip();
-          },
-        ) // JournalWritingView
-      : JournalPromptView(
-          // FIX ERROR 2: Berikan parameter selectedMood yang diminta oleh widget
-          selectedMood: selectedMood, 
-          onNoteAdded: (result) {
-            setState(() {
-              _noteController.text = result;
-              _isWriting = true;
-            });
-          },
-        ), // JournalPromptView
-), // Container
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: _isWriting
+                            ? JournalWritingView(
+                                noteController: _noteController,
+                                onClose: () => setState(() => _isWriting = false),
+                                // FIX ERROR 1: Ubah menjadi fungsi tanpa parameter kosongan ()
+                                onSave: () {
+                                  // Ambil teks langsung dari _noteController
+                                  context.read<MoodJournalProvider>().setNote(_noteController.text);
+                                  _onSaveAndSkip();
+                                },
+                              ) // JournalWritingView
+                            : JournalPromptView(
+                                // FIX ERROR 2: Berikan parameter selectedMood yang diminta oleh widget
+                                selectedMood: selectedMood, 
+                                onNoteAdded: (result) {
+                                  setState(() {
+                                    _noteController.text = result;
+                                    _isWriting = true;
+                                  });
+                                },
+                              ), // JournalPromptView
+                      ), // Container
                     ),
 
                     const Spacer(flex: 2),

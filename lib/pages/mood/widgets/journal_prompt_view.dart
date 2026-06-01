@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/mood/write_journal_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
-
 
 class JournalPromptView extends StatelessWidget {
   final String? selectedMood;
@@ -30,8 +30,11 @@ class JournalPromptView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 3. EDIT UKURAN GAMBAR DI SINI: Kecilkan height agar card ikut memendek
-          Image.asset('assets/images/blogjurnal.png', height: 130),
+          // 3. EDIT UKURAN GAMBAR DI SINI: Diubah ke SVG menggunakan SvgPicture.asset
+          SvgPicture.asset(
+            'assets/images/blogjurnal.svg', 
+            height: 130,
+          ),
           
           const SizedBox(height: 16),
           

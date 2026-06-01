@@ -23,22 +23,24 @@ class DailyActivitiesSection extends StatelessWidget {
         ),
         SizedBox(height: 16),
 
-        // Menggunakan emoji berupa String agar sama persis dengan tampilan visualnya
+        // Kartu Pertama (Diubah ke .svg)
         ActivityItemCard(
           title: "Take a deep breath",
-          imageAsset: 'assets/images/book.png',
+          imageAsset: 'assets/images/book.svg',
         ),
         SizedBox(height: 14),
 
+        // Kartu Kedua (Diubah ke .svg)
         ActivityItemCard(
           title: "Smile for a few seconds",
-          imageAsset: 'assets/images/smile.png',
+          imageAsset: 'assets/images/smile.svg',
         ),
         SizedBox(height: 14),
 
+        // Kartu Ketiga (Diubah ke .svg)
         ActivityItemCard(
           title: "Fix your posture",
-          imageAsset: 'assets/images/exercise.png',
+          imageAsset: 'assets/images/exercise.svg',
         ),
       ],
     );

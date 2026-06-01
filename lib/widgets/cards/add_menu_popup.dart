@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Ditambahkan untuk mendukung SVG
 import 'package:mino/pages/habit/pilih_habit_page.dart';
 import 'package:mino/pages/mood/mood_page.dart';
 
@@ -28,20 +29,19 @@ class AddMenuPopup extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // 1. Kartu Kiri (Add Routine / Form) -> Pindah ke Pilih Habit
+                // 1. Kartu Kiri (Add Routine) -> Pindah ke Pilih Habit
                 Transform.rotate(
                   angle: -0.2,
                   child: MenuPopupCard(
                     title: "Add Routine",
                     subtitle: "Add a new routine to your life",
                     color: const Color(0xFFFF71AB),
-                    imageAsset: 'assets/images/form.png', 
+                    imageAsset: 'assets/images/form.svg', // Migrasi ke SVG
                     onTap: () {
                       // 1. Tutup dulu pop-up menunya
                       Navigator.pop(context);
                       
                       // 2. Navigasi ke halaman Pilih Habit
-                      // Gantilah 'PilihHabitPage()' dengan nama class halamanmu yang sesuai
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const PilihHabitPage()),
@@ -52,20 +52,19 @@ class AddMenuPopup extends StatelessWidget {
                 
                 const SizedBox(width: 32),
                 
-                // 2. Kartu Kanan (Add Reflection / Cat) -> Pindah ke Mood Page
+                // 2. Kartu Kanan (Add Reflection) -> Pindah ke Mood Page
                 Transform.rotate(
                   angle: 0.15,
                   child: MenuPopupCard(
                     title: "Add Reflection",
                     subtitle: "Reflect on your day, mood, and feelings",
                     color: const Color(0xFFA67CFF),
-                    imageAsset: 'assets/images/cat.png', 
+                    imageAsset: 'assets/images/cat.svg', // Migrasi ke SVG
                     onTap: () {
                       // 1. Tutup dulu pop-up menunya
                       Navigator.pop(context);
                       
                       // 2. Navigasi ke halaman Mood
-                      // Gantilah 'MoodPage()' dengan nama class halamanmu yang sesuai
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const MoodPage()),
@@ -115,7 +114,7 @@ class MenuPopupCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -125,11 +124,15 @@ class MenuPopupCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: Image.asset(
+              child: SvgPicture.asset(
                 imageAsset,
                 fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => 
-                  const Icon(Icons.broken_image, size: 40, color: Colors.white), 
+                // Menggunakan placeholderBuilder sebagai fallback jika SVG gagal dimuat
+                placeholderBuilder: (context) => const Icon(
+                  Icons.broken_image, 
+                  size: 40, 
+                  color: Colors.white,
+                ),
               ),
             ),
             const SizedBox(height: 8),

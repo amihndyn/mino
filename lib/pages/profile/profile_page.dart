@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/profile/widgets/info_tile.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 
@@ -16,10 +17,10 @@ class ProfilePage extends StatelessWidget {
       body: Stack(
         children: [
 
-          // BACKGROUND
+          // BACKGROUND (Diubah ke SVG)
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/background.png',
+            child: SvgPicture.asset(
+              'assets/images/background.svg',
               fit: BoxFit.cover,
             ),
           ),
@@ -28,7 +29,6 @@ class ProfilePage extends StatelessWidget {
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 40),
-
               child: Column(
                 children: [
 
@@ -76,17 +76,13 @@ class ProfilePage extends StatelessWidget {
                   // LOGOUT
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 28),
-
                     child: Row(
                       children: [
-
                         const Icon(
                           Icons.logout,
                           color: Color(0xFFF2D1A2),
                         ),
-
                         const SizedBox(width: 12),
-
                         Text(
                           'Log Out',
                           style: TextStyle(

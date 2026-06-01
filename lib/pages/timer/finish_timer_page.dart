@@ -13,16 +13,14 @@ class FinishTimerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF140C08), // Warna dasar default
       body: Stack(
         children: [
-          // Background utama
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'), // Sesuaikan background-mu
-                fit: BoxFit.cover,
-              ),
-              color: Color(0xFF140C08),
+          // ── Background Utama ───────────────────────────────────────
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
             ),
           ),
           
@@ -56,21 +54,21 @@ class FinishTimerPage extends StatelessWidget {
 
                   const SizedBox(height: 40),
 
-                  // ── 2. Gambar Karakter Selesai (enam.svg) ──
+                  // ── 2. Gambar Karakter Selesai ──
                   SvgPicture.asset(
-                    'assets/images/enam.svg', // Pastikan path file ini benar
+                    'assets/images/enam.svg', 
                     height: 250,
                   ),
 
                   const SizedBox(height: 40),
 
-                  // ── 3. Barisan Kotak Statistik (Durasi & Berlian) ──
+                  // ── 3. Barisan Kotak Statistik (Migrasi ke Ikon SVG) ──
                   Row(
                     children: [
                       // Kotak Kiri: Focus Duration
                       Expanded(
                         child: _buildStatCard(
-                          iconPath: 'assets/images/alarm.png', // Ganti dengan path icon jam/alarm kamu
+                          iconPath: 'assets/images/alarm.svg', // Diubah menjadi .svg
                           defaultIcon: Icons.alarm,
                           title: 'Focus Duration',
                           value: '$completedMinutes minutes',
@@ -79,13 +77,13 @@ class FinishTimerPage extends StatelessWidget {
                       
                       const SizedBox(width: 16), // Jarak antar kotak
 
-                      // Kotak Kanan: Diamond Obtained (1 Menit = 1 Berlian)
+                      // Kotak Kanan: Diamond Obtained
                       Expanded(
                         child: _buildStatCard(
-                          iconPath: 'assets/images/diamond.png', // Ganti dengan path icon diamond kamu
+                          iconPath: 'assets/images/diamond.svg', // Diubah menjadi .svg
                           defaultIcon: Icons.diamond,
                           title: 'diamond obtained',
-                          value: '$completedMinutes diamond', // Nilainya sama dengan durasi menit
+                          value: '$completedMinutes diamond',
                         ),
                       ),
                     ],
@@ -117,7 +115,7 @@ class FinishTimerPage extends StatelessWidget {
     );
   }
 
-  // Widget bantuan untuk membuat kotak stat dengan border glow
+  // Widget bantuan untuk membuat kotak stat dengan pendukung ikon SVG
   Widget _buildStatCard({
     required String iconPath,
     required IconData defaultIcon,
@@ -127,21 +125,26 @@ class FinishTimerPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.transparent, // Background tembus pandang
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFE8A838).withValues(alpha: 0.3), // Garis emas transparan
+          color: const Color(0xFFE8A838).withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Ikon
-          Image.asset(
+          // Ikon SVG dengan Fallback Icon bawaan Flutter jika error/tidak ditemukan
+          SvgPicture.asset(
             iconPath,
             height: 32,
-            errorBuilder: (context, error, stackTrace) => Icon(defaultIcon, color: const Color(0xFFE8A838), size: 32),
+            width: 32,
+            placeholderBuilder: (context) => Icon(
+              defaultIcon, 
+              color: const Color(0xFFE8A838), 
+              size: 32,
+            ),
           ),
           const SizedBox(height: 12),
           // Judul
@@ -157,7 +160,7 @@ class FinishTimerPage extends StatelessWidget {
           Text(
             value,
             style: const TextStyle(
-              color: Color(0xFFE8A838), // Warna emas/kuning
+              color: Color(0xFFE8A838),
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),

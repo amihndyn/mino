@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 
 class EditProfilePage extends StatelessWidget {
@@ -12,19 +13,17 @@ class EditProfilePage extends StatelessWidget {
       body: Stack(
         children: [
 
-          // BACKGROUND
+          // BACKGROUND (Diubah ke SVG)
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/background.png',
+            child: SvgPicture.asset(
+              'assets/images/background.svg',
               fit: BoxFit.cover,
             ),
           ),
 
           SafeArea(
             child: SingleChildScrollView(
-              padding:
-                  const EdgeInsets.only(bottom: 40),
-
+              padding: const EdgeInsets.only(bottom: 40),
               child: Column(
                 children: [
 
@@ -39,48 +38,35 @@ class EditProfilePage extends StatelessWidget {
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-
                       Container(
                         width: 110,
                         height: 110,
-
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color:
-                              const Color(0xFFF3E7D7),
-
+                          color: const Color(0xFFF3E7D7),
                           border: Border.all(
-                            color: Colors.white
-                                .withOpacity(0.3),
+                            color: Colors.white.withOpacity(0.3),
                           ),
                         ),
-
                         child: const Icon(
                           Icons.person,
                           size: 58,
                           color: Color(0xFFB98A45),
                         ),
                       ),
-
                       Positioned(
                         right: -2,
                         bottom: -2,
-
                         child: Container(
                           width: 42,
                           height: 42,
-
-                          decoration: BoxDecoration(
-                            color:
-                                const Color(0xFF2F211D),
-
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF2F211D),
                             shape: BoxShape.circle,
                           ),
-
                           child: const Icon(
                             Icons.camera_alt_outlined,
-                            color:
-                                Color(0xFFE6A84A),
+                            color: Color(0xFFE6A84A),
                           ),
                         ),
                       ),
@@ -99,63 +85,47 @@ class EditProfilePage extends StatelessWidget {
 
                   buildInput(
                     hint: 'Email',
-                    value:
-                        'miner@gmail.com',
+                    value: 'miner@gmail.com',
                   ),
 
                   const SizedBox(height: 18),
 
                   buildInput(
                     hint: 'Phone',
-                    value:
-                        '+62 890 1234 5678',
+                    value: '+62 890 1234 5678',
                   ),
 
                   const SizedBox(height: 18),
 
                   buildInput(
                     hint: 'Address',
-                    value:
-                        'Jl. Bukittinggi',
+                    value: 'Jl. Bukittinggi',
                   ),
 
                   const SizedBox(height: 40),
 
                   // SAVE BUTTON
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(
-                      horizontal: 24,
-                    ),
-
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Container(
                       width: double.infinity,
                       height: 58,
-
                       decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(
-                          18,
-                        ),
-
-                        gradient:
-                            const LinearGradient(
+                        borderRadius: BorderRadius.circular(18),
+                        gradient: const LinearGradient(
                           colors: [
                             Color(0xFFE6A84A),
                             Color(0xFF3FA7C4),
                           ],
                         ),
                       ),
-
                       child: const Center(
                         child: Text(
                           'Save Changes',
                           style: TextStyle(
-                            color:
-                                Color(0xFF2F211D),
+                            color: Color(0xFF2F211D),
                             fontSize: 16,
-                            fontWeight:
-                                FontWeight.w700,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
@@ -175,48 +145,27 @@ class EditProfilePage extends StatelessWidget {
     required String value,
   }) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(
-        horizontal: 24,
-      ),
-
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
         height: 62,
-
-        padding:
-            const EdgeInsets.symmetric(
-          horizontal: 18,
-        ),
-
+        padding: const EdgeInsets.symmetric(horizontal: 18),
         decoration: BoxDecoration(
-          borderRadius:
-              BorderRadius.circular(18),
-
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: const Color(0xFFE6A84A),
           ),
-
-          color:
-              Colors.black.withOpacity(0.08),
+          color: Colors.black.withOpacity(0.08),
         ),
-
         child: TextField(
-          controller:
-              TextEditingController(
-            text: value,
-          ),
-
+          controller: TextEditingController(text: value),
           style: const TextStyle(
             color: Color(0xFFF5D2A5),
           ),
-
           decoration: InputDecoration(
             hintText: hint,
-
             hintStyle: const TextStyle(
               color: Color(0xFF9F8572),
             ),
-
             border: InputBorder.none,
           ),
         ),

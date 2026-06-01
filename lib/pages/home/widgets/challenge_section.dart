@@ -21,20 +21,20 @@ class ChallengeSection extends StatelessWidget {
         
         SizedBox(height: 16),
 
-        // Kartu Pertama
+        // Kartu Pertama (Diubah ke .svg)
         ChallengeProgressCard(
           title: "Release tension in your body",
-          imageAsset: 'assets/images/note2.png',// Bisa diganti dengan Image asset jika punya
+          imageAsset: 'assets/images/note2.svg',
           currentProgress: 12,
           totalProgress: 30,
         ),
         
         SizedBox(height: 12),
 
-        // Kartu Kedua
+        // Kartu Kedua (Diubah ke .svg)
         ChallengeProgressCard(
           title: "Clean your home",
-          imageAsset: 'assets/images/clean_home.png',
+          imageAsset: 'assets/images/clean_home.svg',
           currentProgress: 5,
           totalProgress: 30,
         ),

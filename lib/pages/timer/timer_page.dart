@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; 
 import 'package:mino/pages/timer/running_timer_page.dart';
-import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart.dart';
+import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart.dart'; 
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
-
 import 'widgets/balloon_slider.dart';
 
 class TimerPage extends StatefulWidget {
@@ -20,14 +20,14 @@ class _TimerPageState extends State<TimerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF140C08), 
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'),
-                fit: BoxFit.cover,
-              ),
+          // ── Background Utama ───────────────────────────────────────
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
             ),
           ),
 
@@ -36,9 +36,9 @@ class _TimerPageState extends State<TimerPage> {
               children: [
                 const SizedBox(height: 10),
                 
-                // ── KUNCI PERUBAHAN: Menggunakan CustomAppBar milikmu ──
+                // ── Menggunakan CustomAppBar milikmu ──
                 const CustomAppBar(
-                  title: 'Pomodoro', // Sesuaikan parameter ini jika CustomAppBar mu butuh properti lain
+                  title: 'Pomodoro', 
                 ),
                 
                 const SizedBox(height: 20),
@@ -56,12 +56,15 @@ class _TimerPageState extends State<TimerPage> {
                 BalloonSlider(
                   initialValue: _timerValue,
                   onChanged: (val) {
-                    _timerValue = val;
+                    setState(() {
+                      _timerValue = val;
+                    });
                   },
                 ),
                 
                 const SizedBox(height: 60),
 
+                // ── MODIFIKASI: Menggunakan ClipOval agar kompatibel dengan SVG di masa depan ──
                 Container(
                   width: 250,
                   height: 250,
@@ -71,10 +74,6 @@ class _TimerPageState extends State<TimerPage> {
                       color: const Color(0xFF4A3424), 
                       width: 4,
                     ),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/crystal_cave.png'), 
-                      fit: BoxFit.cover,
-                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.5),
@@ -83,29 +82,36 @@ class _TimerPageState extends State<TimerPage> {
                       )
                     ],
                   ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/crystal_cave.png', 
+                      fit: BoxFit.cover,
+                      // Jika nanti aset berubah menjadi SVG, Anda tinggal menggantinya menjadi:
+                      // child: SvgPicture.asset('assets/images/crystal_cave.svg', fit: BoxFit.cover),
+                    ),
+                  ),
                 ),
 
                 const Spacer(),
 
+                // Tombol Navigasi Menuju Running Timer
                 Padding(
                   padding: const EdgeInsets.only(bottom: 30),
                   child: SizedBox(
                     width: 200, 
-                    child: // Di dalam timer_page.dart bagian tombol Next
-                      CustomButton(
-                        text: 'Next',
-                        onTap: () {
-                          // _timerValue berasal dari nilai Slider milikmu sebelumnya
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RunningTimerPage(
-                                minutes: _timerValue.toInt(), 
-                              ),
+                    child: CustomButton(
+                      text: 'Next',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RunningTimerPage(
+                              minutes: _timerValue.toInt(), 
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],

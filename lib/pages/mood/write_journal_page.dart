@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/home/home_page.dart'; 
 import 'package:mino/widgets/button/custom_button.dart';
 
@@ -61,13 +62,11 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
       resizeToAvoidBottomInset: false, 
       body: Stack(
         children: [
-          // ── 1. Background Gambar Full Screen ─────────────────────────
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'),
-                fit: BoxFit.cover,
-              ),
+          // ── 1. Background Gambar Full Screen (Diubah ke SVG) ─────────
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
             ),
           ),
 
@@ -78,7 +77,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
               children: [
                 const SizedBox(height: 20),
                 
-
                 // ── 3. Input Judul / Topic (Kursor Aktif Otomatis) ───────────
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -131,8 +129,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                           ),
                         ),
                         
-
-                        
                         // Kertas Utama Paling Atas (Input Isi Jurnal)
                         Container(
                           decoration: BoxDecoration(
@@ -179,8 +175,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                 const Spacer(),
 
                 // ── 5. Logika Tombol Bawah Menggunakan Cukup Ukuran Saja ──────
-                // ── 5. Logika Tombol Bawah Menggunakan Cukup Ukuran Saja ──────
-Center(
+                Center(
                   child: SizedBox(
                     height: 40, // Memberikan ruang cukup agar bayangan tombol tidak terpotong
                     child: Center(
@@ -193,7 +188,6 @@ Center(
                         // Kondisi Kosong: Tombol Tunggal (Cancel)
                         firstChild: SizedBox(
                           width: 150,
-                          // height: 50, <── Dihapus agar bayangan (glow) bisa melebar sempurna
                           child: CustomButton(
                             text: 'Cancel',
                             onTap: () => Navigator.pop(context), 
@@ -206,7 +200,6 @@ Center(
                           children: [
                             SizedBox(
                               width: 150,
-                              // height: 50, <── Dihapus agar bayangan (glow) bisa melebar sempurna
                               child: CustomButton(
                                 text: 'Cancel',
                                 onTap: () => Navigator.pop(context), 
@@ -215,7 +208,6 @@ Center(
                             const SizedBox(width: 16),
                             SizedBox(
                               width: 150,
-                              // height: 50, <── Dihapus agar bayangan (glow) bisa melebar sempurna
                               child: CustomButton(
                                 text: 'Save',
                                 onTap: _handleSave, 

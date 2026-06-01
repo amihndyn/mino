@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/onboarding/on_boarding3.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 
@@ -11,16 +12,24 @@ class OnBoarding2 extends StatelessWidget {
       backgroundColor: Colors.black, // Mencegah kedip putih
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
-          ),
+          // ── Background Utama (Diubah ke SVG) ───────────────────────
           Positioned.fill(
             child: Image.asset(
-              'assets/images/ob2.png',
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          
+          // ── Ilustrasi Onboarding (Diubah ke SVG) ───────────────────
+          Positioned.fill(
+            child: SvgPicture.asset(
+              'assets/images/ob2.svg',
               fit: BoxFit.cover,
               alignment: Alignment.center,
             ),
           ),
+          
+          // ── Efek Gradient Overlay ──────────────────────────────────
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -38,6 +47,8 @@ class OnBoarding2 extends StatelessWidget {
               ),
             ),
           ),
+          
+          // ── Konten Teks & Tombol Kontrol ───────────────────────────
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(left: 80, right: 80, bottom: 30),
@@ -74,7 +85,7 @@ class OnBoarding2 extends StatelessWidget {
                     child: CustomButton(
                       text: 'Next',
                       onTap: () {
-                        // Transisi Fade yang mulus
+                        // Transisi Fade yang mulus menuju halaman berikutnya
                         Navigator.push(
                           context,
                           PageRouteBuilder(

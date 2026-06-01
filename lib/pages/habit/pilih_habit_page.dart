@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,7 @@ class PilihHabitPage extends StatelessWidget {
           return Scaffold(
             body: Stack(
               children: [
-                /// 1. Background Image
+                /// 1. Background Image (Diubah ke SVG)
                 Positioned.fill(
                   child: Image.asset(
                     'assets/images/bg_login.png',

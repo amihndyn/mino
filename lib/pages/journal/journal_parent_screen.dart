@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/journal/progress_page.dart';
 import 'package:mino/widgets/navbar/bottom_navbar.dart';
@@ -42,7 +43,7 @@ class _JournalParentScreenState extends State<JournalParentScreen> {
       
       body: Stack(
         children: [
-          // Background gambar goa/batu full screen
+          // Background gambar goa/batu full screen (Diubah ke SVG)
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',

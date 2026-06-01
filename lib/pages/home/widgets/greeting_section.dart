@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/pages/journal/journal_parent_screen.dart'; // Import parent baru
 import 'package:mino/pages/profile/profile_page.dart';
@@ -67,8 +68,9 @@ class GreetingSection extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(
-                      'assets/images/diamond.png',
+                    // DIUBAH KE SVG: Menggunakan SvgPicture.asset
+                    SvgPicture.asset(
+                      'assets/images/diamond.svg',
                       width: 26,
                       height: 26,
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/home/home_page.dart';
 
 class ConfirmPassword4 extends StatefulWidget {
@@ -57,15 +58,13 @@ class ConfirmPassword4State extends State<ConfirmPassword4> {
     return Scaffold(
       body: Stack(
         children: [
-          // 1. BACKGROUND FULL SCREEN
-          Container(
+          // 1. BACKGROUND FULL SCREEN (Diubah ke SVG)
+          SizedBox(
             width: double.infinity,
             height: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'),
-                fit: BoxFit.cover,
-              ),
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
             ),
           ),
 
@@ -88,7 +87,7 @@ class ConfirmPassword4State extends State<ConfirmPassword4> {
 }
 
 // ==========================================
-// WIDGET KUSTOM: LINGKARAN YANG BISS MELOMPAT
+// WIDGET KUSTOM: LINGKARAN YANG BISA MELOMPAT
 // ==========================================
 class BouncingCircle extends StatefulWidget {
   final int index;

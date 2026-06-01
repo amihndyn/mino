@@ -111,10 +111,16 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  'assets/images/diamond.png', 
+                // Mengubah ikon berlian menjadi SVG dengan fallback Icon
+                SvgPicture.asset(
+                  'assets/images/diamond.svg', 
                   height: 60,
-                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.diamond, color: Colors.blue, size: 60),
+                  width: 60,
+                  placeholderBuilder: (context) => const Icon(
+                    Icons.diamond, 
+                    color: Colors.blue, 
+                    size: 60,
+                  ),
                 ),
                 
                 const SizedBox(height: 20),
@@ -230,16 +236,14 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF140C08), // Warna dasar default
       body: Stack(
         children: [
-          // Background utama
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'), 
-                fit: BoxFit.cover,
-              ),
-              color: Color(0xFF140C08),
+          // ── Background Utama (Diubah ke SVG) ───────────────────────
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
             ),
           ),
           
@@ -249,7 +253,7 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
               children: [
                 const Spacer(),
 
-// ── 1. Teks Timer dengan 2 Glow yang Mengorbit (Muter) ──
+                // ── 1. Teks Timer dengan 2 Glow yang Mengorbit (Muter) ──
                 AnimatedBuilder(
                   animation: _glowController,
                   builder: (context, child) {

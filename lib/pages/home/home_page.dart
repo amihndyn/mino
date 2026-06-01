@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 
 import '../../widgets/navbar/bottom_navbar.dart';
 import 'widgets/home_header.dart';
@@ -16,40 +17,45 @@ class HomePage extends StatelessWidget {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent, // Wajib agar scaffold transparan
 
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/bg_login.png'),
-            fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          /// 1. BACKGROUND UTAMA (Diubah ke SVG menggunakan Positioned.fill)
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const HomeHeader(),
 
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    children: const [
-                      ReflectionCard(),
-                      SizedBox(height: 24),
+          /// 2. KONTEN UTAMA
+          SafeArea(
+            child: Column(
+              children: [
+                const HomeHeader(),
 
-                      DailyActivitiesSection(),
-                      SizedBox(height: 24),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(18),
+                    child: Column(
+                      children: const [
+                        ReflectionCard(),
+                        SizedBox(height: 24),
 
-                      ChallengeSection(),
+                        DailyActivitiesSection(),
+                        SizedBox(height: 24),
 
-                      // Ruang ekstra di bawah agar konten terakhir tidak tertutup navbar
-                      SizedBox(height: 120),
-                    ],
+                        ChallengeSection(),
+
+                        // Ruang ekstra di bawah agar konten terakhir tidak tertutup navbar
+                        SizedBox(height: 120),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
 
       bottomNavigationBar: BottomNavbar(

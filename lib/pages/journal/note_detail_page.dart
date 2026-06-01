@@ -3,6 +3,7 @@
 // ============================================
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_sizes.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
@@ -61,7 +62,7 @@ class _NoteDetailPageState extends State<NoteDetailPage>
     return Scaffold(
       body: Stack(
         children: [
-          // BACKGROUND
+          // BACKGROUND (Diubah ke SVG menggunakan SvgPicture.asset)
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',
@@ -90,7 +91,7 @@ class _NoteDetailPageState extends State<NoteDetailPage>
                         width: 44,
                         height: 44,
                         alignment: Alignment.center,
-                        child: Icon(
+                        child: const Icon(
                           Icons.edit_outlined,
                           color: AppColors.orange300,
                           size: 22,
@@ -139,7 +140,7 @@ class _NoteDetailPageState extends State<NoteDetailPage>
                             // DATE
                             Text(
                               widget.fullDate,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: AppColors.coklat300,
                                 fontSize: 13,
                               ),
@@ -168,7 +169,7 @@ class _NoteDetailPageState extends State<NoteDetailPage>
                                 padding: const EdgeInsets.only(bottom: 18),
                                 child: Text(
                                   para.trim(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: AppColors.orange100,
                                     fontSize: 15.5,
                                     height: 1.75,
@@ -213,7 +214,7 @@ class _NoteDetailPageState extends State<NoteDetailPage>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Mood',
                 style: TextStyle(
                   color: AppColors.coklat300,

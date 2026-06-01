@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_sizes.dart';
 
@@ -15,24 +16,18 @@ class JournalBanner extends StatelessWidget {
     return Container(
       height: 90,
       width: double.infinity,
-      decoration: BoxDecoration(
-        
-
-      ),
+      decoration: const BoxDecoration(),
       clipBehavior: Clip.antiAlias,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Background image
-          Image.asset(
-            'assets/images/img_jurnal.png',
+          // Background image (Diubah ke SVG menggunakan SvgPicture.asset)
+          SvgPicture.asset(
+            'assets/images/img_jurnal.svg',
             fit: BoxFit.cover,
           ),
 
-
-
           // Inner glow border
-
 
           // Content
           Padding(
@@ -64,13 +59,11 @@ class JournalBanner extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-
                     ],
                   ),
                 ),
 
                 // Decorative icon
-
               ],
             ),
           ),

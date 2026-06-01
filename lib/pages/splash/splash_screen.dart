@@ -1,14 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; 
 import 'package:mino/core/data/datasource/auth_local_datasource.dart';
-import 'package:mino/pages/auth/confirm_password_screen.dart';
-import 'package:mino/pages/auth/login_page.dart';
-import 'package:mino/pages/home/home_page.dart';
-import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/journal/journal_parent_screen.dart';
-import 'package:mino/pages/journal/progress_page.dart';
 import 'package:mino/pages/onboarding/on_boarding1.dart';
-import 'package:mino/pages/profile/profile_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -46,13 +41,12 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    // PERBAIKAN: Menggunakan PageRouteBuilder dengan FadeTransition
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => 
-            isLogin ? const JournalParentScreen() : const JournalParentScreen(),
-        transitionDuration: const Duration(milliseconds: 800), // Durasi fade bisa disesuaikan
+            isLogin ? const JournalParentScreen() : const OnBoarding1(),
+        transitionDuration: const Duration(milliseconds: 800), 
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         }
@@ -69,21 +63,18 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Warna dasar untuk transisi mulus
+      backgroundColor: Colors.black, 
       body: Stack(
         children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg_login.png'), 
-                fit: BoxFit.cover, 
-              ),
+          // Background Utama
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
             ),
           ),
 
-          // GLOW
+          // GLOW EFFECT (Ubah ke .withOpacity untuk stabilitas Flutter Web)
           Center(
             child: Container(
               width: 370,
@@ -92,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF00BBFF).withValues(alpha: 0.5),
+                    const Color(0xFF00BBFF).withOpacity(0.5), // Diperbaiki
                     Colors.transparent,
                   ],
                 ),
@@ -113,7 +104,12 @@ class _SplashScreenState extends State<SplashScreen>
                   _buildAnimatedDot(left: 70, bottom: 90, size: 5, delay: 0.8),
                   _buildAnimatedDot(right: 80, bottom: 70, size: 4, delay: 2.2),
                   _buildAnimatedDot(left: 140, top: 50, size: 3, delay: 1.0),
-                  Image.asset('assets/images/logo.png', width: 160),
+                  
+                  // Logo Utama
+                  SvgPicture.asset(
+                    'assets/images/logo.svg', 
+                    width: 160,
+                  ),
                 ],
               ),
             ),
@@ -151,7 +147,8 @@ class _SplashScreenState extends State<SplashScreen>
               color: const Color(0xFFE5A84F),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFE5A84F).withValues(alpha: 0.3 + glow * 0.5),
+                  // Diperbaiki ke .withOpacity agar tidak merusak kanvas web
+                  color: const Color(0xFFE5A84F).withOpacity(0.3 + glow * 0.5), 
                   blurRadius: 4 + glow * 6,
                   spreadRadius: 1 + glow * 2,
                 ),
