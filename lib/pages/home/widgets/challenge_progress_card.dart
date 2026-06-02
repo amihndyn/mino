@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ChallengeProgressCard extends StatelessWidget {
   final String title;
@@ -30,11 +31,11 @@ class ChallengeProgressCard extends StatelessWidget {
     // Logika untuk menampilkan Gambar Asset atau Emoji
     Widget iconWidget;
     if (imageAsset != null) {
-      iconWidget = Image.asset(
+      iconWidget = SvgPicture.asset(
         imageAsset!,
-        width: 32, // Ukurannya disamakan dengan font size emoji (32)
+        width: 32,
         height: 32,
-        fit: BoxFit.contain, // Agar gambar tidak terpotong
+        fit: BoxFit.contain,
       );
     } else if (emoji != null) {
       iconWidget = Text(

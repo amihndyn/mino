@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/mood/widgets/journal_prompt_view.dart';
 import 'package:mino/pages/mood/widgets/journal_writing_view.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:provider/provider.dart';
-import 'package:mino/providers/moodjournal_provider.dart'; // Sesuaikan path provider-mu
+import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/providers/moodjournal_provider.dart';
 
 class JournalingPage extends StatefulWidget {
   const JournalingPage({super.key});
@@ -59,7 +59,7 @@ class _JournalingPageState extends State<JournalingPage> {
               height: MediaQuery.of(context).size.height * 0.80,
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color(0xFF1E1611), // Warna cokelat gelap serasi
+                color: AppColors.coklat900, // Warna cokelat gelap serasi
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(32),
                   topRight: Radius.circular(32),
@@ -82,8 +82,8 @@ class _JournalingPageState extends State<JournalingPage> {
                             child: Text(
                               "Today's Reflection",
                               style: TextStyle(
-                                color: Color(0xFFE8A838), // Gold soft
-                                fontSize: 17,
+                                color: AppColors.orange300, // Gold soft
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -93,7 +93,7 @@ class _JournalingPageState extends State<JournalingPage> {
                             child: GestureDetector(
                               onTap: () => Navigator.pop(context),
                               child: const Text(
-                                'Cancel',
+                                'cancel',
                                 style: TextStyle(
                                   color: Colors.white60,
                                   fontSize: 16,

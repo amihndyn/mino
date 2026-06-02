@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/home/home_page.dart'; 
 import 'package:mino/widgets/button/custom_button.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
 class WriteJournalScreen extends StatefulWidget {
   const WriteJournalScreen({super.key});
@@ -12,9 +12,12 @@ class WriteJournalScreen extends StatefulWidget {
 }
 
 class _WriteJournalScreenState extends State<WriteJournalScreen> {
+  static const Color darkBrownBorder = Color(0xFF423125);
+  static const double borderWidth = 2.0;
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  
+
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _contentFocusNode = FocusNode();
 
@@ -55,11 +58,8 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const Color darkBrownBorder = Color(0xFF2A1A0E);
-    const double borderWidth = 1.8;
-
     return Scaffold(
-      resizeToAvoidBottomInset: false, 
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // ── 1. Background Gambar Full Screen (Diubah ke SVG) ─────────
@@ -83,32 +83,39 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                   child: TextField(
                     controller: _titleController,
                     focusNode: _titleFocusNode,
-                    autofocus: true, // 1. MEMBUAT KURSOR KEDAP-KEDIP OTOMATIS SAAT BUKA HALAMAN
-                    cursorColor: const Color(0xFFE6D5C3), // 2. KUSTOMISASI WARNA GARIS KEDAP-KEDIP
-                    cursorWidth: 2.5, // Mengatur ketebalan garis kursor agar lebih terlihat
-                    cursorRadius: const Radius.circular(2), // Membuat ujung kursor sedikit tumpul bulat
+                    autofocus: true,
+                    cursorColor: AppColors.coklat100,
+                    cursorWidth: 1.5,
+                    cursorRadius: const Radius.circular(2),
                     textInputAction: TextInputAction.next,
                     style: const TextStyle(
-                      color: Color(0xFFE6D5C3), 
-                      fontSize: 28,
+                      color: AppColors.coklat100,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                     decoration: const InputDecoration(
                       hintText: 'Enter topic',
                       hintStyle: TextStyle(
-                        color: Color(0xFF9A8675), 
-                        fontSize: 28,
+                        color: AppColors.coklat100,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
+                      // ── Ubah di bagian ini ──
+                      contentPadding: EdgeInsets.only(
+                        left: 16,
+                        top: 2,
+                        bottom: 4,
+                      ),
                     ),
                   ),
                 ),
 
+                // ── 3. Komponen Kertas Numpuk (Menggunakan Widget Baru) ───────
+
                 const Spacer(),
 
-                // ── 4. Komponen Kertas Numpuk + Border Cokelat ───────────────
+                // ── 4. Logika Tombol Bawah (Cancel / Save) ───────────────────
                 Center(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.85, 
@@ -184,16 +191,17 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                         crossFadeState: _isButtonsRowVisible
                             ? CrossFadeState.showSecond
                             : CrossFadeState.showFirst,
-                        
+
                         // Kondisi Kosong: Tombol Tunggal (Cancel)
                         firstChild: SizedBox(
+                          height: 100,
                           width: 150,
                           child: CustomButton(
                             text: 'Cancel',
-                            onTap: () => Navigator.pop(context), 
+                            onTap: () => Navigator.pop(context),
                           ),
                         ),
-                        
+
                         // Kondisi Terisi: Tombol Cancel & Save Berdampingan
                         secondChild: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -202,7 +210,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                               width: 150,
                               child: CustomButton(
                                 text: 'Cancel',
-                                onTap: () => Navigator.pop(context), 
+                                onTap: () => Navigator.pop(context),
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -210,7 +218,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                               width: 150,
                               child: CustomButton(
                                 text: 'Save',
-                                onTap: _handleSave, 
+                                onTap: _handleSave,
                               ),
                             ),
                           ],

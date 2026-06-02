@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 
 class ActivityItemCard extends StatelessWidget {
   final String title;
@@ -23,7 +25,7 @@ class ActivityItemCard extends StatelessWidget {
     // Logika untuk menampilkan Gambar Asset atau Emoji
     Widget iconWidget;
     if (imageAsset != null) {
-      iconWidget = Image.asset(
+      iconWidget = SvgPicture.asset(
         imageAsset!,
         width: 30, // Sesuaikan dengan ukuran emoji
         height: 30,

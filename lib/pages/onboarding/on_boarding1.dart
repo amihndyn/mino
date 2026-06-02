@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/onboarding/on_boarding2.dart';
 import 'package:mino/widgets/button/custom_button.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class OnBoarding1 extends StatelessWidget {
   const OnBoarding1({super.key});

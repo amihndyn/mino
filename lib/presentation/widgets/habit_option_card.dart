@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -47,7 +48,7 @@ class HabitOptionCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Menampilkan gambar 3D dari asset
-            Image.asset(
+            SvgPicture.asset(
               imagePath,
               width: 24,
               height: 24,

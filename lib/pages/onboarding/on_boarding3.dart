@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/auth/login_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 class OnBoarding3 extends StatelessWidget {
   const OnBoarding3({super.key});
 

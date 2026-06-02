@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
 class MoodTile extends StatelessWidget {
   final String imagePath;
@@ -23,23 +26,24 @@ class MoodTile extends StatelessWidget {
         children: [
           // ── TARUH KODEMU DI SINI ───────────────────────────
           Container(
-            padding: const EdgeInsets.all(8), 
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              shape: BoxShape.circle, 
-              boxShadow: isSelected // Menggunakan variabel properti di atas
+              shape: BoxShape.circle,
+              boxShadow:
+                  isSelected // Menggunakan variabel properti di atas
                   ? [
                       BoxShadow(
-                        color: Colors.orange.withValues(alpha: 0.60), 
-                        blurRadius: 45,       
-                        spreadRadius: 5,      
+                        color: AppColors.orange600.withValues(alpha: 0.4), // Warna shadow dengan alpha
+                        blurRadius: 40,
+                        spreadRadius: 3,
                       ),
                     ]
-                  : [], 
+                  : [],
             ),
-            child: Image.asset(
+            child: SvgPicture.asset(
               imagePath, // Langsung panggil variabel karena ini StatelessWidget
-              width: 64, 
-              height: 64,
+              width: 44,
+              height: 44,
             ),
           ),
           // ───────────────────────────────────────────────────
@@ -47,7 +51,7 @@ class MoodTile extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.orange : Colors.white70,
+              color: isSelected ? AppColors.orange400 : Colors.white60, // Warna teks berubah saat dipilih
               fontSize: 14,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),

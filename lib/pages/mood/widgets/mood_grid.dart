@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'mood_tile.dart'; // Pastikan path import MoodTile sudah benar
+import 'mood_tile.dart';
 
 class MoodItem {
   final String imagePath;
@@ -19,34 +19,53 @@ class MoodGrid extends StatelessWidget {
     required this.onMoodSelected,
   });
 
+  // ── Fungsi bantuan untuk membuat item agar kode lebih bersih ──
+  Widget _buildMoodItem(MoodItem mood) {
+    final isSelected = selectedMood == mood.label;
+    return MoodTile(
+      imagePath: mood.imagePath,
+      label: mood.label,
+      isSelected: isSelected,
+      onTap: () => onMoodSelected(mood.label),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Kita gunakan LayoutBuilder untuk menghitung lebar layar secara dinamis
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Menghitung lebar per item agar pas dibagi 3 kolom (dikurangi sedikit untuk jarak/spacing)
-        final double itemWidth = (constraints.maxWidth - 32) / 3;
+    // Pastikan list moods ada 5 (sesuai data kamu) agar tidak error out of range
+    if (moods.length < 5) return const SizedBox.shrink();
 
-        return Wrap(
-          alignment: WrapAlignment.center,      // ── MEMBUAT BARIS KEDUA DI TENGAH ──
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 16,                          // Jarak antar emoji secara horizontal
-          runSpacing: 20,                       // Jarak antar baris secara vertikal
-          children: moods.map((mood) {
-            final isSelected = selectedMood == mood.label;
+    // Nilai jarak yang bisa kamu atur
+    const double spacingHorizontal = 12.0; // Jarak kanan-kiri antar emoji
+    const double spacingVertical = 16.0;   // Jarak atas-bawah antar baris
 
-            return SizedBox(
-              width: itemWidth, // Memaksa ukuran tiap item agar konsisten seperti grid
-              child: MoodTile(
-                imagePath: mood.imagePath,
-                label: mood.label,
-                isSelected: isSelected,
-                onTap: () => onMoodSelected(mood.label),
-              ),
-            );
-          }).toList(),
-        );
-      },
+    return Column(
+      mainAxisSize: MainAxisSize.min, // Sesuaikan tinggi column dengan isinya
+      children: [
+        // ── BARIS PERTAMA: 3 Emoji (Index 0, 1, 2) ──
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildMoodItem(moods[0]),
+            const SizedBox(width: spacingHorizontal),
+            _buildMoodItem(moods[1]),
+            const SizedBox(width: spacingHorizontal),
+            _buildMoodItem(moods[2]),
+          ],
+        ),
+        
+        const SizedBox(height: spacingVertical),
+        
+        // ── BARIS KEDUA: 2 Emoji (Index 3, 4) ──
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildMoodItem(moods[3]),
+            const SizedBox(width: spacingHorizontal),
+            _buildMoodItem(moods[4]),
+          ],
+        ),
+      ],
     );
   }
 }
