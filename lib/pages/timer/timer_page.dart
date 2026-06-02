@@ -72,7 +72,7 @@ class _TimerPageState extends State<TimerPage> {
                       width: 4,
                     ),
                     image: const DecorationImage(
-                      image: AssetImage('assets/images/crystal_cave.png'), 
+                      image: AssetImage('assets/images/lian.svg'), 
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mino/core/presentation/auth/bloc/register/register_bloc.dart';
-import 'package:mino/pages/onboarding/on_boarding1.dart';
+import 'package:mino/pages/auth/confirm_password_screen.dart'; 
 import 'package:mino/widgets/button/custom_button.dart';
 import '../../widgets/textfields/custom_textfield.dart';
 
@@ -38,9 +38,9 @@ class _RegisterPageState extends State<RegisterPage> {
         email.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Semua field harus diisi')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Semua field harus diisi')),
+      );
       return;
     }
 
@@ -78,9 +78,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 backgroundColor: Colors.green,
               ),
             );
+            
+            // PERBAIKAN: Logika pindah halaman dipindahkan ke dalam BlocListener Success
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (_) => const OnBoarding1()),
+              MaterialPageRoute(builder: (_) => const ConfirmPassword4()),
               (route) => false,
             );
           },
@@ -92,11 +94,10 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       },
       child: Scaffold(
-        backgroundColor: Colors.black, // Tambahan untuk transisi yang mulus
+        backgroundColor: Colors.black, 
         resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
-            // PERBAIKAN: Background dipaksa melar menutupi seluruh layar
             Container(
               width: double.infinity,
               height: double.infinity,
@@ -112,7 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: 24, // Disamakan dengan halaman Login
+                    left: 24, 
                     right: 24,
                     top: 20,
                     bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -125,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const Text(
                         'Join Mino',
                         style: TextStyle(
-                          fontSize: 36, // Sedikit disesuaikan agar rapi
+                          fontSize: 36, 
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -167,7 +168,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             orElse: () => false,
                           );
                           return SizedBox(
-                            // PERBAIKAN: Lebar tombol jadi double.infinity
                             width: double.infinity,
                             height: 50,
                             child: isLoading
@@ -199,7 +199,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 20),
                       
-                      // PERBAIKAN: Tombol Google dibuat konsisten dengan LoginPage
                       SizedBox(
                         width: double.infinity,
                         height: 50,
@@ -220,7 +219,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 'Continue with google',
                                 style: TextStyle(
                                   color: Colors.black87, 
-                                  fontWeight: FontWeight.w500
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],

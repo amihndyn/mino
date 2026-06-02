@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/pages/journal/journal_parent_screen.dart'; // Import parent baru
+import 'package:mino/pages/profile/profile_page.dart';
 
 class GreetingSection extends StatelessWidget {
   const GreetingSection({super.key});
@@ -20,7 +22,7 @@ class GreetingSection extends StatelessWidget {
               "Hi, Keysha",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 32, // Ukuran sedikit diperbesar agar lebih tegas
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
               ),
@@ -29,7 +31,7 @@ class GreetingSection extends StatelessWidget {
             Text(
               "Wednesday, April 22 2026",
               style: TextStyle(
-                color: AppColors.orange300, // Pastikan warna ini bernuansa emas/oranye redup
+                color: AppColors.orange300,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
@@ -40,72 +42,91 @@ class GreetingSection extends StatelessWidget {
         // Kanan: Status Diamond dan Tombol Profil
         Row(
           children: [
-            // 1. Capsul Counter Diamond
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.25), // Background gelap transparan
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: goldBorderColor,
-                  width: 2.5,
+            // 1. Capsul Counter Diamond (Membuka JournalParentScreen pada posisi Tab Progress)
+            GestureDetector(
+              onTap: () {
+                // Diganti mengarah ke wadah induk (JournalParentScreen) dengan index 1 (Progress)
+                // Ini menjamin state data di dalamnya tidak akan kosong atau ter-reset
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const JournalParentScreen(initialTabIndex: 1),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.25),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: goldBorderColor,
+                    width: 2.5,
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/diamond.png',
-                    width: 26,
-                    height: 26,
-                  ),
-
-                  const SizedBox(width: 8),
-
-                  const Text(
-                    "80",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/diamond.png',
+                      width: 26,
+                      height: 26,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    const Text(
+                      "80",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             
             const SizedBox(width: 12),
 
-            // 2. Tombol Avatar Profil Kustom (Aksen Lingkaran Emas + Kotak 3D)
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: goldBorderColor,
-                  width: 2.5,
-                ),
-              ),
-              alignment: Alignment.center,
+            // 2. Tombol Avatar Profil
+            GestureDetector(
+              onTap: () {
+                // Menghapus baris kode instansiasi ProfilePage() tunggal yang redundan
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
+              },
               child: Container(
-                width: 38,
-                height: 38,
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
-                  color: const Color(0xffF6E5CD), // Warna krem latar avatar
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 1,
-                      offset: const Offset(0, 2), // Efek bayangan tebal di bawah (3D)
-                    ),
-                  ],
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: goldBorderColor,
+                    width: 2.5,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.person_rounded,
-                  color: Color(0xffE5933A), // Warna figur orang oranye tua
-                  size: 28,
+                alignment: Alignment.center,
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffF6E5CD),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 1,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.person_rounded,
+                    color: Color(0xffE5933A),
+                    size: 28,
+                  ),
                 ),
               ),
             ),
