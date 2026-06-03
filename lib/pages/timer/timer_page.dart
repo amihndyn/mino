@@ -86,8 +86,6 @@ class _TimerPageState extends State<TimerPage> {
                     child: Image.asset(
                       'assets/images/crystal_cave.png', 
                       fit: BoxFit.cover,
-                      // Jika nanti aset berubah menjadi SVG, Anda tinggal menggantinya menjadi:
-                      // child: SvgPicture.asset('assets/images/crystal_cave.svg', fit: BoxFit.cover),
                     ),
                   ),
                 ),

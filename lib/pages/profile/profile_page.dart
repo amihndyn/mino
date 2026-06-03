@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/profile/widgets/info_tile.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 
@@ -17,11 +16,15 @@ class ProfilePage extends StatelessWidget {
       body: Stack(
         children: [
 
-          // BACKGROUND (Diubah ke SVG)
+          // BACKGROUND (Diubah ke PNG)
           Positioned.fill(
-            child: SvgPicture.asset(
-              'assets/images/background.svg',
+            child: Image.asset(
+              'assets/images/bg_login.png',
               fit: BoxFit.cover,
+              // Fallback warna jika gambar gagal dimuat
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.black,
+              ),
             ),
           ),
 
@@ -83,10 +86,10 @@ class ProfilePage extends StatelessWidget {
                           color: Color(0xFFF2D1A2),
                         ),
                         const SizedBox(width: 12),
-                        Text(
+                        const Text(
                           'Log Out',
                           style: TextStyle(
-                            color: const Color(0xFFF2D1A2),
+                            color: Color(0xFFF2D1A2),
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),

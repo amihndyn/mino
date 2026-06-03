@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_text_styles.dart';
 
@@ -32,12 +31,12 @@ class CreateHabitCard extends StatelessWidget {
               color: AppColors.orange100,
               borderRadius: BorderRadius.circular(14),
             ),
-            // DIUBAH KE SVG: Menggunakan SvgPicture.asset
-            child: SvgPicture.asset(
-              'assets/images/note.svg',
+            // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+            child: Image.asset(
+              'assets/images/note.png',
               fit: BoxFit.contain,
-              // Menggunakan placeholderBuilder sebagai fallback jika SVG gagal dimuat/kosong
-              placeholderBuilder: (BuildContext context) => const Icon(
+              // Menggunakan errorBuilder sebagai fallback jika PNG gagal dimuat
+              errorBuilder: (context, error, stackTrace) => const Icon(
                 Icons.edit_note_rounded, 
                 size: 38, 
                 color: AppColors.coklat600,

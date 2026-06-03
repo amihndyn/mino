@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; 
 import 'package:mino/core/data/datasource/auth_local_datasource.dart';
+import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/pages/journal/journal_parent_screen.dart';
 import 'package:mino/pages/onboarding/on_boarding1.dart';
 
@@ -45,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => 
-            isLogin ? const JournalParentScreen() : const OnBoarding1(),
+            isLogin ? const JournalParentScreen() : const HomePage(),
         transitionDuration: const Duration(milliseconds: 800), 
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);

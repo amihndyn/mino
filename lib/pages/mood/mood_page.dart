@@ -16,16 +16,16 @@ class MoodPage extends StatefulWidget {
 class _MoodScreenState extends State<MoodPage> {
   String? _selectedMood;
 
-  // Mengubah semua ekstensi ikon mood dari  ke .svg
+  // Mengubah semua ekstensi ikon mood ke .png sesuai dengan format aset terbaru
   final List<MoodItem> _moods = const [
-    MoodItem(imagePath: 'assets/images/amazing.svg', label: 'Amazing'),
-    MoodItem(imagePath: 'assets/images/good.svg', label: 'Good'),
-    MoodItem(imagePath: 'assets/images/okey.svg', label: 'Okey'),
-    MoodItem(imagePath: 'assets/images/unusual.svg', label: 'Unusual'),
-    MoodItem(imagePath: 'assets/images/bad.svg', label: 'Bad'),
+    MoodItem(imagePath: 'assets/images/amazing.png', label: 'Amazing'),
+    MoodItem(imagePath: 'assets/images/good.png', label: 'Good'),
+    MoodItem(imagePath: 'assets/images/okey.png', label: 'Okey'),
+    MoodItem(imagePath: 'assets/images/unusual.png', label: 'Unusual'),
+    MoodItem(imagePath: 'assets/images/bad.png', label: 'Bad'),
   ];
 
-void _onNext() {
+  void _onNext() {
     if (_selectedMood == null) {
       // ── Tampilkan Custom Popup Lebih Kecil & Sederhana ──
       showDialog<void>(
@@ -146,7 +146,7 @@ void _onNext() {
     return Scaffold(
       body: Stack(
         children: [
-          // ── Background utama aplikasi (SVG) ──────────────────
+          // ── Background utama aplikasi ──────────────────
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',
@@ -198,8 +198,7 @@ void _onNext() {
                               child: const Text(
                                 'cancel',
                                 style: TextStyle(
-                                  color: Colors
-                                      .grey, // Warna abu-abu untuk teks "Cancel"
+                                  color: Colors.grey, // Warna abu-abu untuk teks "Cancel"
                                   fontSize: 16,
                                 ),
                               ),

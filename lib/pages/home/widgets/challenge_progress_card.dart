@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ChallengeProgressCard extends StatelessWidget {
   final String title;
   final String? emoji; // Diubah menjadi opsional (bisa null)
-  final String? imageAsset; // Ditambahkan untuk menampung gambar dari assets
+  final String? imageAsset; // Pastikan data yang dikirim adalah path file .png
   final int currentProgress;
   final int totalProgress;
 
@@ -31,11 +30,22 @@ class ChallengeProgressCard extends StatelessWidget {
     // Logika untuk menampilkan Gambar Asset atau Emoji
     Widget iconWidget;
     if (imageAsset != null) {
-      iconWidget = SvgPicture.asset(
+      // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+      iconWidget = Image.asset(
         imageAsset!,
         width: 32,
         height: 32,
         fit: BoxFit.contain,
+        // Menggunakan errorBuilder sebagai fallback jika PNG gagal dimuat
+        errorBuilder: (context, error, stackTrace) => const SizedBox(
+          width: 32,
+          height: 32,
+          child: Icon(
+            Icons.broken_image,
+            size: 24,
+            color: textColor,
+          ),
+        ),
       );
     } else if (emoji != null) {
       iconWidget = Text(

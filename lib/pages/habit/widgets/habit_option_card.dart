@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 
 class HabitOptionCard extends StatelessWidget {
   final String title;
-  final String imagePath; // Menggunakan String path gambar, bukan IconData
+  final String imagePath; // Pastikan data yang dikirim nanti adalah path file .png
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -29,7 +28,6 @@ class HabitOptionCard extends StatelessWidget {
           vertical: 8, // Ukuran vertical mengecil agar proporsional seperti kapsul
         ),
         decoration: BoxDecoration(
-          // PERBAIKAN DI SINI: Menggunakan format 0xFF untuk warna hex
           color: isSelected ? AppColors.biru500 : const Color(0xFFFFF8EC), 
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
@@ -44,13 +42,14 @@ class HabitOptionCard extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Menampilkan gambar 3D dari asset
-            SvgPicture.asset(
+            // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+            Image.asset(
               imagePath,
               width: 24,
               height: 24,
+              fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
-                // Fallback jika file gambar belum ada di folder asset agar tidak crash
+                // Fallback jika file PNG belum ada di folder asset agar tidak crash
                 return Container(
                   width: 24,
                   height: 24,

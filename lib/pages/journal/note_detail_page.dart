@@ -3,7 +3,6 @@
 // ============================================
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_sizes.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
@@ -62,7 +61,6 @@ class _NoteDetailPageState extends State<NoteDetailPage>
     return Scaffold(
       body: Stack(
         children: [
-          // BACKGROUND (Diubah ke SVG menggunakan SvgPicture.asset)
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',

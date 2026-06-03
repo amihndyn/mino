@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mino/core/constants/app_colors.dart';
 
 class MoodTile extends StatelessWidget {
@@ -40,10 +38,25 @@ class MoodTile extends StatelessWidget {
                     ]
                   : [],
             ),
-            child: SvgPicture.asset(
+            // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+            child: Image.asset(
               imagePath, // Langsung panggil variabel karena ini StatelessWidget
               width: 44,
               height: 44,
+              // Pengaman jika gambar gagal dimuat
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 44,
+                height: 44,
+                decoration: const BoxDecoration(
+                  color: Colors.white10,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.image_not_supported,
+                  color: Colors.white54,
+                  size: 20,
+                ),
+              ),
             ),
           ),
           // ───────────────────────────────────────────────────

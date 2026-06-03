@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/mood/mood_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
@@ -80,14 +79,14 @@ class ReflectionCard extends StatelessWidget {
           
           const SizedBox(width: 12),
 
-          // RIGHT IMAGE (Diubah ke SVG)
-          SvgPicture.asset(
-            'assets/images/reflection.svg',
+          // RIGHT IMAGE (Diubah ke PNG)
+          Image.asset(
+            'assets/images/reflection.png',
             width: 113,
             height: 93,
             fit: BoxFit.contain,
-            // Menggunakan placeholderBuilder sebagai fallback jika SVG gagal dimuat
-            placeholderBuilder: (BuildContext context) => const SizedBox(
+            // Menggunakan errorBuilder sebagai fallback jika PNG gagal dimuat
+            errorBuilder: (context, error, stackTrace) => const SizedBox(
               width: 113,
               height: 93,
               child: Icon(

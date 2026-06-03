@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_sizes.dart';
 import 'package:mino/core/constants/app_text_styles.dart';
@@ -11,11 +10,11 @@ class ChooseAvatarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // List path diubah ekstensinya menjadi .svg
+    // List path diubah ekstensinya menjadi .png
     final avatars = [
-      'assets/images/man.svg',
-      'assets/images/astronot.svg',
-      'assets/images/woman.svg',
+      'assets/images/man.png',
+      'assets/images/astronot.png',
+      'assets/images/woman.png',
     ];
 
     return Scaffold(
@@ -51,11 +50,19 @@ class ChooseAvatarPage extends StatelessWidget {
                   width: 2,
                 ),
               ),
-              // Menggunakan ClipOval + SvgPicture agar gambar SVG terpotong sempurna menjadi lingkaran
+              // Menggunakan ClipOval + Image.asset agar gambar PNG terpotong sempurna menjadi lingkaran
               child: ClipOval(
-                child: SvgPicture.asset(
+                child: Image.asset(
                   avatars[index],
                   fit: BoxFit.cover,
+                  // Pengaman jika gambar gagal dimuat, menampilkan icon avatar default
+                  errorBuilder: (context, error, stackTrace) => const Center(
+                    child: Icon(
+                      Icons.account_circle,
+                      color: AppColors.orange400,
+                      size: 48,
+                    ),
+                  ),
                 ),
               ),
             ),

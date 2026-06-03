@@ -68,7 +68,7 @@ class FinishTimerPage extends StatelessWidget {
                       // Kotak Kiri: Focus Duration
                       Expanded(
                         child: _buildStatCard(
-                          iconPath: 'assets/images/alarm.svg', // Diubah menjadi .svg
+                          iconPath: 'assets/images/alarm.png', // Diubah menjadi .png sesuai migrasi terbaru
                           defaultIcon: Icons.alarm,
                           title: 'Focus Duration',
                           value: '$completedMinutes minutes',

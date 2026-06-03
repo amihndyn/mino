@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 
 class JournalWritingView extends StatelessWidget {
   final TextEditingController noteController;
@@ -21,10 +20,21 @@ class JournalWritingView extends StatelessWidget {
       children: [
         Row(
           children: [
-            // Diubah ke SVG menggunakan SvgPicture.asset
-            SvgPicture.asset(
-              'assets/images/blogjurnal.svg', 
+            // DIUBAH KE PNG: Menggunakan Image.asset standar bawaan Flutter
+            Image.asset(
+              'assets/images/blogjurnal.png', 
               height: 40,
+              errorBuilder: (context, error, stackTrace) => const SizedBox(
+                height: 40,
+                width: 40,
+                child: Center(
+                  child: Icon(
+                    Icons.image_not_supported,
+                    color: Color(0xFF7A5C3E),
+                    size: 20,
+                  ),
+                ),
+              ),
             ),
             const SizedBox(width: 12),
             const Text(

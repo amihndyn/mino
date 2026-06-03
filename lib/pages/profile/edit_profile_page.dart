@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 
 class EditProfilePage extends StatelessWidget {
@@ -13,11 +12,15 @@ class EditProfilePage extends StatelessWidget {
       body: Stack(
         children: [
 
-          // BACKGROUND (Diubah ke SVG)
+          // BACKGROUND (Diubah ke PNG)
           Positioned.fill(
-            child: SvgPicture.asset(
-              'assets/images/background.svg',
+            child: Image.asset(
+              'assets/images/bg_login.png',
               fit: BoxFit.cover,
+              // Pengaman jika gambar gagal dimuat agar tidak merusak UI
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.black,
+              ),
             ),
           ),
 
@@ -45,7 +48,7 @@ class EditProfilePage extends StatelessWidget {
                           shape: BoxShape.circle,
                           color: const Color(0xFFF3E7D7),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
+                            color: Colors.white.withValues(alpha: 0.3), // Diperbarui ke withValues
                           ),
                         ),
                         child: const Icon(
@@ -154,7 +157,7 @@ class EditProfilePage extends StatelessWidget {
           border: Border.all(
             color: const Color(0xFFE6A84A),
           ),
-          color: Colors.black.withOpacity(0.08),
+          color: Colors.black.withValues(alpha: 0.08), // Diperbarui ke withValues
         ),
         child: TextField(
           controller: TextEditingController(text: value),

@@ -4,6 +4,8 @@ import 'package:mino/widgets/cards/add_menu_popup.dart';
 import '../../pages/home/home_page.dart';
 import '../../pages/journal/note_list_page.dart';
 import '../../pages/profile/profile_page.dart';
+import '../../pages/challenge/find_page.dart';
+
 
 class BottomNavbar extends StatelessWidget {
   final int currentIndex;
@@ -50,6 +52,10 @@ class BottomNavbar extends StatelessWidget {
 
       case 1:
         page = const NoteListPage();
+        break;
+        
+      case 2:
+        page = const FindPage(); 
         break;
 
       case 3:

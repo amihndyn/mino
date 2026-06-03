@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Ditambahkan untuk mendukung SVG
 import 'package:mino/pages/habit/pilih_habit_page.dart';
 import 'package:mino/pages/mood/mood_page.dart';
 
@@ -36,7 +35,7 @@ class AddMenuPopup extends StatelessWidget {
                     title: "Add Routine",
                     subtitle: "Add a new routine to your life",
                     color: const Color(0xFFFF71AB),
-                    imageAsset: 'assets/images/form.svg', // Migrasi ke SVG
+                    imageAsset: 'assets/images/form.png', // Migrasi ke PNG
                     onTap: () {
                       // 1. Tutup dulu pop-up menunya
                       Navigator.pop(context);
@@ -59,7 +58,7 @@ class AddMenuPopup extends StatelessWidget {
                     title: "Add Reflection",
                     subtitle: "Reflect on your day, mood, and feelings",
                     color: const Color(0xFFA67CFF),
-                    imageAsset: 'assets/images/cat.svg', // Migrasi ke SVG
+                    imageAsset: 'assets/images/cat.png', // Migrasi ke PNG
                     onTap: () {
                       // 1. Tutup dulu pop-up menunya
                       Navigator.pop(context);
@@ -124,11 +123,12 @@ class MenuPopupCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: SvgPicture.asset(
+              // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+              child: Image.asset(
                 imageAsset,
                 fit: BoxFit.contain,
-                // Menggunakan placeholderBuilder sebagai fallback jika SVG gagal dimuat
-                placeholderBuilder: (context) => const Icon(
+                // Menggunakan errorBuilder sebagai fallback jika PNG gagal dimuat
+                errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.broken_image, 
                   size: 40, 
                   color: Colors.white,

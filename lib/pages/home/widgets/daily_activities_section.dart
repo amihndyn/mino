@@ -23,24 +23,24 @@ class DailyActivitiesSection extends StatelessWidget {
         ),
         SizedBox(height: 16),
 
-        // Kartu Pertama (Diubah ke .svg)
+        // Kartu Pertama (Diubah ke .png)
         ActivityItemCard(
           title: "Take a deep breath",
-          imageAsset: 'assets/images/book.svg',
+          imageAsset: 'assets/images/book.png',
         ),
         SizedBox(height: 14),
 
-        // Kartu Kedua (Diubah ke .svg)
+        // Kartu Kedua (Diubah ke .png)
         ActivityItemCard(
           title: "Smile for a few seconds",
-          imageAsset: 'assets/images/smile.svg',
+          imageAsset: 'assets/images/smile.png',
         ),
         SizedBox(height: 14),
 
-        // Kartu Ketiga (Diubah ke .svg)
+        // Kartu Ketiga (Diubah ke .png)
         ActivityItemCard(
           title: "Fix your posture",
-          imageAsset: 'assets/images/exercise.svg',
+          imageAsset: 'assets/images/exercise.png',
         ),
       ],
     );

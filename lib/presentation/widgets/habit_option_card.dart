@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -38,7 +37,7 @@ class HabitOptionCard extends StatelessWidget {
           boxShadow: [
             if (!isSelected)
               BoxShadow(
-                color: Colors.black.withOpacity(0.03),
+                color: Colors.black.withValues(alpha: 0.03), // Diperbarui menggunakan withValues
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -47,8 +46,8 @@ class HabitOptionCard extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Menampilkan gambar 3D dari asset
-            SvgPicture.asset(
+            // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+            Image.asset(
               imagePath,
               width: 24,
               height: 24,

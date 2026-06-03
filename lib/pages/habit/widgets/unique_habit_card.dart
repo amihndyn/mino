@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -28,11 +27,12 @@ class UniqueHabitCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // DIUBAH KE SVG: Menggunakan SvgPicture.asset
-            SvgPicture.asset(
-              'assets/images/stars.svg',
+            // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+            Image.asset(
+              'assets/images/stars.png',
               width: 50,
               height: 50,
+              fit: BoxFit.contain,
             ),
             
             Expanded(

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 
 class ActivityItemCard extends StatelessWidget {
   final String title;
   final String? emoji; // Buat jadi opsional
-  final String? imageAsset; // Untuk menampung gambar dari assets
+  final String? imageAsset; // Untuk menampung gambar dari assets (Pastikan path file .png)
   final bool isCompleted; // Menambahkan variabel state untuk checklist
 
   const ActivityItemCard({
@@ -25,11 +23,22 @@ class ActivityItemCard extends StatelessWidget {
     // Logika untuk menampilkan Gambar Asset atau Emoji
     Widget iconWidget;
     if (imageAsset != null) {
-      iconWidget = SvgPicture.asset(
+      // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+      iconWidget = Image.asset(
         imageAsset!,
         width: 30, // Sesuaikan dengan ukuran emoji
         height: 30,
         fit: BoxFit.contain,
+        // Menyediakan errorBuilder jika file PNG tidak ditemukan/gagal dimuat
+        errorBuilder: (context, error, stackTrace) => const SizedBox(
+          width: 30,
+          height: 30,
+          child: Icon(
+            Icons.image_not_supported_rounded,
+            size: 24,
+            color: darkBrownColor,
+          ),
+        ),
       );
     } else if (emoji != null) {
       iconWidget = Text(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/mood/write_journal_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:mino/core/constants/app_colors.dart';
@@ -31,10 +30,21 @@ class JournalPromptView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 3. EDIT UKURAN GAMBAR DI SINI: Diubah ke SVG menggunakan SvgPicture.asset
-          SvgPicture.asset(
-            'assets/images/blogjurnal.svg', 
+          // 3. DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+          Image.asset(
+            'assets/images/blogjurnal.png', 
             height: 130,
+            // Fallback jika file png belum ada di folder aset
+            errorBuilder: (context, error, stackTrace) => const SizedBox(
+              height: 130,
+              child: Center(
+                child: Icon(
+                  Icons.image_not_supported, 
+                  color: AppColors.coklat900,
+                  size: 32,
+                ),
+              ),
+            ),
           ),
           
           const SizedBox(height: 16),
@@ -46,7 +56,6 @@ class JournalPromptView extends StatelessWidget {
               color: AppColors.coklat900, 
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              
             ),
           ),
           
@@ -56,7 +65,7 @@ class JournalPromptView extends StatelessWidget {
             "It's not mandatory, but this will be very helpful",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.coklat900, // Warna teks soft cream kustom
+              color: AppColors.coklat900, 
               fontSize: 12,
             ),
           ),

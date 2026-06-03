@@ -68,7 +68,6 @@ class GreetingSection extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // DIUBAH KE SVG: Menggunakan SvgPicture.asset
                     SvgPicture.asset(
                       'assets/images/diamond.svg',
                       width: 26,

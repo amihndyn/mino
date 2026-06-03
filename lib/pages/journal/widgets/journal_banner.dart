@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_sizes.dart';
 
@@ -21,10 +20,20 @@ class JournalBanner extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Background image (Diubah ke SVG menggunakan SvgPicture.asset)
-          SvgPicture.asset(
-            'assets/images/img_jurnal.svg',
+          // Background image (Diubah ke PNG menggunakan Image.asset)
+          Image.asset(
+            'assets/images/img_jurnal.png',
             fit: BoxFit.cover,
+            // Menggunakan errorBuilder sebagai fallback jika PNG gagal dimuat
+            errorBuilder: (context, error, stackTrace) => Container(
+              color: AppColors.orange500.withOpacity(0.3), // Fallback warna background
+              child: const Center(
+                child: Icon(
+                  Icons.image_not_supported,
+                  color: Colors.white54,
+                ),
+              ),
+            ),
           ),
 
           // Inner glow border

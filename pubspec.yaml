@@ -64,6 +64,21 @@ flutter:
   assets:
     - assets/images/
     - assets/images/bg_login.svg
+    - assets/images/run.png
+    - assets/images/routine.png
+    - assets/images/nophone.png
+    - assets/images/gratitude.png
+    - assets/images/face.png
+    - assets/images/drink.png
+    - assets/images/detox.png
+    - assets/images/deepwork.png
+    - assets/images/watch.png
+    - assets/images/plan.png
+    - assets/images/kalender.png
+    - assets/images/habit.png
+    - assets/images/jam.png
+    - assets/images/skincare.png
+    - assets/images/skin.png
     - assets/icons/
 
   # Pendaftaran Font Lokal
