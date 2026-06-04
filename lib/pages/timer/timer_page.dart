@@ -48,6 +48,7 @@ class _TimerPageState extends State<TimerPage> {
               ),
             ),
 
+
             // Konten Foreground (AppBar, Menu Tab Oval, & Konten Tengah)
             SafeArea(
               child: Column(
@@ -57,6 +58,7 @@ class _TimerPageState extends State<TimerPage> {
                   const CustomAppBar(
                     title: 'Pomodoro', 
                     
+
                   ),
                   
                   const SizedBox(height: 20),

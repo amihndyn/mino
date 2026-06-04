@@ -150,7 +150,7 @@ child: Container(
                         width: double.infinity,
                         height: 54,
                         child: CustomButton(
-                          text: 'Skip and save',
+                          text: 'Skip and Save',
                           onTap: _onSaveAndSkip,
                         ),
                       ),
