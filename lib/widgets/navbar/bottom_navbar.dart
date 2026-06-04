@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:mino/widgets/cards/add_menu_popup.dart';
 
+import '../../pages/home/home_page.dart';
+import '../../pages/journal/note_list_page.dart';
+import '../../pages/profile/profile_page.dart';
+
 class BottomNavbar extends StatelessWidget {
   final int currentIndex;
-  final Function(int) onTap;
+  final Function(int)? onTap;
 
   const BottomNavbar({
     super.key,
     required this.currentIndex,
-    required this.onTap,
+    this.onTap,
   });
 
-  // Fungsi untuk memunculkan Pop Up Menu dengan animasi yang lebih smooth
-  // Fungsi untuk memunculkan Pop Up Menu
   void _showAddMenu(BuildContext context) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Dismiss',
-      barrierColor: Colors.black.withOpacity(0.6), 
+      barrierColor: Colors.black.withOpacity(0.6),
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
-        // Panggil widget AddMenuPopup dari file yang baru kamu buat!
-        return const AddMenuPopup(); 
+        return const AddMenuPopup();
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         return ScaleTransition(
@@ -34,6 +35,34 @@ class BottomNavbar extends StatelessWidget {
           child: child,
         );
       },
+    );
+  }
+
+  void _navigate(BuildContext context, int index) {
+    if (index == currentIndex) return;
+
+    Widget page;
+
+    switch (index) {
+      case 0:
+        page = const HomePage();
+        break;
+
+      case 1:
+        page = const NoteListPage();
+        break;
+
+      case 3:
+        page = const ProfilePage();
+        break;
+
+      default:
+        return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => page),
     );
   }
 
@@ -49,7 +78,6 @@ class BottomNavbar extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.bottomCenter,
         children: [
-          // 1. Background utama Bottom Nav (Kotak Coklat)
           Positioned(
             bottom: 0,
             left: 0,
@@ -66,13 +94,10 @@ class BottomNavbar extends StatelessWidget {
             ),
           ),
 
-          // 2. Tombol Plus (Biru) di tengah
           Positioned(
             top: 8,
             child: GestureDetector(
-              onTap: () {
-                _showAddMenu(context);
-              },
+              onTap: () => _showAddMenu(context),
               child: Container(
                 width: 70,
                 height: 70,
@@ -93,34 +118,39 @@ class BottomNavbar extends StatelessWidget {
             ),
           ),
 
-          // 3. Deretan Menu Navigasi
           SizedBox(
             height: 80,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildItem(
+                  context: context,
                   icon: Icons.home_rounded,
-                  label: "Today",
+                  label: "Home",
                   index: 0,
                   accentColor: accentColor,
                 ),
+
                 _buildItem(
+                  context: context,
                   icon: Icons.list_alt_rounded,
                   label: "Journal",
                   index: 1,
                   accentColor: accentColor,
                 ),
-                
-                const SizedBox(width: 75), // Jarak kosong agar tidak tertutup tombol biru
-                
+
+                const SizedBox(width: 75),
+
                 _buildItem(
+                  context: context,
                   icon: Icons.flag_rounded,
                   label: "Challenge",
                   index: 2,
                   accentColor: accentColor,
                 ),
+
                 _buildItem(
+                  context: context,
                   icon: Icons.account_circle_rounded,
                   label: "Profile",
                   index: 3,
@@ -135,6 +165,7 @@ class BottomNavbar extends StatelessWidget {
   }
 
   Widget _buildItem({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required int index,
@@ -142,12 +173,11 @@ class BottomNavbar extends StatelessWidget {
   }) {
     final bool isActive = currentIndex == index;
 
-    final Color itemColor = isActive
-        ? accentColor
-        : accentColor.withOpacity(0.6);
+    final Color itemColor =
+        isActive ? accentColor : accentColor.withOpacity(0.6);
 
     return GestureDetector(
-      onTap: () => onTap(index),
+      onTap: () => _navigate(context, index),
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
         width: 65,
@@ -165,7 +195,8 @@ class BottomNavbar extends StatelessWidget {
               style: TextStyle(
                 color: itemColor,
                 fontSize: 12,
-                fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+                fontWeight:
+                    isActive ? FontWeight.w700 : FontWeight.w600,
               ),
             ),
           ],
