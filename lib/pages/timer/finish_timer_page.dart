@@ -68,7 +68,7 @@ class FinishTimerPage extends StatelessWidget {
                       // Kotak Kiri: Focus Duration
                       Expanded(
                         child: _buildStatCard(
-                          iconPath: 'assets/images/alarm.png', // Diubah menjadi .png sesuai migrasi terbaru
+                          iconPath: 'assets/images/watch.png', // Diubah menjadi .png sesuai migrasi terbaru
                           defaultIcon: Icons.alarm,
                           title: 'Focus Duration',
                           value: '$completedMinutes minutes',
@@ -96,7 +96,7 @@ class FinishTimerPage extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 30),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 55,
+                      height: 40,
                       child: CustomButton(
                         text: 'I am great',
                         onTap: () {

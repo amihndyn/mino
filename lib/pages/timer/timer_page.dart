@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; 
+// Pustaka flutter_svg telah dihapus
 import 'package:mino/pages/timer/running_timer_page.dart';
-import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart.dart'; 
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'widgets/balloon_slider.dart';
@@ -14,7 +13,8 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage> {
-  int _selectedTabIndex = 1; 
+  // Karena ini adalah TimerPage, default tab yang aktif adalah index 1 (Timer)
+  int _activeTab = 1; 
   double _timerValue = 10.0;
 
   @override
@@ -36,23 +36,33 @@ class _TimerPageState extends State<TimerPage> {
               children: [
                 const SizedBox(height: 10),
                 
-                // ── Menggunakan CustomAppBar milikmu ──
                 const CustomAppBar(
                   title: 'Pomodoro', 
                 ),
                 
                 const SizedBox(height: 20),
 
-                PomodoroTabMenu(
-                  selectedIndex: _selectedTabIndex,
-                  onTabChanged: (index) {
-                    setState(() {
-                      _selectedTabIndex = index;
-                    });
-                  },
+                // ── TAB MENU (Migrasi ke PNG) ──
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildTopTab(index: 0, label: 'Challenge', imagePath: 'assets/images/tren.png'),
+                        const SizedBox(width: 12),
+                        _buildTopTab(index: 1, label: 'Timer', imagePath: 'assets/images/watch.png'),
+                        const SizedBox(width: 12),
+                        _buildTopTab(index: 2, label: 'Afirmation', imagePath: 'assets/images/plan.png'),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 40),
 
+                // ── SLIDER ──
                 BalloonSlider(
                   initialValue: _timerValue,
                   onChanged: (val) {
@@ -64,7 +74,7 @@ class _TimerPageState extends State<TimerPage> {
                 
                 const SizedBox(height: 60),
 
-                // ── MODIFIKASI: Menggunakan ClipOval agar kompatibel dengan SVG di masa depan ──
+                // ── GAMBAR LINGKARAN TENGAH ──
                 Container(
                   width: 250,
                   height: 250,
@@ -84,7 +94,7 @@ class _TimerPageState extends State<TimerPage> {
                   ),
                   child: ClipOval(
                     child: Image.asset(
-                      'assets/images/crystal_cave.png', 
+                      'assets/images/berlin.png', 
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -92,11 +102,11 @@ class _TimerPageState extends State<TimerPage> {
 
                 const Spacer(),
 
-                // Tombol Navigasi Menuju Running Timer
+                // ── TOMBOL NAVIGASI NEXT ──
                 Padding(
                   padding: const EdgeInsets.only(bottom: 30),
                   child: SizedBox(
-                    width: 200, 
+                    width: 212, 
                     child: CustomButton(
                       text: 'Next',
                       onTap: () {
@@ -116,6 +126,62 @@ class _TimerPageState extends State<TimerPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ==================== WIDGET BUILDER UNTUK TAB DENGAN PNG ====================
+
+  Widget _buildTopTab({required int index, required String label, required String imagePath}) {
+    final bool isSelected = _activeTab == index;
+    const Color themeGold = Color(0xffF2CD94);
+
+    return GestureDetector(
+      onTap: () {
+        if (index == _activeTab) return; // Jika klik tab yang sama, biarkan saja
+
+        if (index == 0) {
+          // Jika klik tab Challenge (0), kembali ke FindPage (Karena FindPage ada di tumpukan bawah)
+          Navigator.pop(context);
+        } else {
+          // Update status tab aktif (misal untuk Afirmation nanti)
+          setState(() => _activeTab = index);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white.withValues(alpha: 0.12) : Colors.black.withValues(alpha: 0.25),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isSelected ? themeGold.withValues(alpha: 0.8) : Colors.white10,
+            width: 1.2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Opacity(
+              opacity: isSelected ? 1.0 : 0.4,
+              child: Image.asset(
+                imagePath, 
+                width: 18, 
+                height: 18,
+                // Catatan: Jika ikon PNG Anda satu warna (monokrom) dan ingin diwarnai otomatis 
+                // seperti fungsi colorFilter pada SVG sebelumnya, Anda bisa menggunakan properti color:
+                // color: isSelected ? Colors.white : Colors.white70,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.white70,
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

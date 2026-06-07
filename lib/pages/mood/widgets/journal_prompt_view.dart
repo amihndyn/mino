@@ -16,11 +16,11 @@ class JournalPromptView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      // 1. EDIT LEBAR CARD DI SINI: Makin kecil angka horizontal, card makin lebar ke samping
-      margin: const EdgeInsets.symmetric(horizontal: 0.4), 
+      // 🔥 Lebar dan tinggi card diubah ke 370x412
+      width: 370,
+      height: 412,
       
-      // 2. EDIT TINGGI CARD DI SINI: Kurangi angka vertikal jika ingin card lebih pendek
+      margin: const EdgeInsets.symmetric(horizontal: 0.4), 
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       
       decoration: BoxDecoration(
@@ -29,11 +29,14 @@ class JournalPromptView extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        // 🔥 Tambahkan ini agar konten berada tepat di tengah card secara vertikal
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // 3. DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
           Image.asset(
-            'assets/images/blogjurnal.png', 
-            height: 130,
+            'assets/images/blog.png', 
+            height: 200,
+            width: 212,
             // Fallback jika file png belum ada di folder aset
             errorBuilder: (context, error, stackTrace) => const SizedBox(
               height: 130,

@@ -167,8 +167,8 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
                     ),
 
                     SizedBox(
-                      width: 120, 
-                      height: 50,
+                      width: 140, 
+                      height: 44,
                       child: CustomButton(
                         text: 'Next',
                         onTap: () {

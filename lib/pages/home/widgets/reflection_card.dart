@@ -60,7 +60,8 @@ class ReflectionCard extends StatelessWidget {
 
                 // CUSTOM BUTTON
                 SizedBox(
-                  width: 150,
+                  width: 140, // Ukuran lebar pas 140px
+                  height: 33, // Ukuran tinggi pas 33px
                   child: CustomButton(
                     text: "Add",
                     onTap: () {

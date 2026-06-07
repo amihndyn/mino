@@ -47,9 +47,10 @@ class ActivityCard extends StatelessWidget {
                         Text(
                           isWeekly ? 'Weekly Activity' : 'Monthly Activity',
                           style: const TextStyle(
-                            color: AppColors.orange100,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w200,
+                            color: Color(0xFFF5E6D3),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 1
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -58,9 +59,10 @@ class ActivityCard extends StatelessWidget {
                               ? 'Your habit consistency\nthis week'
                               : 'Your habit consistency\nin $selectedMonth',
                           style: const TextStyle(
-                            color: AppColors.orange800,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w200,
+                            color: Color(0xFFE6A84A),
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 1
                           ),
                         ),
                       ],
@@ -70,10 +72,10 @@ class ActivityCard extends StatelessWidget {
                     GestureDetector(
                       onTap: onMonthPickerTap,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
                         decoration: BoxDecoration(
                           color: AppColors.coklat800.withAlpha((0.8 * 255).toInt()),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: AppColors.orange700.withAlpha((0.5 * 255).toInt()),
                           ),

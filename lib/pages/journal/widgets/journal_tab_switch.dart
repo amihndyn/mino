@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
 class JournalTabSwitch extends StatefulWidget {
   final int selectedIndex;
@@ -62,11 +63,11 @@ class _JournalTabSwitchState extends State<JournalTabSwitch>
     return Container(
       height: 54,
       decoration: BoxDecoration(
-        color: const Color(0xFF231712), // Background gelap dasar
+        color: AppColors.coklat800, // Background gelap dasar
         borderRadius: BorderRadius.circular(27),
         border: Border.all(
-          color: const Color(0xFF4A3525).withAlpha((0.6 * 255).round()),
-          width: 1.5,
+          color: AppColors.coklat700,
+          width: 5,
         ),
         boxShadow: [
           BoxShadow(
@@ -90,7 +91,7 @@ class _JournalTabSwitchState extends State<JournalTabSwitch>
                       const Color(0xFF9E6B36), // Gradasi atas tembaga
                       const Color(0xFF704823), // Gradasi bawah
                     ],
-                    highlightColor: Colors.white.withAlpha((0.9 * 255).round()), // Garis putih tipis mido
+                    highlightColor: Color(0xFFC69451), // Garis putih tipis mido
                   ),
                 );
               },
@@ -119,13 +120,13 @@ class _JournalTabSwitchState extends State<JournalTabSwitch>
                     _StaticTabButton(
                       label: 'Journal',
                       textColor: journalColor,
-                      fontWeight: _slideAnimation.value < 0.5 ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: _slideAnimation.value < 0.5 ? FontWeight.w600 : FontWeight.w400,
                       onTap: () => widget.onChanged(0),
                     ),
                     _StaticTabButton(
                       label: 'Progress',
                       textColor: progressColor,
-                      fontWeight: _slideAnimation.value >= 0.5 ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: _slideAnimation.value >= 0.5 ? FontWeight.w600 : FontWeight.w400,
                       onTap: () => widget.onChanged(1),
                     ),
                   ],
@@ -263,7 +264,7 @@ class _StaticTabButton extends StatelessWidget {
               fontSize: 15,
               fontWeight: fontWeight,
               color: textColor,
-              letterSpacing: 0.4,
+              letterSpacing: 1,
             ),
           ),
         ),

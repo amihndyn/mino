@@ -28,17 +28,17 @@ class CalendarDayItem extends StatelessWidget {
           style: const TextStyle(
             color: creamColor,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.2,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 1,
           ),
         ),
 
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
 
         // 2. Lingkaran Angka Tanggal
         Container(
-          width: 52, // Menjaga dimensi tetap lingkaran sempurna
-          height: 52,
+          width: 40, // Menjaga dimensi tetap lingkaran sempurna
+          height: 40,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,

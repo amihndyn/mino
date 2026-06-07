@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/pages/journal/note_list_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 
 class WeeklyReflection extends StatelessWidget {
@@ -32,7 +33,7 @@ class WeeklyReflection extends StatelessWidget {
                   color: Color(0xFFFFF1E6),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  letterSpacing: 0.2,
+                  letterSpacing: 1,
                 ),
               ),
               const SizedBox(height: 14),
@@ -44,16 +45,29 @@ class WeeklyReflection extends StatelessWidget {
                   color: AppColors.coklat300.withValues(alpha: 0.85),
                   fontSize: 15,
                   height: 1.45,
-                  letterSpacing: 0.1,
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w400
                 ),
               ),
               const SizedBox(height: 26),
               
               // TOMBOL ACTION MENGGUNAKAN CUSTOMBUTTON TEMPLATE
               CustomButton(
-                text: 'View full reflection', // atau gunakan property 'title' / 'label' sesuai CustomButton-mu
+                text: 'View full reflection',
                 onTap: () {
-                  // TODO: navigate to full reflection page
+                  final now = DateTime.now();
+                  final oneWeekAgo = now.subtract(const Duration(days: 7));
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NoteListPage(
+                        // Kirim parameter tanggal ke NoteListPage
+                        startDate: oneWeekAgo,
+                        endDate: now,
+                      ),
+                    ),
+                  );
                 },
               ),
             ],

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
-class ChallengeProgressCard extends StatelessWidget {
+class ChallengeProgressCard extends StatefulWidget {
   final String title;
-  final String? emoji; // Diubah menjadi opsional (bisa null)
-  final String? imageAsset; // Pastikan data yang dikirim adalah path file .png
+  final String? emoji; 
+  final String? imageAsset; 
   final int currentProgress;
   final int totalProgress;
 
@@ -17,29 +18,35 @@ class ChallengeProgressCard extends StatelessWidget {
   });
 
   @override
+  State<ChallengeProgressCard> createState() => _ChallengeProgressCardState();
+}
+
+class _ChallengeProgressCardState extends State<ChallengeProgressCard> {
+  // 🔥 State internal untuk menyimpan status dicentang atau tidak
+  bool _isChecked = false;
+
+  @override
   Widget build(BuildContext context) {
-    // Menghitung value indikator dari 0.0 hingga 1.0
-    final double progressValue = totalProgress == 0 ? 0 : currentProgress / totalProgress;
+    // Karena sekarang StatefulWidget, pemanggilan variabel menggunakan "widget.namaVariabel"
+    final double progressValue = widget.totalProgress == 0 ? 0 : widget.currentProgress / widget.totalProgress;
 
     // Palet Warna disesuaikan dengan gambar
-    const Color cardBgColor = Color(0xff4A3320); // Cokelat gelap untuk latar belakang kartu
-    const Color textColor = Color(0xffFBF1E3); // Krem terang untuk teks
-    const Color progressActiveColor = Color(0xffFBA944); // Oranye cerah untuk progress
-    const Color progressBgColor = Color(0xffF6E5CD); // Krem pucat untuk sisa bar
+    const Color cardBgColor = Color.fromARGB(255, 95, 66, 41); 
+    const Color textColor = AppColors.orange100; 
+    const Color progressActiveColor = AppColors.orange500; 
+    const Color progressBgColor = AppColors.orange100; 
 
     // Logika untuk menampilkan Gambar Asset atau Emoji
     Widget iconWidget;
-    if (imageAsset != null) {
-      // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+    if (widget.imageAsset != null) {
       iconWidget = Image.asset(
-        imageAsset!,
+        widget.imageAsset!,
         width: 32,
         height: 32,
         fit: BoxFit.contain,
-        // Menggunakan errorBuilder sebagai fallback jika PNG gagal dimuat
         errorBuilder: (context, error, stackTrace) => const SizedBox(
-          width: 32,
-          height: 32,
+          width: 38,
+          height: 38,
           child: Icon(
             Icons.broken_image,
             size: 24,
@@ -47,96 +54,114 @@ class ChallengeProgressCard extends StatelessWidget {
           ),
         ),
       );
-    } else if (emoji != null) {
+    } else if (widget.emoji != null) {
       iconWidget = Text(
-        emoji!,
-        style: const TextStyle(fontSize: 32),
+        widget.emoji!,
+        style: const TextStyle(fontSize: 38),
       );
     } else {
-      iconWidget = const SizedBox(width: 32, height: 32); // Fallback jika tidak ada dua-duanya
+      iconWidget = const SizedBox(width: 38, height: 38); 
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-        color: cardBgColor,
-        borderRadius: BorderRadius.circular(20), // Sudut lebih melengkung
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // 1. Ikon / Gambar di Kiri (Memanggil widget yang sudah dicek di atas)
-          iconWidget,
-          
-          const SizedBox(width: 16),
+    // 🔥 GestureDetector untuk menangkap aksi klik pengguna
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isChecked = !_isChecked; // Membalikkan status saat diklik (true jadi false, dst)
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: cardBgColor,
+          borderRadius: BorderRadius.circular(20), 
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // 1. Ikon / Gambar di Kiri 
+            iconWidget,
+            
+            const SizedBox(width: 16),
 
-          // 2. Tengah (Judul & Progress Bar)
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: textColor,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.2,
+            // 2. Tengah (Judul & Progress Bar)
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      color: textColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 1,
+                    ),
                   ),
-                ),
-                
-                const SizedBox(height: 10),
-                
-                Row(
-                  children: [
-                    // Linear Progress Bar
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: LinearProgressIndicator(
-                          value: progressValue,
-                          minHeight: 8,
-                          backgroundColor: progressBgColor,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            progressActiveColor,
+                  
+                  const SizedBox(height: 10),
+                  
+                  Row(
+                    children: [
+                      // Linear Progress Bar
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: LinearProgressIndicator(
+                            value: progressValue,
+                            minHeight: 8,
+                            backgroundColor: progressBgColor,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              progressActiveColor,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    
-                    const SizedBox(width: 10),
-                    
-                    // Teks Rasio Progress (cth: 12/30)
-                    Text(
-                      "$currentProgress/$totalProgress",
-                      style: const TextStyle(
-                        color: textColor,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                      
+                      const SizedBox(width: 10),
+                      
+                      // Teks Rasio Progress 
+                      Text(
+                        "${widget.currentProgress}/${widget.totalProgress}",
+                        style: const TextStyle(
+                          color: textColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          
-          const SizedBox(width: 16),
-
-          // 3. Kanan (Lingkaran Checkbox)
-          Container(
-            width: 26,
-            height: 26,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: textColor,
-                width: 1.5, // Border putih tipis menyesuaikan gambar
+                    ],
+                  )
+                ],
               ),
             ),
-          ),
-        ],
+            
+            const SizedBox(width: 16),
+
+            // ── 3. Kanan (Lingkaran Checkbox Interaktif) ──
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                // 🔥 Jika dicentang, warnanya jadi oranye. Jika tidak, transparan.
+                color: _isChecked ? progressActiveColor : Colors.transparent,
+                border: Border.all(
+                  // 🔥 Border menyesuaikan status centang
+                  color: _isChecked ? progressActiveColor : textColor,
+                  width: 1.5, 
+                ),
+              ),
+              child: _isChecked
+                  ? const Icon(
+                      Icons.check, // 🔥 Munculkan ikon centang
+                      size: 18,
+                      color: cardBgColor, // Warna centangnya (coklat mengikuti background)
+                    )
+                  : null, // Kosong jika tidak dicentang
+            ),
+          ],
+        ),
       ),
     );
   }

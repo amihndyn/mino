@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({super.key});
+  final String avatarPath;
+  final VoidCallback onAvatarTap;
+
+  const ProfileCard({
+    super.key,
+    required this.avatarPath,
+    required this.onAvatarTap,
+  });
 
   @override
   Widget build(BuildContext context) {

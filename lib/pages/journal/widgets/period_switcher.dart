@@ -27,7 +27,7 @@ class PeriodSwitcher extends StatelessWidget {
                       style: TextStyle(
                         color: isWeekly ? AppColors.orange100 : AppColors.coklat300,
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 12),

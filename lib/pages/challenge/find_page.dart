@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mino/pages/timer/timer_page.dart';
+// Pustaka flutter_svg telah dihapus
+import 'package:mino/widgets/appbars/custom_appbar.dart'; 
 import '../challenge/challenge_detail_page.dart';
+import '../../pages/home/home_page.dart';
+import 'package:mino/models/challenge_data.dart';
+import 'package:mino/widgets/navbar/bottom_navbar.dart';
 
 class FindPage extends StatefulWidget {
   const FindPage({super.key});
@@ -14,50 +20,40 @@ class _FindPageState extends State<FindPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
+      extendBody: true,
       body: Stack(
         children: [
-          // 1. BACKGROUND UTAMA
-          _buildImageAsset(
-            'assets/images/bg_login.png', 
-            width: double.infinity, 
-            height: double.infinity, 
-            fit: BoxFit.cover,
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_login.png',
+              fit: BoxFit.cover,
+            ),
           ),
 
           // CONTENT LAYER
           SafeArea(
-            bottom: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                
-                // HEADER: "< Find"
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 22),
-                      ),
-                      const SizedBox(width: 16),
-                      const Expanded(
-                        child: Text(
-                          'Find',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 10),
+
+                // HEADER: CustomAppBar
+                CustomAppBar(
+                  title: 'Find',
+                  onBackPressed: () {
+                    // Paksa pindah ke HomePage jika tombol back ditekan
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()), 
+                      (route) => false,
+                    );
+                  },
                 ),
 
-                // 2. KATEGORI TABS ATAS (Migrasi ke .png)
+                const SizedBox(height: 10),
+
+                // 2. KATEGORI TABS ATAS
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                   child: SingleChildScrollView(
@@ -81,7 +77,8 @@ class _FindPageState extends State<FindPage> {
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.only(bottom: 120),
+                    // Padding bawah 120 agar konten paling bawah tidak tertutup BottomNavbar
+                    padding: const EdgeInsets.only(bottom: 120), 
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -89,36 +86,124 @@ class _FindPageState extends State<FindPage> {
                         // SECTION 1: TRENDING
                         _buildSectionHeaderWithChip('Trending', 'assets/images/tren.png'),
                         _buildHorizontalChallengeList([
-                          {'title': 'Clean your home', 'image': 'assets/images/clean.png', 'desc': 'Create a peaceful environment.'},
-                          {'title': 'Digital detox', 'image': 'assets/images/detox.png', 'desc': 'Disconnect from screens.'},
-                          {'title': 'Morning routine', 'image': 'assets/images/routine.png', 'desc': 'Start your day intentional.'},
+                          ChallengeData(
+                            id: 'trend_clean_home',
+                            title: 'Benefits of a Clean Home.',
+                            imageAsset: 'assets/images/clean.png',
+                            description: 'Cleaning your home is not just about neatness, it also has a direct impact on your health and overall comfort. A clean home helps reduce dust, germs, and allergens that can cause illnesses such as coughs, flu, or allergies. In addition, a tidy environment makes your mind feel calmer and more focused, allowing you to be more productive when studying or working. Cleaning activities also count as light physical exercise, which is beneficial for your body, especially when done regularly. Just as important, a clean home creates a comfortable and pleasant atmosphere to live in with your family. So, start making cleaning a regular habit, because the benefits are immediately felt by both your body and mind.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
+                          ChallengeData(
+                            id: 'trend_digital_detox',
+                            title: 'Digital detox',
+                            imageAsset: 'assets/images/detox.png',
+                            description: 'Take a break from constant notifications and endless scrolling. This challenge helps you reduce screen time and reconnect with the real world around you. By limiting digital distractions, your mind becomes calmer, your focus improves, and you gain more control over how you spend your time. Use this moment to rest your eyes, clear your thoughts, and be more present in your daily life.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
+                          ChallengeData(
+                            id: 'trend_morning_routine',
+                            title: 'Morning routine',
+                            imageAsset: 'assets/images/routine.png',
+                            description: 'Start your day with intention and structure. This challenge helps you build a consistent morning routine that sets the tone for the rest of your day. By doing simple activities like planning your tasks, stretching, or enjoying a quiet moment, you create a sense of control and clarity. A good morning routine can boost your productivity, improve your mood, and help you feel more prepared to face the day ahead.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
                         ]),
 
                         // SECTION 2: ROUTINE
                         _buildSectionHeaderWithChip('Routine', 'assets/images/kalender.png'),
-                        _buildHorizontalChallengeList([
-                          {'title': 'Morning routine', 'image': 'assets/images/routine.png', 'desc': 'Build powerful daily habits.'},
-                        ]),
+                        const SizedBox(height: 10), // Placeholder space jika routine kosong sementara
 
                         // SECTION 3: HEALTHY HABITS
                         _buildSectionHeaderText('Healthy habits', 'assets/images/habit.png'),
                         _buildHorizontalChallengeList([
-                          {'title': 'Morning run', 'image': 'assets/images/run.png', 'desc': 'Boost your cardiovascular health.'},
-                          {'title': 'Drink 8 Glasses', 'image': 'assets/images/drink.png', 'desc': 'Keep your body fully hydrated.'},
+                          ChallengeData(
+                            id: 'habit_eat_healthy',
+                            title: 'Eat Healthy',
+                            imageAsset: 'assets/images/eat.png',
+                            description: 'Fuel your body with the nutrients it needs to function at its best. This challenge encourages you to make healthier food choices and be more mindful of what you eat. A balanced diet supports your energy, focus, and long-term health. Small changes in your eating habits can lead to meaningful results.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
+                          ChallengeData(
+                            id: 'habit_morning_run',
+                            title: 'Morning run',
+                            imageAsset: 'assets/images/run.png',
+                            description: 'Start your day with energy and a clear mind through a refreshing morning run. This challenge encourages you to build a healthy routine by moving your body early in the day. Running in the morning helps improve your stamina, boost your mood, and increase your focus for the rest of the day. The fresh air and quiet atmosphere can also give you a sense of calm and motivation. It’s not about speed or distance—it’s about consistency and showing up for yourself..',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
+                          ChallengeData(
+                            id: 'habit_drink_8_glasses',
+                            title: 'Drink 8 Glasses',
+                            imageAsset: 'assets/images/drink.png',
+                            description: 'Stay hydrated and take care of your body from within. This challenge helps you build the simple yet powerful habit of drinking enough water every day. Proper hydration supports your energy, focus, and overall health. It may seem small, but consistency in this habit can make a big difference in how you feel daily.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
                         ]),
 
                         // SECTION 4: PRODUCTIVITY AND LIFESTYLE
-                        _buildSectionHeaderText('Productivity and Lifestyle', 'assets/images/jam.png'),
+                        _buildSectionHeaderText('Productivity and Lifestyle', 'assets/images/watch.png'),
                         _buildHorizontalChallengeList([
-                          {'title': 'No phone before bed', 'image': 'assets/images/nophone.png', 'desc': 'Improve your sleep quality.'},
-                          {'title': 'Gratitude Challenge', 'image': 'assets/images/gratitude.png', 'desc': 'Write down things you are grateful for.'},
+                          ChallengeData(
+                            id: 'prod_no_phone',
+                            title: 'No phone before bed',
+                            imageAsset: 'assets/images/nophone.png',
+                            description: 'Improve your sleep quality.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
+                          ChallengeData(
+                            id: 'prod_deep_work',
+                            title: 'Deep Work',
+                            imageAsset: 'assets/images/deepwork.png',
+                            description: 'Expand your knowledge daily.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
+                          ChallengeData(
+                            id: 'prod_gratitude',
+                            title: 'Gratitude Challenge',
+                            imageAsset: 'assets/images/gratitude.png',
+                            description: 'Write down things you are grateful for.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
                         ]),
 
                         // SECTION 5: SKINCARE & BEAUTY
                         _buildSectionHeaderText('Skincare & Beauty', 'assets/images/skin.png'),
                         _buildHorizontalChallengeList([
-                          {'title': 'Face Yoga', 'image': 'assets/images/face.png', 'desc': 'Natural exercises to tone your facial muscles.'},
-                          {'title': 'Skincare Challenge', 'image': 'assets/images/skincare.png', 'desc': 'Maintain consistency in your skincare rituals.'},
+                          ChallengeData(
+                            id: 'skin_face_yoga',
+                            title: 'Face Yoga',
+                            imageAsset: 'assets/images/face.png',
+                            description: 'Natural exercises to tone your facial muscles.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
+                          ChallengeData(
+                            id: 'skin_skincare',
+                            title: 'Skincare Challenge',
+                            imageAsset: 'assets/images/skincare.png',
+                            description: 'Maintain consistency in your skincare rituals.',
+                            diamondReward: 50,
+                            durationDays: 7,
+                            dateInfo: 'June 2026',
+                          ),
                         ]),
                       ],
                     ),
@@ -129,11 +214,16 @@ class _FindPageState extends State<FindPage> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavbar(
+        currentIndex: 2,
+        onTap: (i) {
+          // isi navigasi sesuai kebutuhan
+        },
+      ),
     );
   }
 
   // ==================== IMAGE LOADER VIA ASSETS ====================
-  // Menggunakan Image.asset standar bawaan Flutter dengan error fallback
   Widget _buildImageAsset(String path, {double? width, double? height, BoxFit? fit}) {
     return Image.asset(
       path,
@@ -156,7 +246,21 @@ class _FindPageState extends State<FindPage> {
     const Color themeGold = Color(0xffF2CD94);
 
     return GestureDetector(
-      onTap: () => setState(() => _activeTab = index),
+      onTap: () {
+        setState(() => _activeTab = index);
+        
+        // JIKA TAB TIMER DIKLIK, NAVIGASI KE TIMER PAGE
+        if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TimerPage(),
+            ),
+          ).then((_) {
+            setState(() => _activeTab = 0);
+          });
+        }
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
@@ -171,7 +275,7 @@ class _FindPageState extends State<FindPage> {
           children: [
             Opacity(
               opacity: isSelected ? 1.0 : 0.4,
-              child: _buildImageAsset(fullAssetPath, width: 18, height: 18),
+              child: Image.asset(fullAssetPath, width: 18, height: 18), 
             ),
             const SizedBox(width: 8),
             Text(
@@ -201,7 +305,7 @@ class _FindPageState extends State<FindPage> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildImageAsset(fullAssetPath, width: 16, height: 16),
+            Image.asset(fullAssetPath, width: 16, height: 16), 
             const SizedBox(width: 8),
             Text(
               title,
@@ -223,7 +327,7 @@ class _FindPageState extends State<FindPage> {
       padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 26, bottom: 12),
       child: Row(
         children: [
-          _buildImageAsset(fullAssetPath, width: 20, height: 20),
+          Image.asset(fullAssetPath, width: 20, height: 20), 
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -236,7 +340,7 @@ class _FindPageState extends State<FindPage> {
     );
   }
 
-  Widget _buildHorizontalChallengeList(List<Map<String, String>> items) {
+  Widget _buildHorizontalChallengeList(List<ChallengeData> items) {
     return SizedBox(
       height: 215,
       child: ListView.builder(
@@ -246,7 +350,6 @@ class _FindPageState extends State<FindPage> {
         itemCount: items.length,
         itemBuilder: (context, index) {
           final item = items[index];
-          final String imagePath = item['image']!;
 
           return GestureDetector(
             onTap: () {
@@ -254,9 +357,7 @@ class _FindPageState extends State<FindPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChallengeDetailPage(
-                    imageAsset: imagePath,
-                    title: item['title']!,
-                    description: item['desc']!,
+                    challenge: item,
                   ),
                 ),
               );
@@ -268,7 +369,7 @@ class _FindPageState extends State<FindPage> {
                 child: Container(
                   width: 148,
                   color: Colors.white.withValues(alpha: 0.05),
-                  child: _buildImageAsset(imagePath, fit: BoxFit.cover),
+                  child: _buildImageAsset(item.imageAsset, fit: BoxFit.cover),
                 ),
               ),
             ),

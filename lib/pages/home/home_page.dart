@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
+import 'package:mino/pages/home/widgets/todays_progress_card.dart';
 
 import '../../widgets/navbar/bottom_navbar.dart';
 import 'widgets/home_header.dart';
-import 'widgets/reflection_card.dart';
 import 'widgets/daily_activities_section.dart';
 import 'widgets/challenge_section.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // 1. Inisialisasi variabel index untuk melacak halaman aktif di navbar
+  int _navIndex = 0; 
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +26,7 @@ class HomePage extends StatelessWidget {
 
       body: Stack(
         children: [
-          /// 1. BACKGROUND UTAMA (Diubah ke SVG menggunakan Positioned.fill)
+          /// 1. BACKGROUND UTAMA
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',
@@ -29,6 +36,7 @@ class HomePage extends StatelessWidget {
 
           /// 2. KONTEN UTAMA
           SafeArea(
+            bottom: false,
             child: Column(
               children: [
                 const HomeHeader(),
@@ -37,17 +45,18 @@ class HomePage extends StatelessWidget {
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(18),
                     child: Column(
-                      children: const [
-                        ReflectionCard(),
-                        SizedBox(height: 24),
+                      children: [
+                        // Menggunakan const secara spesifik per widget yang konstan
+                        const TodaysProgressCard(),
+                        const SizedBox(height: 24),
 
-                        DailyActivitiesSection(),
-                        SizedBox(height: 24),
+                        const DailyActivitiesSection(),
+                        const SizedBox(height: 24),
 
-                        ChallengeSection(),
+                        const ChallengeSection(),
 
                         // Ruang ekstra di bawah agar konten terakhir tidak tertutup navbar
-                        SizedBox(height: 120),
+                        const SizedBox(height: 120),
                       ],
                     ),
                   ),
@@ -59,9 +68,14 @@ class HomePage extends StatelessWidget {
       ),
 
       bottomNavigationBar: BottomNavbar(
-        currentIndex: 0,
-        onTap: (index) {
-          // Tambahkan logika perpindahan tab di sini
+        currentIndex: _navIndex, // 2. Pasang variabel state di sini
+        onTap: (i) {
+          // 3. Sekarang setState bisa berjalan dengan normal untuk memperbarui UI
+          setState(() {
+            _navIndex = i;
+          });
+          
+          // TODO: Tambahkan logika perpindahan antar halaman menggunakan PageController atau IndexedStack jika diperlukan
         },
       ),
     );

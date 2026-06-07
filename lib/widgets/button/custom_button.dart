@@ -41,20 +41,20 @@ class _CustomButtonState extends State<CustomButton>
       onTap: widget.onTap,
       child: LayoutBuilder(
         builder: (context, constraints) {
+          // 🔥 Ukuran default diubah menjadi 358x44
           final w = constraints.maxWidth.isInfinite
-    ? 250.0
-    : constraints.maxWidth;
+              ? 358.0 
+              : constraints.maxWidth;
 
-final h = constraints.maxHeight.isInfinite
-    ? 60.0
-    : constraints.maxHeight;
+          final h = constraints.maxHeight.isInfinite
+              ? 44.0 
+              : constraints.maxHeight;
 
           return AnimatedBuilder(
             animation: _controller,
             builder: (context, _) {
               /// 🔥 GERAK KANAN-KIRI MULUS (NO JEDA)
-              final flowX =
-                  sin(_controller.value * 2 * pi) * (w / 2);
+              final flowX = sin(_controller.value * 2 * pi) * (w / 2);
 
               final glow = (sin(_controller.value * 2 * pi) + 1) / 2;
               final glowOpacity = 0.4 + glow * 0.6;
@@ -71,8 +71,8 @@ final h = constraints.maxHeight.isInfinite
                       boxShadow: [
                         BoxShadow(
                           color: Colors.orangeAccent.withOpacity(0.4),
-                          blurRadius: 25,
-                          spreadRadius: 2,
+                          blurRadius: 12,
+                          spreadRadius: 1,
                         ),
                       ],
                     ),

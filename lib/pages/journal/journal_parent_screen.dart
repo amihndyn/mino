@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
+ // Tambahkan import ini
 import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/journal/progress_page.dart';
 import 'package:mino/widgets/navbar/bottom_navbar.dart';

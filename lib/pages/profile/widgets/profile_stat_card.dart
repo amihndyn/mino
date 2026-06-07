@@ -59,6 +59,7 @@ class ProfileStatCard extends StatelessWidget {
               fontSize: 36,
               fontWeight: FontWeight.w700,
               color: Color(0xFFF7EFE7),
+              letterSpacing: 1
             ),
           ),
 

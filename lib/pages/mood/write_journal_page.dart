@@ -101,7 +101,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                       border: InputBorder.none,
-                      // ── Ubah di bagian ini ──
                       contentPadding: EdgeInsets.only(
                         left: 16,
                         top: 2,
@@ -110,8 +109,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                     ),
                   ),
                 ),
-
-                // ── 3. Komponen Kertas Numpuk (Menggunakan Widget Baru) ───────
 
                 const Spacer(),
 
@@ -153,7 +150,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                           child: TextField(
                             controller: _contentController,
                             focusNode: _contentFocusNode,
-                            cursorColor: const Color(0xFF423125), // Kursor warna cokelat tua saat mengetik di kertas jurnal
+                            cursorColor: const Color(0xFF423125),
                             cursorWidth: 2.0,
                             maxLines: null,
                             expands: true,
@@ -183,50 +180,61 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
 
                 // ── 5. Logika Tombol Bawah Menggunakan Cukup Ukuran Saja ──────
                 Center(
-                  child: SizedBox(
-                    height: 40, // Memberikan ruang cukup agar bayangan tombol tidak terpotong
-                    child: Center(
-                      child: AnimatedCrossFade(
-                        duration: const Duration(milliseconds: 200),
-                        crossFadeState: _isButtonsRowVisible
-                            ? CrossFadeState.showSecond
-                            : CrossFadeState.showFirst,
+  child: AnimatedCrossFade(
+    duration: const Duration(milliseconds: 200),
+    crossFadeState: _isButtonsRowVisible
+        ? CrossFadeState.showSecond
+        : CrossFadeState.showFirst,
 
-                        // Kondisi Kosong: Tombol Tunggal (Cancel)
-                        firstChild: SizedBox(
-                          height: 100,
-                          width: 150,
-                          child: CustomButton(
-                            text: 'Cancel',
-                            onTap: () => Navigator.pop(context),
-                          ),
-                        ),
+    // Kondisi Kosong: Tombol Tunggal (Cancel)
+    firstChild: Container(
+      height: 80, // 🔥 Beri ruang atas-bawah agar glow tidak terpotong
+      alignment: Alignment.center,
+      child: FittedBox(
+        fit: BoxFit.none,
+        child: SizedBox(
+          height: 44,
+          width: 140,
+          child: CustomButton(
+            text: 'Cancel',
+            onTap: () => Navigator.pop(context),
+          ),
+        ),
+      ),
+    ),
 
-                        // Kondisi Terisi: Tombol Cancel & Save Berdampingan
-                        secondChild: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 150,
-                              child: CustomButton(
-                                text: 'Cancel',
-                                onTap: () => Navigator.pop(context),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            SizedBox(
-                              width: 150,
-                              child: CustomButton(
-                                text: 'Save',
-                                onTap: _handleSave,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+    // Kondisi Terisi: Tombol Cancel & Save Berdampingan
+    secondChild: Container(
+      height: 80, // 🔥 Beri ruang atas-bawah agar glow tidak terpotong
+      alignment: Alignment.center,
+      child: FittedBox( // 🔥 Mencegah error Overflow saat animasi transisi berjalan
+        fit: BoxFit.none,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 44,
+              width: 140,
+              child: CustomButton(
+                text: 'Cancel',
+                onTap: () => Navigator.pop(context),
+              ),
+            ),
+            const SizedBox(width: 32),
+            SizedBox(
+              height: 44,
+              width: 140,
+              child: CustomButton(
+                text: 'Save',
+                onTap: _handleSave,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+),
                 const SizedBox(height: 20),
               ],
             ),

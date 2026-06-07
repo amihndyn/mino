@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/models/journal_entry_model.dart.dart'; // Memperbaiki typo ekstensi berkas .dart.dart menjadi .dart
+import 'package:mino/models/journal_entry_model.dart'; // Typo ekstensi diperbaiki
 
 class JournalApi {
   Future<List<JournalEntry>> getJournals() async {
@@ -9,7 +9,7 @@ class JournalApi {
 
     return [
       // ENTRI 1: Thursday 30
-      JournalEntry(
+      JournalEntry (
         id: '1',
         dayName: 'Thursday',
         dayNumber: 30,
@@ -17,7 +17,7 @@ class JournalApi {
         noteContent: 'Today was really tough.\n\nI struggled with staying focused on my tasks.',
         fullDate: 'Thursday, 30 May 2026',
         moodLabel: 'Bad',
-        moodEmoji: '😩',
+        moodEmoji: 'assets/images/bad.png', // Diubah menjadi aset PNG
         moodColor: AppColors.coklat400,
       ),
       
@@ -30,11 +30,11 @@ class JournalApi {
         noteContent: 'Had an incredible productive day today!',
         fullDate: 'Sunday, 26 May 2026',
         moodLabel: 'Amazing',
-        moodEmoji: '😁',
+        moodEmoji: 'assets/images/amazing.png', // Diubah menjadi aset PNG
         moodColor: AppColors.orange400,
       ),
 
-      // ENTRI 3 (BARU): Saturday 18 (Sesuai Gambar Screenshot)
+      // ENTRI 3: Saturday 18
       JournalEntry(
         id: '3',
         dayName: 'Saturday',
@@ -43,11 +43,11 @@ class JournalApi {
         noteContent: 'Spent time resting and recharging. Felt very good and balanced today.',
         fullDate: 'Saturday, 18 May 2026',
         moodLabel: 'Good',
-        moodEmoji: '😊',
-        moodColor: const Color(0xffE5933A), // Menyesuaikan palette emas/oranye mino
+        moodEmoji: 'assets/images/good.png', // Diubah menjadi aset PNG
+        moodColor: const Color(0xffE5933A),
       ),
 
-      // ENTRI 4 (BARU): Wednesday 15 (Sesuai Gambar Screenshot)
+      // ENTRI 4: Wednesday 15
       JournalEntry(
         id: '4',
         dayName: 'Wednesday',
@@ -56,7 +56,7 @@ class JournalApi {
         noteContent: 'Too many things to handle at once. Need to take a step back tomorrow.',
         fullDate: 'Wednesday, 15 May 2026',
         moodLabel: 'Bad',
-        moodEmoji: '😩',
+        moodEmoji: 'assets/images/bad.png', // Diubah menjadi aset PNG
         moodColor: AppColors.coklat400,
       ),
     ];

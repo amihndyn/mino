@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/pages/journal/journal_parent_screen.dart'; // Import parent baru
-import 'package:mino/pages/profile/profile_page.dart';
 
 class GreetingSection extends StatelessWidget {
   const GreetingSection({super.key});
@@ -22,9 +21,10 @@ class GreetingSection extends StatelessWidget {
             Text(
               "Hi, Keysha",
               style: TextStyle(
+                fontFamily: 'Poppins',
                 color: Colors.white,
                 fontSize: 32,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
               ),
             ),
@@ -33,8 +33,9 @@ class GreetingSection extends StatelessWidget {
               "Wednesday, April 22 2026",
               style: TextStyle(
                 color: AppColors.orange300,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 1,
               ),
             ),
           ],
@@ -62,7 +63,7 @@ class GreetingSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
                     color: goldBorderColor,
-                    width: 2.5,
+                    width: 3.5,
                   ),
                 ),
                 child: Row(
@@ -70,64 +71,19 @@ class GreetingSection extends StatelessWidget {
                   children: [
                     SvgPicture.asset(
                       'assets/images/diamond.svg',
-                      width: 26,
-                      height: 26,
+                      width: 22,
+                      height: 22,
                     ),
                     const SizedBox(width: 8),
                     const Text(
                       "80",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
-                ),
-              ),
-            ),
-            
-            const SizedBox(width: 12),
-
-            // 2. Tombol Avatar Profil
-            GestureDetector(
-              onTap: () {
-                // Menghapus baris kode instansiasi ProfilePage() tunggal yang redundan
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
-                );
-              },
-              child: Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: goldBorderColor,
-                    width: 2.5,
-                  ),
-                ),
-                alignment: Alignment.center,
-                child: Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: const Color(0xffF6E5CD),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 1,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.person_rounded,
-                    color: Color(0xffE5933A),
-                    size: 28,
-                  ),
                 ),
               ),
             ),

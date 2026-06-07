@@ -7,12 +7,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBackButton;
   final List<Widget>? actions;
+  final VoidCallback? onBackPressed; // 🔥 1. TAMBAHKAN INI
 
   const CustomAppBar({
     super.key,
     required this.title,
     this.showBackButton = true,
     this.actions,
+    this.onBackPressed, // 🔥 2. TAMBAHKAN INI DI CONSTRUCTOR
   });
 
   @override
@@ -37,11 +39,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             if (showBackButton)
               GestureDetector(
-                onTap: () => Navigator.pop(context),
+                // 🔥 3. UBAH LOGIKA ONTAP MENJADI SEPERTI INI
+                // Jika onBackPressed diisi, gunakan itu. Jika tidak, pakai pop(context) bawaan.
+                onTap: onBackPressed ?? () => Navigator.pop(context), 
                 child: Container(
                   width: 55,
                   height: 55,
-
                   child: const Icon(
                     Icons.chevron_left_rounded,
                     color: AppColors.orange200,
@@ -53,6 +56,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               const SizedBox(width: 36),
             const SizedBox(width: AppSizes.sm),
             Expanded(child: Text(title, style: AppTextStyles.pageTitleBold)),
+            
+            // Tempat untuk menaruh icon SVG-mu (target.svg dll) jika dikirim via find_page.dart
             if (actions != null) ...actions!,
           ],
         ),

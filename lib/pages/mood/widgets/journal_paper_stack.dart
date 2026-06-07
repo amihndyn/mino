@@ -16,8 +16,8 @@ class JournalPaperStack extends StatelessWidget {
     required this.controller,
     required this.focusNode,
     this.onChanged,
-    this.paperWidth = 310, // Sesuai W: 373.51 (dibulatkan untuk Flutter)
-    this.paperHeight = 430,  // Sesuai H: 496
+    this.paperWidth = 327, // 🔥 Lebar diubah menjadi 327
+    this.paperHeight = 468, // 🔥 Tinggi diubah menjadi 468
   });
 
   @override

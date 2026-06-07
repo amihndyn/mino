@@ -49,6 +49,7 @@ class ProfileInfoTile extends StatelessWidget {
                   color: Color(0xFFF5D2A5),
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
+                  letterSpacing: 1
                 ),
               ),
             ),

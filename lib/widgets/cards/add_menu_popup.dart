@@ -28,19 +28,32 @@ class AddMenuPopup extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // 1. Kartu Kiri (Add Routine) -> Pindah ke Pilih Habit
+                // 1. Kartu Kiri (Add Routine)
                 Transform.rotate(
-                  angle: -0.2,
+                  angle: -0.5,
                   child: MenuPopupCard(
                     title: "Add Routine",
                     subtitle: "Add a new routine to your life",
-                    color: const Color(0xFFFF71AB),
-                    imageAsset: 'assets/images/form.png', // Migrasi ke PNG
+                    color: const Color(0xFFFF8BD4),
+                    imageAsset: 'assets/images/form.png',
+                    imageHeight: 65, // Ubah angka ini untuk mengatur besar gambar form.png
+                    imageAngle: 0.2,
+                    titleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1
+                    ),
+                    subtitleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                      height: 1.2,
+                      letterSpacing: 1
+                    ),
+                    // ----------------------------------
                     onTap: () {
-                      // 1. Tutup dulu pop-up menunya
                       Navigator.pop(context);
-                      
-                      // 2. Navigasi ke halaman Pilih Habit
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const PilihHabitPage()),
@@ -49,21 +62,35 @@ class AddMenuPopup extends StatelessWidget {
                   ),
                 ),
                 
-                const SizedBox(width: 32),
+                const SizedBox(width: 55),
                 
-                // 2. Kartu Kanan (Add Reflection) -> Pindah ke Mood Page
+                // 2. Kartu Kanan (Add Reflection)
                 Transform.rotate(
-                  angle: 0.15,
+                  angle: 0.5,
                   child: MenuPopupCard(
                     title: "Add Reflection",
                     subtitle: "Reflect on your day, mood, and feelings",
-                    color: const Color(0xFFA67CFF),
-                    imageAsset: 'assets/images/cat.png', // Migrasi ke PNG
+                    color: const Color(0xFFAC87E4),
+                    imageAsset: 'assets/images/cat.png',
+                    imageHeight: 65, // Misalnya cat.png ingin dibuat lebih besar
+                    imageAngle: -0.5, // Atur kemiringan khusus untuk gambar cat.png
+                    // --- TAMBAHAN STYLE KARTU KANAN ---
+                    titleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1
+                    ),
+                    subtitleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                      height: 1.2,
+                      letterSpacing: 1
+                    ),
+                    // ----------------------------------
                     onTap: () {
-                      // 1. Tutup dulu pop-up menunya
                       Navigator.pop(context);
-                      
-                      // 2. Navigasi ke halaman Mood
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const MoodPage()),
@@ -86,6 +113,12 @@ class MenuPopupCard extends StatelessWidget {
   final Color color;
   final String imageAsset;
   final VoidCallback onTap;
+  
+  final TextStyle? titleStyle;
+  final TextStyle? subtitleStyle;
+  final double? imageHeight;
+  // --- TAMBAH PARAMETER ROTASI GAMBAR ---
+  final double imageAngle; 
 
   const MenuPopupCard({
     super.key,
@@ -94,6 +127,10 @@ class MenuPopupCard extends StatelessWidget {
     required this.color,
     required this.imageAsset,
     required this.onTap,
+    this.titleStyle,
+    this.subtitleStyle,
+    this.imageHeight = 50, // Nilai default jika tidak diisi
+    this.imageAngle = 0.0, // Nilai default (0 = tidak miring)
   });
 
   @override
@@ -101,8 +138,8 @@ class MenuPopupCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 145,
-        height: 155,
+        width: 141,
+        height: 148,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: color,
@@ -122,12 +159,13 @@ class MenuPopupCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
+            // --- HAPUS EXPANDED, GUNAKAN TRANSFORM UNTUK ROTASI ---
+            Transform.rotate(
+              angle: imageAngle,
               child: Image.asset(
                 imageAsset,
+                height: imageHeight, // Sekarang tinggi gambar akan patuh pada nilai ini
                 fit: BoxFit.contain,
-                // Menggunakan errorBuilder sebagai fallback jika PNG gagal dimuat
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.broken_image, 
                   size: 40, 
@@ -138,20 +176,20 @@ class MenuPopupCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               title,
-              style: const TextStyle(
+              style: titleStyle ?? const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
             Text(
               subtitle,
-              style: const TextStyle(
+              style: subtitleStyle ?? const TextStyle(
                 color: Colors.white,
                 fontSize: 10,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
                 height: 1.2,
               ),
               textAlign: TextAlign.center,

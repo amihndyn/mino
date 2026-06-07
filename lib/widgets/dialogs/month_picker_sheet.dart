@@ -21,6 +21,17 @@ class MonthPickerSheet extends StatelessWidget {
         color: AppColors.coklat900,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.orange700.withAlpha((0.4 * 255).toInt())),
+        
+        // --- EFEK GLOW KOTAK UTAMA (LUAR) ---
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withAlpha((0.25 * 255).toInt()), 
+            blurRadius: 15,
+            spreadRadius: 1,
+            offset: const Offset(0, 0),
+          ),
+        ],
+        // ------------------------------------
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -43,16 +54,16 @@ class MonthPickerSheet extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 2.4,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+              crossAxisCount: 4, 
+              childAspectRatio: 1.8, 
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 16,
             ),
             itemCount: months.length,
             itemBuilder: (_, i) {
@@ -64,7 +75,19 @@ class MonthPickerSheet extends StatelessWidget {
                   duration: const Duration(milliseconds: 150),
                   decoration: BoxDecoration(
                     color: isSel ? AppColors.orange800 : AppColors.coklat800,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(50),
+                    
+                    // --- EFEK GLOW TOMBOL BULAN ---
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withAlpha((0.25 * 255).toInt()), 
+                        blurRadius: 15,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                    // ------------------------------
+                    
                     border: Border.all(
                       color: isSel ? AppColors.orange400 : Colors.transparent,
                       width: 1.5,
@@ -74,16 +97,16 @@ class MonthPickerSheet extends StatelessWidget {
                   child: Text(
                     month.split(' ')[0],
                     style: TextStyle(
-                      color: isSel ? AppColors.orange100 : AppColors.coklat300,
+                      color: isSel ? AppColors.orange100 : Colors.white70, 
                       fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
-                      fontSize: 13,
+                      fontSize: 14,
                     ),
                   ),
                 ),
               );
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
         ],
       ),
     );

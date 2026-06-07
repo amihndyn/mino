@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mino/models/journal_entry_model.dart.dart';
-import 'package:mino/pages/journal/note_list_page.dart';
+import 'package:mino/models/journal_entry_model.dart';
+// import 'package:mino/pages/journal/note_list_page.dart'; // Ini bisa dihapus kalau tidak dipakai lagi di sini
 import 'package:mino/pages/journal/widgets/journal_card.dart';
-import 'package:mino/pages/journal/note_detail_page.dart';
+import 'package:mino/pages/journal/note_detail_page.dart'; // Pastikan import ini ada
 
 class JournalGrid extends StatelessWidget {
   final List<JournalEntry> entries;
@@ -22,7 +22,8 @@ class JournalGrid extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 14,
         mainAxisSpacing: 14,
-        childAspectRatio: 0.78, // Rasio proporsional pas sesuai desain kartu mood
+        // Masukkan rasio 160 (lebar) dibagi 305 (tinggi)
+        childAspectRatio: 160 / 285, 
       ),
       itemCount: entries.length,
       itemBuilder: (context, index) {
@@ -30,12 +31,22 @@ class JournalGrid extends StatelessWidget {
         return JournalCard(
           entry: entry,
           onSeeNote: () {
+            // --- UBAH NAVIGASI DI SINI ---
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NoteListPage(),
+                builder: (context) => NoteDetailPage(
+                  // Sesuaikan pemanggilan 'entry.xxx' dengan field yang ada di JournalEntry model-mu
+                  noteTitle: entry.noteTitle, 
+                  noteContent: entry.noteContent,
+                  fullDate: entry.fullDate, // atau entry.createdAt, dll
+                  mood: entry.moodEmoji, 
+                  moodLabel: entry.moodLabel,
+                  moodColor: entry.moodColor, 
+                ),
               ),
             );
+            // -----------------------------
           },
         );
       },

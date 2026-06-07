@@ -1,11 +1,12 @@
-// ============================================
-// NOTE DETAIL PAGE
-// ============================================
-
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/core/constants/app_sizes.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
+import 'package:mino/widgets/button/custom_button.dart';
+
+// ============================================
+// NOTE DETAIL PAGE (GABUNGAN DESAIN & LOGIC)
+// ============================================
 
 class NoteDetailPage extends StatefulWidget {
   final String noteTitle;
@@ -35,6 +36,9 @@ class _NoteDetailPageState extends State<NoteDetailPage>
   late Animation<double> _fadeAnim;
   late Animation<Offset> _slideAnim;
 
+  static const Color darkBrownBorder = Color(0xFF423125);
+  static const double borderWidth = 2.0;
+
   @override
   void initState() {
     super.initState();
@@ -59,8 +63,10 @@ class _NoteDetailPageState extends State<NoteDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
+          // ── 1. Background Gambar Full Screen ─────────
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',
@@ -70,114 +76,174 @@ class _NoteDetailPageState extends State<NoteDetailPage>
 
           // Dark overlay
           Container(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: Colors.black.withValues(alpha: 0.3),
           ),
 
-          // CONTENT
+          // ── 2. Area Konten Utama dengan Animasi ─────────
           SafeArea(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // APPBAR
+                // APPBAR (Tetap ada untuk fungsi Edit)
                 CustomAppBar(
                   title: 'Notes',
-                  actions: [
-                    GestureDetector(
-                      onTap: () {
-                        // Edit functionality
-                      },
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        alignment: Alignment.center,
-                        child: const Icon(
-                          Icons.edit_outlined,
-                          color: AppColors.orange300,
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
 
-                // SCROLLABLE CONTENT
+                // Area Bawah Appbar yang Dianimasikan
                 Expanded(
                   child: FadeTransition(
                     opacity: _fadeAnim,
                     child: SlideTransition(
                       position: _slideAnim,
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(
-                          AppSizes.md,
-                          AppSizes.sm,
-                          AppSizes.md,
-                          AppSizes.xl,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // MOOD CHIP
-                            _buildMoodChip(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 20),
 
-                            const SizedBox(height: 20),
-
-                            // TITLE
-                            Text(
-                              widget.noteTitle,
-                              style: TextStyle(
-                                color: widget.moodColor,
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                height: 1.2,
-                                letterSpacing: 0.2,
-                              ),
-                            ),
-
-                            const SizedBox(height: 6),
-
-                            // DATE
-                            Text(
-                              widget.fullDate,
-                              style: const TextStyle(
-                                color: AppColors.coklat300,
-                                fontSize: 13,
-                              ),
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // DIVIDER
-                            Container(
-                              height: 1,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppColors.orange700.withValues(alpha: 0.5),
-                                    Colors.transparent,
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 24),
-
-                            // CONTENT PARAGRAPHS
-                            ...widget.noteContent.split('\n\n').map(
-                              (para) => Padding(
-                                padding: const EdgeInsets.only(bottom: 18),
-                                child: Text(
-                                  para.trim(),
-                                  style: const TextStyle(
-                                    color: AppColors.orange100,
-                                    fontSize: 15.5,
-                                    height: 1.75,
-                                    letterSpacing: 0.1,
+                          // ── 3. Baris Info: Judul & Tanggal (Kiri) | Mood (Kanan) ───────────
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 28),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // ── SEBELAH KIRI: Kumpulan Judul dan Tanggal ──
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.noteTitle,
+                                        style: TextStyle(
+                                          color: widget.moodColor,
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.2,
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        widget.fullDate,
+                                        style: const TextStyle(
+                                          color: AppColors.coklat300,
+                                          fontSize: 14,
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
+                                
+                                const SizedBox(width: 16),
+
+                                // ── SEBELAH KANAN: Chip Mood ──
+                                _buildMoodChip(),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 40), 
+
+                          // ── 4. Tumpukan Kertas (Isi Note) ───────────
+                          Center(
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.85,
+                              height: MediaQuery.of(context).size.height * 0.48,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Lapisan Kertas Belakang
+                                  Transform.rotate(
+                                    angle: -6 * (math.pi / 180),
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      margin: const EdgeInsets.only(
+                                          bottom: 12, right: 8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF2E2C9),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: darkBrownBorder,
+                                          width: borderWidth,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Kertas Utama Paling Atas (Menampilkan Isi Konten)
+                                  Container(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.orange200,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: darkBrownBorder,
+                                        width: borderWidth,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black
+                                              .withValues(alpha: 0.2),
+                                          blurRadius: 12,
+                                          offset: const Offset(0, 6),
+                                        ),
+                                      ],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: SingleChildScrollView(
+                                        physics: const BouncingScrollPhysics(),
+                                        padding: const EdgeInsets.all(24),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: widget.noteContent
+                                              .split('\n\n')
+                                              .map(
+                                                (para) => Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 18),
+                                                  child: Text(
+                                                    para.trim(),
+                                                    style: const TextStyle(
+                                                      color: Color(0xFF423125),
+                                                      fontSize: 16,
+                                                      height: 1.15,
+                                                      letterSpacing: 1,
+                                                      fontWeight: FontWeight.w400
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                              .toList(),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+
+                          const SizedBox(height: 90,), 
+                          
+                          // ── 5. Custom Button Area ───────────
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 44),
+                            child: CustomButton(
+                              text: 'Edit Note',
+                              onTap: () { // 🔥 Sekarang sudah menggunakan onTap
+                                // Aksi edit note ditaruh di sini
+                              },
+                            ),
+                          ),
+                                           
+                          const SizedBox(height: 24), 
+                        ],
                       ),
                     ),
                   ),
@@ -204,11 +270,21 @@ class _NoteDetailPageState extends State<NoteDetailPage>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          Image.asset(
             widget.mood,
-            style: const TextStyle(fontSize: 20),
+            height: 28,  
+            width: 28,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(
+                Icons.sentiment_satisfied_alt,
+                color: widget.moodColor,
+                size: 28,
+              );
+            },
           ),
+          
           const SizedBox(width: 8),
+          
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -224,7 +300,8 @@ class _NoteDetailPageState extends State<NoteDetailPage>
                 style: TextStyle(
                   color: widget.moodColor,
                   fontSize: 13,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 1
                 ),
               ),
             ],

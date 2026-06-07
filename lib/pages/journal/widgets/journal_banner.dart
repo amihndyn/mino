@@ -56,9 +56,9 @@ class JournalBanner extends StatelessWidget {
                         monthYear,
                         style: TextStyle(
                           fontSize: 22,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                           color: AppColors.orange100,
-                          letterSpacing: 0.5,
+                          letterSpacing: 1,
                           shadows: [
                             Shadow(
                               color: AppColors.orange500.withValues(alpha: 0.6),

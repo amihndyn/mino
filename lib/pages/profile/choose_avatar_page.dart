@@ -40,7 +40,7 @@ class ChooseAvatarPage extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(context, avatars[index]);
             },
             child: Container(
               decoration: BoxDecoration(

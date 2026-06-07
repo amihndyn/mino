@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/pages/journal/journal_page.dart';
+import 'package:mino/pages/journal/journal_parent_screen.dart';
 import 'package:mino/widgets/cards/add_menu_popup.dart';
 
 import '../../pages/home/home_page.dart';
@@ -51,7 +54,7 @@ class BottomNavbar extends StatelessWidget {
         break;
 
       case 1:
-        page = const NoteListPage();
+        page = const JournalParentScreen();
         break;
         
       case 2:
@@ -74,8 +77,18 @@ class BottomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color bgColor = Color(0xff462F21);
-    const Color accentColor = Color(0xffF2CD94);
+    const Color bgColor = Color(0xff372615);
+    const Color accentColor = AppColors.orange300;
+
+    // Membuat variabel khusus untuk gradasi background
+    const LinearGradient bgGradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xff8B5E40), // Warna cokelat yang sedikit lebih terang di atas
+        bgColor,           // Warna cokelat gelap asli (bgColor) di bawah
+      ],
+    );
 
     return Container(
       color: Colors.transparent,
@@ -91,7 +104,7 @@ class BottomNavbar extends StatelessWidget {
             child: Container(
               height: 80,
               decoration: const BoxDecoration(
-                color: bgColor,
+                gradient: bgGradient,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(28),
                   topRight: Radius.circular(28),
@@ -108,7 +121,7 @@ class BottomNavbar extends StatelessWidget {
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  color: const Color(0xff18C3F7),
+                  color: AppColors.biru500,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: accentColor,
@@ -132,7 +145,7 @@ class BottomNavbar extends StatelessWidget {
                 _buildItem(
                   context: context,
                   icon: Icons.home_rounded,
-                  label: "Today",
+                  label: "Home",
                   index: 0,
                   accentColor: accentColor,
                 ),

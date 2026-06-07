@@ -1,51 +1,41 @@
 import 'package:flutter/material.dart';
+import '../models/challenge_data.dart';
 
-import '../models/challenge_model.dart';
 
 class ChallengeProvider extends ChangeNotifier {
-  final List<ChallengeModel> _challenges =
-      [];
+  final List<ChallengeData> _challenges = [];
 
-  List<ChallengeModel> get challenges =>
-      _challenges;
+  List<ChallengeData> get challenges => _challenges;
 
   // ADD
-  void addChallenge(
-    ChallengeModel challenge,
-  ) {
+  void addChallenge(ChallengeData challenge) {
     _challenges.add(challenge);
     notifyListeners();
   }
 
   // DELETE
   void deleteChallenge(String id) {
-    _challenges.removeWhere(
-      (challenge) =>
-          challenge.id == id,
-    );
-
+    _challenges.removeWhere((challenge) => challenge.id == id);
     notifyListeners();
   }
 
   // TOGGLE COMPLETE
   void toggleChallenge(String id) {
-    final index = _challenges.indexWhere(
-      (challenge) =>
-          challenge.id == id,
-    );
+    final index = _challenges.indexWhere((challenge) => challenge.id == id);
 
     if (index != -1) {
-      final oldChallenge =
-          _challenges[index];
+      final oldChallenge = _challenges[index];
 
-      _challenges[index] =
-          ChallengeModel(
+      // 🔥 Diperbaiki: Menggunakan properti dari ChallengeData yang sebenarnya
+      _challenges[index] = ChallengeData(
         id: oldChallenge.id,
         title: oldChallenge.title,
-        subtitle: oldChallenge.subtitle,
-        progress: oldChallenge.progress,
-        isCompleted:
-            !oldChallenge.isCompleted,
+        description: oldChallenge.description,
+        imageAsset: oldChallenge.imageAsset,
+        diamondReward: oldChallenge.diamondReward,
+        durationDays: oldChallenge.durationDays,
+        dateInfo: oldChallenge.dateInfo,
+        isCompleted: !oldChallenge.isCompleted, // Membalikkan status boolean
       );
 
       notifyListeners();

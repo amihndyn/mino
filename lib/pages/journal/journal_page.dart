@@ -6,7 +6,6 @@ import 'package:mino/providers/journal_provider.dart';
 import 'package:mino/pages/journal/widgets/journal_banner.dart';
 import 'package:mino/pages/journal/widgets/journal_grid.dart';
 import 'package:mino/pages/journal/widgets/journal_tab_switch.dart';
-import 'package:mino/widgets/appbars/custom_appbar.dart';
 
 class JournalPage extends StatefulWidget {
   final int currentTabIndex;
@@ -36,59 +35,79 @@ class _JournalPageState extends State<JournalPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CustomAppBar(title: 'Journal'),
+        // 1. BAGIAN ATAS (FIXED / TIDAK IKUT SCROLL)
+        Padding(
+          // --- PADDING DITAMBAHKAN DI SINI (bottom: 15) ---
+          padding: const EdgeInsets.only(left: 25, right: 25, top: 25, bottom: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 8),
+              const Text(
+                'Journal',
+                style: TextStyle(
+                  color: AppColors.orange100,
+                  fontSize: 28, 
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1
+                ),
+              ),
+              const SizedBox(height: AppSizes.md),
+              
+              JournalTabSwitch(
+                selectedIndex: widget.currentTabIndex,
+                onChanged: widget.onTabChanged,
+              ),
+            ],
+          ),
+        ),
+
+        // 2. BAGIAN BAWAH (BISA DI-SCROLL)
         Expanded(
-          // 1. Tambahkan ClipRect agar widget anak tidak meluap keluar dari batas Expanded ini
           child: ClipRect(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+              // --- PADDING ATAS BAWAH KONTEN SCROLL DISESUAIKAN ---
+              padding: const EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 25),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Banner tetap ikut ter-scroll
+                  const JournalBanner(monthYear: 'April 2026'), 
                   const SizedBox(height: AppSizes.md),
-                  JournalTabSwitch(
-                    selectedIndex: widget.currentTabIndex,
-                    onChanged: widget.onTabChanged,
-                  ),
-                  const SizedBox(height: AppSizes.md),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const JournalBanner(monthYear: 'April 2026'),
-                      const SizedBox(height: AppSizes.md),
-                      Consumer<JournalProvider>(
-                        builder: (context, provider, child) {
-                          if (provider.isLoading) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 40),
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColors.orange400,
-                                ),
-                              ),
-                            );
-                          }
+                  
+                  Consumer<JournalProvider>(
+                    builder: (context, provider, child) {
+                      if (provider.isLoading) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 40),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.orange400,
+                            ),
+                          ),
+                        );
+                      }
 
-                          if (provider.journals.isEmpty) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 40),
-                              child: Center(
-                                child: Text(
-                                  'No journal entries today.',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                            );
-                          }
+                      if (provider.journals.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 40),
+                          child: Center(
+                            child: Text(
+                              'No journal entries today.',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        );
+                      }
 
-                          return JournalGrid(entries: provider.journals);
-                        },
-                      ),
-                    ],
+                      return JournalGrid(entries: provider.journals);
+                    },
                   ),
-                  // 2. Jarak ekstra di ujung bawah agar konten paling bawah tidak terhalang navbar
+                  
+                  // Jarak ekstra di ujung bawah agar konten paling bawah tidak terhalang navbar
                   const SizedBox(height: 130), 
                 ],
               ),

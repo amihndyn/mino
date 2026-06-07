@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_sizes.dart';
 import 'package:mino/models/progress_model.dart';
-import 'package:mino/widgets/appbars/custom_appbar.dart';
+import 'package:mino/pages/journal/widgets/monthly_reflection.dart';
 import 'package:mino/widgets/dialogs/month_picker_sheet.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
 import 'package:mino/pages/journal/widgets/journal_tab_switch.dart';
 import 'package:mino/pages/journal/widgets/period_switcher.dart';
 import 'package:mino/pages/journal/widgets/goal_card.dart';
 import 'package:mino/pages/journal/widgets/activity_card.dart';
-import 'package:mino/pages/journal/widgets/stats_grid.dart';
-import 'package:mino/pages/journal/widgets/weekly_achievements.dart';
 import 'package:mino/pages/journal/widgets/weekly_reflection.dart';
 
 class ProgressPage extends StatefulWidget {
@@ -82,33 +81,57 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
         : _currentMonthData;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CustomAppBar(title: 'Progress'),
+        // 1. BAGIAN ATAS (FIXED / TIDAK IKUT SCROLL)
+        Padding(
+          padding: const EdgeInsets.only(left: 25, right: 25, top: 32, bottom: 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Progress',
+                style: TextStyle(
+                  color: AppColors.orange100,
+                  fontSize: 28, 
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1
+                ),
+              ),
+              const SizedBox(height: AppSizes.md),
+              
+              JournalTabSwitch(
+                selectedIndex: widget.currentTabIndex,
+                onChanged: widget.onTabChanged,
+              ),
+              const SizedBox(height: 26),
+              
+              // Period Switcher diturunkan ke sini agar tidak ikut ke-scroll
+              PeriodSwitcher(
+                isWeekly: _isWeekly,
+                onChanged: (val) => setState(() => _isWeekly = val),
+              ),
+            ],
+          ),
+        ),
+
+        // 2. BAGIAN BAWAH (BISA DI-SCROLL)
         Expanded(
-          // 1. Tambahkan ClipRect di sini juga
           child: ClipRect(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+              padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: AppSizes.md),
-                  JournalTabSwitch(
-                    selectedIndex: widget.currentTabIndex,
-                    onChanged: widget.onTabChanged,
-                  ),
-                  const SizedBox(height: 26),
-                  PeriodSwitcher(
-                    isWeekly: _isWeekly,
-                    onChanged: (val) => setState(() => _isWeekly = val),
-                  ),
-                  const SizedBox(height: 26),
+                  const SizedBox(height: 26), // Jarak atas sebelum GoalCard
+                  
                   GoalCard(
                     isWeekly: _isWeekly,
                     data: activeGoalData,
                   ),
                   const SizedBox(height: 26),
+                  
                   ActivityCard(
                     isWeekly: _isWeekly,
                     selectedMonth: _selectedMonth,
@@ -116,13 +139,12 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
                     onMonthPickerTap: _showMonthPicker,
                   ),
                   const SizedBox(height: 26),
-                  const StatsGrid(),
-                  const SizedBox(height: 26),
-                  const WeeklyAchievements(),
-                  const SizedBox(height: 26),
-                  const WeeklyReflection(),
-                  // 2. Diubah menjadi 130 agar konsisten dengan halaman Journal
-                  const SizedBox(height: 130), 
+                  
+                  _isWeekly 
+                      ? const WeeklyReflection() 
+                      : MonthlyReflection(selectedMonth: _selectedMonth),
+                  
+                  const SizedBox(height: 130), // Jarak aman untuk bottom navbar
                 ],
               ),
             ),

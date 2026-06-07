@@ -52,19 +52,20 @@ class GoalCard extends StatelessWidget {
                       Text(
                         isWeekly ? 'Weekly Goal' : 'Monthly Goal',
                         style: const TextStyle(
-                          color: AppColors.coklat300,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFF5E6D3),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 1
                         ),
                       ),
                       const SizedBox(height: 8),
                       const Text(
                         "You're getting\ncloser to your\ndiamond.",
                         style: TextStyle(
-                          color: AppColors.orange700,
-                          fontSize: 18,
+                          color: Color(0xFFE6A84A),
+                          fontSize: 20,
                           height: 1.3,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                           letterSpacing: 1.0,
                         ),
                       ),

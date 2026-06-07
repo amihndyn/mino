@@ -143,7 +143,7 @@ class _JournalingPageState extends State<JournalingPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                       child: SizedBox(
                         width: double.infinity,
-                        height: 54,
+                        height: 44,
                         child: CustomButton(
                           text: 'Skip and save',
                           onTap: _onSaveAndSkip,

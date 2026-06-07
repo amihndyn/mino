@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mino/models/journal_entry_model.dart.dart';
+import 'package:mino/models/journal_entry_model.dart';
 import 'package:mino/services/api/journal_api.dart';
 
 class JournalProvider extends ChangeNotifier {
