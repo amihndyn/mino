@@ -145,7 +145,7 @@ class _JournalingPageState extends State<JournalingPage> {
                         width: double.infinity,
                         height: 44,
                         child: CustomButton(
-                          text: 'Skip and save',
+                          text: 'Skip and Save',
                           onTap: _onSaveAndSkip,
                         ),
                       ),

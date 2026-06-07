@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; 
 import 'package:mino/core/data/datasource/auth_local_datasource.dart';
 import 'package:mino/pages/home/home_page.dart';
-import 'package:mino/pages/journal/journal_parent_screen.dart';
-import 'package:mino/pages/onboarding/on_boarding1.dart';
+// TODO: Sesuaikan path ini dengan lokasi LoginPage di projek Anda
+import 'package:mino/pages/auth/login_page.dart'; 
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -46,7 +46,8 @@ class _SplashScreenState extends State<SplashScreen>
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => 
-            isLogin ? const JournalParentScreen() : const HomePage(),
+            isLogin ? const HomePage() : const LoginPage(), // Biasanya jika isLogin true ke HomePage, jika false ke LoginPage
+
         transitionDuration: const Duration(milliseconds: 800), 
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
@@ -75,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
 
-          // GLOW EFFECT (Ubah ke .withOpacity untuk stabilitas Flutter Web)
+          // GLOW EFFECT
           Center(
             child: Container(
               width: 370,
@@ -84,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF00BBFF).withOpacity(0.5), // Diperbaiki
+                    const Color(0xFF00BBFF).withOpacity(0.5), 
                     Colors.transparent,
                   ],
                 ),
@@ -148,7 +149,6 @@ class _SplashScreenState extends State<SplashScreen>
               color: const Color(0xFFE5A84F),
               boxShadow: [
                 BoxShadow(
-                  // Diperbaiki ke .withOpacity agar tidak merusak kanvas web
                   color: const Color(0xFFE5A84F).withOpacity(0.3 + glow * 0.5), 
                   blurRadius: 4 + glow * 6,
                   spreadRadius: 1 + glow * 2,

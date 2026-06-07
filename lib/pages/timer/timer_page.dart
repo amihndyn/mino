@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 // Pustaka flutter_svg telah dihapus
 import 'package:mino/pages/timer/running_timer_page.dart';
+// 💡 Pastikan nama file di bawah ini sesuai di proyekmu (apakah .dart atau .dart.dart)
+import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart.dart'; 
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'widgets/balloon_slider.dart';
+import 'package:mino/pages/timer/affirmation_page.dart'; 
 
 class TimerPage extends StatefulWidget {
   const TimerPage({super.key});
@@ -19,170 +22,123 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isAffirmation = _selectedTabIndex == 2;
+
     return Scaffold(
       backgroundColor: const Color(0xFF140C08), 
       body: Stack(
         children: [
-          // ── Background Utama ───────────────────────────────────────
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
+          // ── SITUASI 1: JIKA USER MEMILIH TAB AFIRMASI (Index 2) ──
+          if (isAffirmation)
+            AffirmationPage(
+              // 🔥 Mengirimkan fungsi callback untuk kembali ke halaman Timer (Index 1)
+              onBack: () {
+                setState(() {
+                  _selectedTabIndex = 1; 
+                });
+              },
+            ) // 💡 TIDAK MEMAKAI 'const' lagi di sini
+
+          // ── SITUASI 2: JIKA BUKAN TAB AFIRMASI (Index 0 atau 1) ──
+          else ...[
+            // Background Default Utama
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/bg_login.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-          ),
 
-          SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                
-                const CustomAppBar(
-                  title: 'Pomodoro', 
-                ),
-                
-                const SizedBox(height: 20),
+            // Konten Foreground (AppBar, Menu Tab Oval, & Konten Tengah)
+            SafeArea(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  
+                  const CustomAppBar(
+                    title: 'Pomodoro', 
+                    
 
-                // ── TAB MENU (Migrasi ke PNG) ──
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildTopTab(index: 0, label: 'Challenge', imagePath: 'assets/images/tren.png'),
-                        const SizedBox(width: 12),
-                        _buildTopTab(index: 1, label: 'Timer', imagePath: 'assets/images/watch.png'),
-                        const SizedBox(width: 12),
-                        _buildTopTab(index: 2, label: 'Afirmation', imagePath: 'assets/images/plan.png'),
-                      ],
-                    ),
                   ),
-                ),
-                const SizedBox(height: 40),
+                  
+                  const SizedBox(height: 20),
 
-                // ── SLIDER ──
-                BalloonSlider(
-                  initialValue: _timerValue,
-                  onChanged: (val) {
-                    setState(() {
-                      _timerValue = val;
-                    });
-                  },
-                ),
-                
-                const SizedBox(height: 60),
-
-                // ── GAMBAR LINGKARAN TENGAH ──
-                Container(
-                  width: 250,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: const Color(0xFF4A3424), 
-                      width: 4,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        blurRadius: 20,
-                        spreadRadius: 2,
-                      )
-                    ],
+                  PomodoroTabMenu(
+                    selectedIndex: _selectedTabIndex,
+                    onTabChanged: (index) {
+                      setState(() {
+                        _selectedTabIndex = index;
+                      });
+                    },
                   ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/berlin.png', 
-                      fit: BoxFit.cover,
-                    ),
+                  
+                  // Isi Konten Tengah (Challenge / Timer Content)
+                  Expanded(
+                    child: _buildBodyContent(),
                   ),
-                ),
-
-                const Spacer(),
-
-                // ── TOMBOL NAVIGASI NEXT ──
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 30),
-                  child: SizedBox(
-                    width: 212, 
-                    child: CustomButton(
-                      text: 'Next',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RunningTimerPage(
-                              minutes: _timerValue.toInt(), 
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
   }
 
-  // ==================== WIDGET BUILDER UNTUK TAB DENGAN PNG ====================
-
-  Widget _buildTopTab({required int index, required String label, required String imagePath}) {
-    final bool isSelected = _activeTab == index;
-    const Color themeGold = Color(0xffF2CD94);
-
-    return GestureDetector(
-      onTap: () {
-        if (index == _activeTab) return; // Jika klik tab yang sama, biarkan saja
-
-        if (index == 0) {
-          // Jika klik tab Challenge (0), kembali ke FindPage (Karena FindPage ada di tumpukan bawah)
-          Navigator.pop(context);
-        } else {
-          // Update status tab aktif (misal untuk Afirmation nanti)
-          setState(() => _activeTab = index);
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white.withValues(alpha: 0.12) : Colors.black.withValues(alpha: 0.25),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: isSelected ? themeGold.withValues(alpha: 0.8) : Colors.white10,
-            width: 1.2,
-          ),
-        ),
-        child: Row(
+  // Fungsi pembantu untuk menukar konten tengah berdasarkan tab
+  Widget _buildBodyContent() {
+    switch (_selectedTabIndex) {
+      case 0:
+        return const Center(
+          child: Text('Challenge Page', style: TextStyle(color: Colors.white)),
+        );
+      case 1:
+        return Column(
           children: [
-            Opacity(
-              opacity: isSelected ? 1.0 : 0.4,
-              child: Image.asset(
-                imagePath, 
-                width: 18, 
-                height: 18,
-                // Catatan: Jika ikon PNG Anda satu warna (monokrom) dan ingin diwarnai otomatis 
-                // seperti fungsi colorFilter pada SVG sebelumnya, Anda bisa menggunakan properti color:
-                // color: isSelected ? Colors.white : Colors.white70,
+            const SizedBox(height: 40),
+            BalloonSlider(
+              initialValue: _timerValue,
+              onChanged: (val) {
+                _timerValue = val;
+              },
+            ),
+            const SizedBox(height: 60),
+            Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFF4A3424), width: 4),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/berlin.png'), 
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? Colors.white : Colors.white70,
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: SizedBox(
+                width: 200, 
+                child: CustomButton(
+                  text: 'Next',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RunningTimerPage(minutes: _timerValue.toInt()),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],
-        ),
-      ),
-    );
+        );
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }

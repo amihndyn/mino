@@ -65,6 +65,7 @@ flutter:
   # Pendaftaran Aset folder
   assets:
     - assets/images/
+    - assets/images/boarding/ 
     - assets/icons/
 
   # Pendaftaran Font Lokal
