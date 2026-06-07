@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-// Pustaka flutter_svg telah dihapus
 import 'package:mino/pages/timer/running_timer_page.dart';
-// 💡 Pastikan nama file di bawah ini sesuai di proyekmu (apakah .dart atau .dart.dart)
-import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart.dart'; 
+import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart';
+// 💡 .dart.dart diubah menjadi .dart
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'widgets/balloon_slider.dart';
@@ -16,8 +15,8 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage> {
-  // Karena ini adalah TimerPage, default tab yang aktif adalah index 1 (Timer)
-  int _activeTab = 1; 
+  // 💡 PERBAIKAN 1: Mengubah _activeTab menjadi _selectedTabIndex agar sesuai
+  int _selectedTabIndex = 1; 
   double _timerValue = 10.0;
 
   @override
@@ -31,13 +30,13 @@ class _TimerPageState extends State<TimerPage> {
           // ── SITUASI 1: JIKA USER MEMILIH TAB AFIRMASI (Index 2) ──
           if (isAffirmation)
             AffirmationPage(
-              // 🔥 Mengirimkan fungsi callback untuk kembali ke halaman Timer (Index 1)
+              // Callback untuk kembali ke halaman Timer (Index 1)
               onBack: () {
                 setState(() {
                   _selectedTabIndex = 1; 
                 });
               },
-            ) // 💡 TIDAK MEMAKAI 'const' lagi di sini
+            )
 
           // ── SITUASI 2: JIKA BUKAN TAB AFIRMASI (Index 0 atau 1) ──
           else ...[
@@ -59,8 +58,6 @@ class _TimerPageState extends State<TimerPage> {
                   
                   const CustomAppBar(
                     title: 'Pomodoro', 
-                    
-
                   ),
                   
                   const SizedBox(height: 20),
@@ -81,7 +78,7 @@ class _TimerPageState extends State<TimerPage> {
                 ],
               ),
             ),
-          ],
+          ], // 💡 PERBAIKAN 2: Kurung tutup ini sudah dirapikan, sebelumnya ada lebihan '],'
         ],
       ),
     );

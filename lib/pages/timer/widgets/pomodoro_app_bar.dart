@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart.dart';
+import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/pages/timer/widgets/timer_content.dart'; 
 import 'package:mino/pages/timer/affirmation_page.dart';
