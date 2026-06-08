@@ -2,20 +2,29 @@ import 'dart:async';
 import 'dart:math'; // Dibutuhkan untuk fungsi sin() pada animasi
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
+import 'package:mino/core/presentation/home/bloc/focus_timer/focus_timer_bloc.dart';
 import 'package:mino/pages/timer/finish_timer_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RunningTimerPage extends StatefulWidget {
-  final int minutes; // Menerima durasi timer dari halaman sebelumnya
+  final int minutes;
+  final int timerId; // 🔥 Tambahkan ini
 
-  const RunningTimerPage({super.key, required this.minutes});
+  const RunningTimerPage({
+    super.key,
+    required this.minutes,
+    required this.timerId, // 🔥 Tambahkan ini
+  });
 
   @override
   State<RunningTimerPage> createState() => _RunningTimerPageState();
 }
 
 // Tambahkan SingleTickerProviderStateMixin untuk animasi
-class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerProviderStateMixin {
+class _RunningTimerPageState extends State<RunningTimerPage>
+    with SingleTickerProviderStateMixin {
   Timer? _timer;
   late int _totalSeconds;
   late int _remainingSeconds;
@@ -38,7 +47,7 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
     super.initState();
     _totalSeconds = widget.minutes * 60;
     _remainingSeconds = _totalSeconds;
-    
+
     // Inisialisasi animasi glow (berulang setiap 2 detik)
     _glowController = AnimationController(
       vsync: this,
@@ -56,14 +65,13 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
         });
       } else {
         // JIKA WAKTU HABIS (0 DETIK)
-        _timer?.cancel(); 
-        
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FinishTimerPage(
-              completedMinutes: widget.minutes,
-            ),
+        _timer?.cancel();
+
+        // 🔥 PANGGIL API COMPLETE LEWAT BLOC
+        context.read<FocusTimerBloc>().add(
+          FocusTimerEvent.completeFocus(
+            timerId: widget.timerId,
+            durationMinutes: widget.minutes,
           ),
         );
       }
@@ -94,7 +102,7 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
 
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, 
+      barrierDismissible: false,
       builder: (BuildContext dialogContext) {
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -113,16 +121,13 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
               children: [
                 // Mengubah ikon berlian menjadi SVG dengan fallback Icon
                 SvgPicture.asset(
-                  'assets/images/diamond.svg', 
+                  'assets/images/diamond.svg',
                   height: 60,
                   width: 60,
-                  placeholderBuilder: (context) => const Icon(
-                    Icons.diamond, 
-                    color: Colors.blue, 
-                    size: 60,
-                  ),
+                  placeholderBuilder: (context) =>
+                      const Icon(Icons.diamond, color: Colors.blue, size: 60),
                 ),
-                
+
                 const SizedBox(height: 20),
 
                 const Text(
@@ -133,7 +138,7 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                
+
                 const SizedBox(height: 8),
 
                 const Text(
@@ -145,7 +150,7 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
                     height: 1.5,
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
 
                 Row(
@@ -154,7 +159,9 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(dialogContext);
-                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.of(
+                          context,
+                        ).popUntil((route) => route.isFirst);
                       },
                       child: const Text(
                         'Back to home',
@@ -167,7 +174,7 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
                     ),
 
                     SizedBox(
-                      width: 140, 
+                      width: 140,
                       height: 44,
                       child: CustomButton(
                         text: 'Next',
@@ -204,7 +211,7 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
   // ── LOGIKA GANTI GAMBAR PROPORSIONAL ──
   Widget _buildDynamicImage() {
     int elapsedSeconds = _totalSeconds - _remainingSeconds;
-    
+
     double interval = _totalSeconds / _imagePaths.length;
     if (interval <= 0) interval = 1;
 
@@ -215,122 +222,143 @@ class _RunningTimerPageState extends State<RunningTimerPage> with SingleTickerPr
     }
 
     String currentImage = _imagePaths[imageIndex];
-    
+
     // 🔥 UKURAN GAMBAR DIPERBESAR MENJADI 350
-    double imageSize = 350; 
+    double imageSize = 350;
 
     if (currentImage.endsWith('.svg')) {
-      return SvgPicture.asset(
-        currentImage,
-        height: imageSize,
-      );
+      return SvgPicture.asset(currentImage, height: imageSize);
     } else {
-      return Image.asset(
-        currentImage,
-        height: imageSize,
-        fit: BoxFit.contain,
-      );
+      return Image.asset(currentImage, height: imageSize, fit: BoxFit.contain);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF140C08), // Warna dasar default
-      body: Stack(
-        children: [
-          // ── Background Utama (Diubah ke SVG) ───────────────────────
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
+    return BlocListener<FocusTimerBloc, FocusTimerState>(
+      listener: (context, state) {
+        state.maybeWhen(
+          completed: () {
+            // 🔥 REFRESH DASHBOARD AGAR DIAMOND & MENIT LANGSUNG BERTAMBAH
+            context.read<DashboardBloc>().add(
+              const DashboardEvent.fetchDashboardData(),
+            );
+
+            // Pindah ke halaman Finish
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    FinishTimerPage(completedMinutes: widget.minutes),
+              ),
+            );
+          },
+          error: (message) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(message), backgroundColor: Colors.red),
+            );
+          },
+          orElse: () {},
+        );
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFF140C08), // Warna dasar default
+        body: Stack(
+          children: [
+            // ── Background Utama (Diubah ke SVG) ───────────────────────
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/bg_login.png',
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          
-          SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
 
-                // ── 1. Teks Timer dengan 2 Glow yang Mengorbit (Muter) ──
-                AnimatedBuilder(
-                  animation: _glowController,
-                  builder: (context, child) {
-                    // Nilai putaran dari 0.0 sampai 2*Pi (satu putaran penuh)
-                    final double theta = _glowController.value * 2 * pi;
+            SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
 
-                    // Jarak seberapa jauh lingkaran bergerak (X = kiri-kanan, Y = atas-bawah)
-                    final double radiusX = 80.0; // Lebar putaran
-                    final double radiusY = 20.0; // Tinggi putaran (biar ada efek muter melingkar)
+                  // ── 1. Teks Timer dengan 2 Glow yang Mengorbit (Muter) ──
+                  AnimatedBuilder(
+                    animation: _glowController,
+                    builder: (context, child) {
+                      // Nilai putaran dari 0.0 sampai 2*Pi (satu putaran penuh)
+                      final double theta = _glowController.value * 2 * pi;
 
-                    // 📍 Posisi Lingkaran 1
-                    final double x1 = sin(theta) * radiusX;
-                    final double y1 = cos(theta) * radiusY;
+                      // Jarak seberapa jauh lingkaran bergerak (X = kiri-kanan, Y = atas-bawah)
+                      final double radiusX = 80.0; // Lebar putaran
+                      final double radiusY =
+                          20.0; // Tinggi putaran (biar ada efek muter melingkar)
 
-                    // 📍 Posisi Lingkaran 2 (Lawan arahnya, ditambah Pi)
-                    final double x2 = sin(theta + pi) * radiusX;
-                    final double y2 = cos(theta + pi) * radiusY;
+                      // 📍 Posisi Lingkaran 1
+                      final double x1 = sin(theta) * radiusX;
+                      final double y1 = cos(theta) * radiusY;
 
-                    return Stack(
-                      alignment: Alignment.center,
-                      clipBehavior: Clip.none, // Supaya glow tidak terpotong
-                      children: [
-                        // --- Lingkaran Glow 1 ---
-                        Transform.translate(
-                          offset: Offset(x1, y1),
-                          child: _buildGlowCircle(),
-                        ),
+                      // 📍 Posisi Lingkaran 2 (Lawan arahnya, ditambah Pi)
+                      final double x2 = sin(theta + pi) * radiusX;
+                      final double y2 = cos(theta + pi) * radiusY;
 
-                        // --- Lingkaran Glow 2 ---
-                        Transform.translate(
-                          offset: Offset(x2, y2),
-                          child: _buildGlowCircle(),
-                        ),
-
-                        // --- Angka Timer ---
-                        Text(
-                          _formattedTime,
-                          style: const TextStyle(
-                            color: Color(0xFFF7EAD3), // Warna krem
-                            fontSize: 68,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
+                      return Stack(
+                        alignment: Alignment.center,
+                        clipBehavior: Clip.none, // Supaya glow tidak terpotong
+                        children: [
+                          // --- Lingkaran Glow 1 ---
+                          Transform.translate(
+                            offset: Offset(x1, y1),
+                            child: _buildGlowCircle(),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                
-                const SizedBox(height: 60),
 
-                // ── 2. Gambar (Ukuran sudah diperbesar) ──
-                _buildDynamicImage(),
+                          // --- Lingkaran Glow 2 ---
+                          Transform.translate(
+                            offset: Offset(x2, y2),
+                            child: _buildGlowCircle(),
+                          ),
 
-                const Spacer(),
-
-                // ── 3. Tombol Back to home ──
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 30),
-                  child: GestureDetector(
-                    onTap: () {
-                      _showExitConfirmationDialog();
+                          // --- Angka Timer ---
+                          Text(
+                            _formattedTime,
+                            style: const TextStyle(
+                              color: Color(0xFFF7EAD3), // Warna krem
+                              fontSize: 68,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ],
+                      );
                     },
-                    child: const Text(
-                      'Back to home',
-                      style: TextStyle(
-                        color: Color(0xFFE8A838),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                  ),
+
+                  const SizedBox(height: 60),
+
+                  // ── 2. Gambar (Ukuran sudah diperbesar) ──
+                  _buildDynamicImage(),
+
+                  const Spacer(),
+
+                  // ── 3. Tombol Back to home ──
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 30),
+                    child: GestureDetector(
+                      onTap: () {
+                        _showExitConfirmationDialog();
+                      },
+                      child: const Text(
+                        'Back to home',
+                        style: TextStyle(
+                          color: Color(0xFFE8A838),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
