@@ -4,7 +4,16 @@ import 'greeting_section.dart';
 import 'weekly_calendar.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  // 🔥 1. TAMBAHKAN PARAMETER VARIABEL DI SINI
+  final String name;
+  final int diamonds;
+
+  // 🔥 2. MASUKKAN KE CONSTRUCTOR (Hapus kata 'const' di depan HomeHeader)
+  const HomeHeader({
+    super.key, 
+    required this.name, 
+    required this.diamonds,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +27,19 @@ class HomeHeader extends StatelessWidget {
         28,
       ),
 
-      child: const Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+      child: Column( // 🔥 3. HAPUS KATA 'const' di depan Column karena anaknya sekarang dinamis
+        crossAxisAlignment: CrossAxisAlignment.start,
 
         children: [
-          GreetingSection(),
+          // 🔥 4. OPER DATA NAME DAN DIAMONDS KE GREETING SECTION
+          GreetingSection(
+            name: name, 
+            diamonds: diamonds,
+          ),
 
-          SizedBox(height: 28),
+          const SizedBox(height: 28),
 
-          WeeklyCalendar(),
+          const WeeklyCalendar(), // Berikan const di widget yang statis saja
         ],
       ),
     );

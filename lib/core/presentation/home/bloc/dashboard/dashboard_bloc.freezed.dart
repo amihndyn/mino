@@ -55,12 +55,16 @@ extension DashboardEventPatterns on DashboardEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _FetchDashboardData value)?  fetchDashboardData,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _FetchDashboardData value)?  fetchDashboardData,TResult Function( _ToggleHabit value)?  toggleHabit,TResult Function( _DeleteHabit value)?  deleteHabit,TResult Function( _AddHabit value)?  addHabit,TResult Function( _EditHabit value)?  editHabit,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _FetchDashboardData() when fetchDashboardData != null:
-return fetchDashboardData(_that);case _:
+return fetchDashboardData(_that);case _ToggleHabit() when toggleHabit != null:
+return toggleHabit(_that);case _DeleteHabit() when deleteHabit != null:
+return deleteHabit(_that);case _AddHabit() when addHabit != null:
+return addHabit(_that);case _EditHabit() when editHabit != null:
+return editHabit(_that);case _:
   return orElse();
 
 }
@@ -78,12 +82,16 @@ return fetchDashboardData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _FetchDashboardData value)  fetchDashboardData,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _FetchDashboardData value)  fetchDashboardData,required TResult Function( _ToggleHabit value)  toggleHabit,required TResult Function( _DeleteHabit value)  deleteHabit,required TResult Function( _AddHabit value)  addHabit,required TResult Function( _EditHabit value)  editHabit,}){
 final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _FetchDashboardData():
-return fetchDashboardData(_that);case _:
+return fetchDashboardData(_that);case _ToggleHabit():
+return toggleHabit(_that);case _DeleteHabit():
+return deleteHabit(_that);case _AddHabit():
+return addHabit(_that);case _EditHabit():
+return editHabit(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +108,16 @@ return fetchDashboardData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _FetchDashboardData value)?  fetchDashboardData,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _FetchDashboardData value)?  fetchDashboardData,TResult? Function( _ToggleHabit value)?  toggleHabit,TResult? Function( _DeleteHabit value)?  deleteHabit,TResult? Function( _AddHabit value)?  addHabit,TResult? Function( _EditHabit value)?  editHabit,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _FetchDashboardData() when fetchDashboardData != null:
-return fetchDashboardData(_that);case _:
+return fetchDashboardData(_that);case _ToggleHabit() when toggleHabit != null:
+return toggleHabit(_that);case _DeleteHabit() when deleteHabit != null:
+return deleteHabit(_that);case _AddHabit() when addHabit != null:
+return addHabit(_that);case _EditHabit() when editHabit != null:
+return editHabit(_that);case _:
   return null;
 
 }
@@ -122,11 +134,15 @@ return fetchDashboardData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  fetchDashboardData,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  fetchDashboardData,TResult Function( int userHabitId)?  toggleHabit,TResult Function( int userHabitId)?  deleteHabit,TResult Function( String name)?  addHabit,TResult Function( int userHabitId,  String newName)?  editHabit,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _FetchDashboardData() when fetchDashboardData != null:
-return fetchDashboardData();case _:
+return fetchDashboardData();case _ToggleHabit() when toggleHabit != null:
+return toggleHabit(_that.userHabitId);case _DeleteHabit() when deleteHabit != null:
+return deleteHabit(_that.userHabitId);case _AddHabit() when addHabit != null:
+return addHabit(_that.name);case _EditHabit() when editHabit != null:
+return editHabit(_that.userHabitId,_that.newName);case _:
   return orElse();
 
 }
@@ -144,11 +160,15 @@ return fetchDashboardData();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  fetchDashboardData,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  fetchDashboardData,required TResult Function( int userHabitId)  toggleHabit,required TResult Function( int userHabitId)  deleteHabit,required TResult Function( String name)  addHabit,required TResult Function( int userHabitId,  String newName)  editHabit,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _FetchDashboardData():
-return fetchDashboardData();case _:
+return fetchDashboardData();case _ToggleHabit():
+return toggleHabit(_that.userHabitId);case _DeleteHabit():
+return deleteHabit(_that.userHabitId);case _AddHabit():
+return addHabit(_that.name);case _EditHabit():
+return editHabit(_that.userHabitId,_that.newName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +185,15 @@ return fetchDashboardData();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  fetchDashboardData,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  fetchDashboardData,TResult? Function( int userHabitId)?  toggleHabit,TResult? Function( int userHabitId)?  deleteHabit,TResult? Function( String name)?  addHabit,TResult? Function( int userHabitId,  String newName)?  editHabit,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _FetchDashboardData() when fetchDashboardData != null:
-return fetchDashboardData();case _:
+return fetchDashboardData();case _ToggleHabit() when toggleHabit != null:
+return toggleHabit(_that.userHabitId);case _DeleteHabit() when deleteHabit != null:
+return deleteHabit(_that.userHabitId);case _AddHabit() when addHabit != null:
+return addHabit(_that.name);case _EditHabit() when editHabit != null:
+return editHabit(_that.userHabitId,_that.newName);case _:
   return null;
 
 }
@@ -240,6 +264,272 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _ToggleHabit implements DashboardEvent {
+  const _ToggleHabit(this.userHabitId);
+  
+
+ final  int userHabitId;
+
+/// Create a copy of DashboardEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ToggleHabitCopyWith<_ToggleHabit> get copyWith => __$ToggleHabitCopyWithImpl<_ToggleHabit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ToggleHabit&&(identical(other.userHabitId, userHabitId) || other.userHabitId == userHabitId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,userHabitId);
+
+@override
+String toString() {
+  return 'DashboardEvent.toggleHabit(userHabitId: $userHabitId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ToggleHabitCopyWith<$Res> implements $DashboardEventCopyWith<$Res> {
+  factory _$ToggleHabitCopyWith(_ToggleHabit value, $Res Function(_ToggleHabit) _then) = __$ToggleHabitCopyWithImpl;
+@useResult
+$Res call({
+ int userHabitId
+});
+
+
+
+
+}
+/// @nodoc
+class __$ToggleHabitCopyWithImpl<$Res>
+    implements _$ToggleHabitCopyWith<$Res> {
+  __$ToggleHabitCopyWithImpl(this._self, this._then);
+
+  final _ToggleHabit _self;
+  final $Res Function(_ToggleHabit) _then;
+
+/// Create a copy of DashboardEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? userHabitId = null,}) {
+  return _then(_ToggleHabit(
+null == userHabitId ? _self.userHabitId : userHabitId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _DeleteHabit implements DashboardEvent {
+  const _DeleteHabit(this.userHabitId);
+  
+
+ final  int userHabitId;
+
+/// Create a copy of DashboardEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeleteHabitCopyWith<_DeleteHabit> get copyWith => __$DeleteHabitCopyWithImpl<_DeleteHabit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeleteHabit&&(identical(other.userHabitId, userHabitId) || other.userHabitId == userHabitId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,userHabitId);
+
+@override
+String toString() {
+  return 'DashboardEvent.deleteHabit(userHabitId: $userHabitId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeleteHabitCopyWith<$Res> implements $DashboardEventCopyWith<$Res> {
+  factory _$DeleteHabitCopyWith(_DeleteHabit value, $Res Function(_DeleteHabit) _then) = __$DeleteHabitCopyWithImpl;
+@useResult
+$Res call({
+ int userHabitId
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeleteHabitCopyWithImpl<$Res>
+    implements _$DeleteHabitCopyWith<$Res> {
+  __$DeleteHabitCopyWithImpl(this._self, this._then);
+
+  final _DeleteHabit _self;
+  final $Res Function(_DeleteHabit) _then;
+
+/// Create a copy of DashboardEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? userHabitId = null,}) {
+  return _then(_DeleteHabit(
+null == userHabitId ? _self.userHabitId : userHabitId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _AddHabit implements DashboardEvent {
+  const _AddHabit(this.name);
+  
+
+ final  String name;
+
+/// Create a copy of DashboardEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddHabitCopyWith<_AddHabit> get copyWith => __$AddHabitCopyWithImpl<_AddHabit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddHabit&&(identical(other.name, name) || other.name == name));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,name);
+
+@override
+String toString() {
+  return 'DashboardEvent.addHabit(name: $name)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AddHabitCopyWith<$Res> implements $DashboardEventCopyWith<$Res> {
+  factory _$AddHabitCopyWith(_AddHabit value, $Res Function(_AddHabit) _then) = __$AddHabitCopyWithImpl;
+@useResult
+$Res call({
+ String name
+});
+
+
+
+
+}
+/// @nodoc
+class __$AddHabitCopyWithImpl<$Res>
+    implements _$AddHabitCopyWith<$Res> {
+  __$AddHabitCopyWithImpl(this._self, this._then);
+
+  final _AddHabit _self;
+  final $Res Function(_AddHabit) _then;
+
+/// Create a copy of DashboardEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? name = null,}) {
+  return _then(_AddHabit(
+null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _EditHabit implements DashboardEvent {
+  const _EditHabit(this.userHabitId, this.newName);
+  
+
+ final  int userHabitId;
+ final  String newName;
+
+/// Create a copy of DashboardEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$EditHabitCopyWith<_EditHabit> get copyWith => __$EditHabitCopyWithImpl<_EditHabit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditHabit&&(identical(other.userHabitId, userHabitId) || other.userHabitId == userHabitId)&&(identical(other.newName, newName) || other.newName == newName));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,userHabitId,newName);
+
+@override
+String toString() {
+  return 'DashboardEvent.editHabit(userHabitId: $userHabitId, newName: $newName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$EditHabitCopyWith<$Res> implements $DashboardEventCopyWith<$Res> {
+  factory _$EditHabitCopyWith(_EditHabit value, $Res Function(_EditHabit) _then) = __$EditHabitCopyWithImpl;
+@useResult
+$Res call({
+ int userHabitId, String newName
+});
+
+
+
+
+}
+/// @nodoc
+class __$EditHabitCopyWithImpl<$Res>
+    implements _$EditHabitCopyWith<$Res> {
+  __$EditHabitCopyWithImpl(this._self, this._then);
+
+  final _EditHabit _self;
+  final $Res Function(_EditHabit) _then;
+
+/// Create a copy of DashboardEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? userHabitId = null,Object? newName = null,}) {
+  return _then(_EditHabit(
+null == userHabitId ? _self.userHabitId : userHabitId // ignore: cast_nullable_to_non_nullable
+as int,null == newName ? _self.newName : newName // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 mixin _$DashboardState {

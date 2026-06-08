@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
 
-class ChallengeProgressCard extends StatefulWidget {
+class ChallengeProgressCard extends StatelessWidget { // 🔥 1. UBAH KE STATELESSWIDGET
   final String title;
   final String? emoji; 
   final String? imageAsset; 
   final int currentProgress;
   final int totalProgress;
+  final bool isChecked; // 🔥 2. AMBIL STATUS LANGSUNG DARI MODEL BACKEND
+  final VoidCallback? onToggle; // 🔥 3. TERIMA AKSI TAP DARI LUAR (UNTUK BLOC)
 
   const ChallengeProgressCard({
     super.key,
@@ -15,32 +17,26 @@ class ChallengeProgressCard extends StatefulWidget {
     this.imageAsset,
     required this.currentProgress,
     required this.totalProgress,
+    required this.isChecked, // Wajib diisi dari data state Bloc
+    this.onToggle, // Aksi ketika card / checkbox ditekan
   });
 
   @override
-  State<ChallengeProgressCard> createState() => _ChallengeProgressCardState();
-}
-
-class _ChallengeProgressCardState extends State<ChallengeProgressCard> {
-  // 🔥 State internal untuk menyimpan status dicentang atau tidak
-  bool _isChecked = false;
-
-  @override
   Widget build(BuildContext context) {
-    // Karena sekarang StatefulWidget, pemanggilan variabel menggunakan "widget.namaVariabel"
-    final double progressValue = widget.totalProgress == 0 ? 0 : widget.currentProgress / widget.totalProgress;
+    // Perhitungan progress ratio
+    final double progressValue = totalProgress == 0 ? 0 : currentProgress / totalProgress;
 
-    // Palet Warna disesuaikan dengan gambar
+    // Palet Warna
     const Color cardBgColor = Color.fromARGB(255, 95, 66, 41); 
     const Color textColor = AppColors.orange100; 
     const Color progressActiveColor = AppColors.orange500; 
     const Color progressBgColor = AppColors.orange100; 
 
-    // Logika untuk menampilkan Gambar Asset atau Emoji
+    // Logika menampilkan Gambar Asset atau Emoji
     Widget iconWidget;
-    if (widget.imageAsset != null) {
+    if (imageAsset != null && imageAsset!.isNotEmpty) {
       iconWidget = Image.asset(
-        widget.imageAsset!,
+        imageAsset!,
         width: 32,
         height: 32,
         fit: BoxFit.contain,
@@ -54,22 +50,17 @@ class _ChallengeProgressCardState extends State<ChallengeProgressCard> {
           ),
         ),
       );
-    } else if (widget.emoji != null) {
+    } else if (emoji != null && emoji!.isNotEmpty) {
       iconWidget = Text(
-        widget.emoji!,
+        emoji!,
         style: const TextStyle(fontSize: 38),
       );
     } else {
       iconWidget = const SizedBox(width: 38, height: 38); 
     }
 
-    // 🔥 GestureDetector untuk menangkap aksi klik pengguna
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _isChecked = !_isChecked; // Membalikkan status saat diklik (true jadi false, dst)
-        });
-      },
+      onTap: onToggle, // 🔥 4. UTUS AKSI KETIKA CARD DI-TAP LANGSUNG KE BLOC
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
@@ -91,12 +82,14 @@ class _ChallengeProgressCardState extends State<ChallengeProgressCard> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    widget.title,
-                    style: const TextStyle(
+                    title,
+                    style: TextStyle(
                       color: textColor,
                       fontSize: 15,
                       fontWeight: FontWeight.w400,
                       letterSpacing: 1,
+                      // 🔥 5. OPSIONAL: Beri efek coret tipis jika challenge sudah sukses/checked
+                      decoration: isChecked ? TextDecoration.lineThrough : TextDecoration.none,
                     ),
                   ),
                   
@@ -123,7 +116,7 @@ class _ChallengeProgressCardState extends State<ChallengeProgressCard> {
                       
                       // Teks Rasio Progress 
                       Text(
-                        "${widget.currentProgress}/${widget.totalProgress}",
+                        "$currentProgress/$totalProgress",
                         style: const TextStyle(
                           color: textColor,
                           fontSize: 13,
@@ -138,27 +131,25 @@ class _ChallengeProgressCardState extends State<ChallengeProgressCard> {
             
             const SizedBox(width: 16),
 
-            // ── 3. Kanan (Lingkaran Checkbox Interaktif) ──
+            // 3. Kanan (Lingkaran Checkbox Sinkron dengan Data Laravel)
             Container(
               width: 26,
               height: 26,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                // 🔥 Jika dicentang, warnanya jadi oranye. Jika tidak, transparan.
-                color: _isChecked ? progressActiveColor : Colors.transparent,
+                color: isChecked ? progressActiveColor : Colors.transparent,
                 border: Border.all(
-                  // 🔥 Border menyesuaikan status centang
-                  color: _isChecked ? progressActiveColor : textColor,
+                  color: isChecked ? progressActiveColor : textColor,
                   width: 1.5, 
                 ),
               ),
-              child: _isChecked
+              child: isChecked
                   ? const Icon(
-                      Icons.check, // 🔥 Munculkan ikon centang
+                      Icons.check,
                       size: 18,
-                      color: cardBgColor, // Warna centangnya (coklat mengikuti background)
+                      color: cardBgColor,
                     )
-                  : null, // Kosong jika tidak dicentang
+                  : null,
             ),
           ],
         ),

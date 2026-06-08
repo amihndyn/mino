@@ -14,8 +14,8 @@ import 'package:flutter/widgets.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
-  /// File path: assets/icons/amezing.svg
-  String get amezing => 'assets/icons/amezing.svg';
+  /// File path: assets/icons/app_icon.png
+  AssetGenImage get appIcon => const AssetGenImage('assets/icons/app_icon.png');
 
   /// File path: assets/icons/bg_blur.png
   AssetGenImage get bgBlur => const AssetGenImage('assets/icons/bg_blur.png');
@@ -24,50 +24,41 @@ class $AssetsIconsGen {
   AssetGenImage get borderLight =>
       const AssetGenImage('assets/icons/border_light.png');
 
+  /// File path: assets/icons/centang.png
+  AssetGenImage get centang => const AssetGenImage('assets/icons/centang.png');
+
   /// File path: assets/icons/diamond.svg
   String get diamond => 'assets/icons/diamond.svg';
 
+  /// File path: assets/icons/flag.png
+  AssetGenImage get flag => const AssetGenImage('assets/icons/flag.png');
+
   /// List of all assets
-  List<dynamic> get values => [amezing, bgBlur, borderLight, diamond];
+  List<dynamic> get values => [
+    appIcon,
+    bgBlur,
+    borderLight,
+    centang,
+    diamond,
+    flag,
+  ];
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/aa copy.png
-  AssetGenImage get aaCopy => const AssetGenImage('assets/images/aa copy.png');
-
-  /// File path: assets/images/aa.png
-  AssetGenImage get aa => const AssetGenImage('assets/images/aa.png');
-
   /// File path: assets/images/affirmation.png
   AssetGenImage get affirmation =>
       const AssetGenImage('assets/images/affirmation.png');
 
-  /// File path: assets/images/afirmation.svg
-  String get afirmation => 'assets/images/afirmation.svg';
-
   /// File path: assets/images/amazing.png
-  AssetGenImage get amazingPng =>
-      const AssetGenImage('assets/images/amazing.png');
-
-  /// File path: assets/images/amazing.svg
-  String get amazingSvg => 'assets/images/amazing.svg';
-
-  /// File path: assets/images/astronot.svg
-  String get astronot => 'assets/images/astronot.svg';
+  AssetGenImage get amazing => const AssetGenImage('assets/images/amazing.png');
 
   /// File path: assets/images/bad.png
-  AssetGenImage get badPng => const AssetGenImage('assets/images/bad.png');
-
-  /// File path: assets/images/bad.svg
-  String get badSvg => 'assets/images/bad.svg';
+  AssetGenImage get bad => const AssetGenImage('assets/images/bad.png');
 
   /// File path: assets/images/bed.png
-  AssetGenImage get bedPng => const AssetGenImage('assets/images/bed.png');
-
-  /// File path: assets/images/bed.svg
-  String get bedSvg => 'assets/images/bed.svg';
+  AssetGenImage get bed => const AssetGenImage('assets/images/bed.png');
 
   /// File path: assets/images/berlian.svg
   String get berlian => 'assets/images/berlian.svg';
@@ -75,89 +66,41 @@ class $AssetsImagesGen {
   /// File path: assets/images/berlin.png
   AssetGenImage get berlin => const AssetGenImage('assets/images/berlin.png');
 
-  /// File path: assets/images/bg_login copy.png
-  AssetGenImage get bgLoginCopy =>
-      const AssetGenImage('assets/images/bg_login copy.png');
-
   /// File path: assets/images/bg_login.png
-  AssetGenImage get bgLoginPng =>
+  AssetGenImage get bgLogin =>
       const AssetGenImage('assets/images/bg_login.png');
 
-  /// File path: assets/images/bg_login.svg
-  String get bgLoginSvg => 'assets/images/bg_login.svg';
-
-  /// File path: assets/images/blog copy.svg
-  String get blogCopy => 'assets/images/blog copy.svg';
-
   /// File path: assets/images/blog.png
-  AssetGenImage get blogPng => const AssetGenImage('assets/images/blog.png');
-
-  /// File path: assets/images/blog.svg
-  String get blogSvg => 'assets/images/blog.svg';
-
-  /// File path: assets/images/blogjurnal.svg
-  String get blogjurnal => 'assets/images/blogjurnal.svg';
+  AssetGenImage get blog => const AssetGenImage('assets/images/blog.png');
 
   /// File path: assets/images/book.png
-  AssetGenImage get bookPng => const AssetGenImage('assets/images/book.png');
-
-  /// File path: assets/images/book.svg
-  String get bookSvg => 'assets/images/book.svg';
+  AssetGenImage get book => const AssetGenImage('assets/images/book.png');
 
   /// File path: assets/images/cat.png
-  AssetGenImage get catPng => const AssetGenImage('assets/images/cat.png');
-
-  /// File path: assets/images/cat.svg
-  String get catSvg => 'assets/images/cat.svg';
+  AssetGenImage get cat => const AssetGenImage('assets/images/cat.png');
 
   /// File path: assets/images/challenge.png
-  AssetGenImage get challengePng =>
+  AssetGenImage get challenge =>
       const AssetGenImage('assets/images/challenge.png');
 
-  /// File path: assets/images/challenge.svg
-  String get challengeSvg => 'assets/images/challenge.svg';
-
   /// File path: assets/images/clean.png
-  AssetGenImage get cleanPng => const AssetGenImage('assets/images/clean.png');
-
-  /// File path: assets/images/clean.svg
-  String get cleanSvg => 'assets/images/clean.svg';
+  AssetGenImage get clean => const AssetGenImage('assets/images/clean.png');
 
   /// File path: assets/images/course.png
-  AssetGenImage get coursePng =>
-      const AssetGenImage('assets/images/course.png');
-
-  /// File path: assets/images/course.svg
-  String get courseSvg => 'assets/images/course.svg';
+  AssetGenImage get course => const AssetGenImage('assets/images/course.png');
 
   /// File path: assets/images/deepwork.png
-  AssetGenImage get deepworkPng =>
+  AssetGenImage get deepwork =>
       const AssetGenImage('assets/images/deepwork.png');
 
-  /// File path: assets/images/deepwork.svg
-  String get deepworkSvg => 'assets/images/deepwork.svg';
-
   /// File path: assets/images/detox.png
-  AssetGenImage get detoxPng => const AssetGenImage('assets/images/detox.png');
-
-  /// File path: assets/images/detox.svg
-  String get detoxSvg => 'assets/images/detox.svg';
+  AssetGenImage get detox => const AssetGenImage('assets/images/detox.png');
 
   /// File path: assets/images/diamond.svg
   String get diamond => 'assets/images/diamond.svg';
 
-  /// File path: assets/images/drink copy.png
-  AssetGenImage get drinkCopy =>
-      const AssetGenImage('assets/images/drink copy.png');
-
   /// File path: assets/images/drink.png
-  AssetGenImage get drinkPng => const AssetGenImage('assets/images/drink.png');
-
-  /// File path: assets/images/drink.svg
-  String get drinkSvg => 'assets/images/drink.svg';
-
-  /// File path: assets/images/dua copy.svg
-  String get duaCopy => 'assets/images/dua copy.svg';
+  AssetGenImage get drink => const AssetGenImage('assets/images/drink.png');
 
   /// File path: assets/images/dua.svg
   String get dua => 'assets/images/dua.svg';
@@ -165,59 +108,27 @@ class $AssetsImagesGen {
   /// File path: assets/images/eat.png
   AssetGenImage get eat => const AssetGenImage('assets/images/eat.png');
 
-  /// File path: assets/images/empat copy.svg
-  String get empatCopy => 'assets/images/empat copy.svg';
-
   /// File path: assets/images/empat.svg
   String get empat => 'assets/images/empat.svg';
-
-  /// File path: assets/images/enam copy.svg
-  String get enamCopy => 'assets/images/enam copy.svg';
 
   /// File path: assets/images/enam.svg
   String get enam => 'assets/images/enam.svg';
 
   /// File path: assets/images/exercise.png
-  AssetGenImage get exercisePng =>
+  AssetGenImage get exercise =>
       const AssetGenImage('assets/images/exercise.png');
 
-  /// File path: assets/images/exercise.svg
-  String get exerciseSvg => 'assets/images/exercise.svg';
-
   /// File path: assets/images/face.png
-  AssetGenImage get facePng => const AssetGenImage('assets/images/face.png');
-
-  /// File path: assets/images/face.svg
-  String get faceSvg => 'assets/images/face.svg';
-
-  /// File path: assets/images/flag.svg
-  String get flag => 'assets/images/flag.svg';
+  AssetGenImage get face => const AssetGenImage('assets/images/face.png');
 
   /// File path: assets/images/form.png
-  AssetGenImage get formPng => const AssetGenImage('assets/images/form.png');
-
-  /// File path: assets/images/form.svg
-  String get formSvg => 'assets/images/form.svg';
+  AssetGenImage get form => const AssetGenImage('assets/images/form.png');
 
   /// File path: assets/images/fruits.png
-  AssetGenImage get fruitsPng =>
-      const AssetGenImage('assets/images/fruits.png');
-
-  /// File path: assets/images/fruits.svg
-  String get fruitsSvg => 'assets/images/fruits.svg';
-
-  /// File path: assets/images/get_diamond.svg
-  String get getDiamond => 'assets/images/get_diamond.svg';
-
-  /// File path: assets/images/good copy.png
-  AssetGenImage get goodCopy =>
-      const AssetGenImage('assets/images/good copy.png');
+  AssetGenImage get fruits => const AssetGenImage('assets/images/fruits.png');
 
   /// File path: assets/images/good.png
-  AssetGenImage get goodPng => const AssetGenImage('assets/images/good.png');
-
-  /// File path: assets/images/good.svg
-  String get goodSvg => 'assets/images/good.svg';
+  AssetGenImage get good => const AssetGenImage('assets/images/good.png');
 
   /// File path: assets/images/google.svg
   String get google => 'assets/images/google.svg';
@@ -272,6 +183,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/learn.svg
   String get learnSvg => 'assets/images/learn.svg';
+
+  /// File path: assets/images/lian.svg
+  String get lian => 'assets/images/lian.svg';
 
   /// File path: assets/images/lima copy.svg
   String get limaCopy => 'assets/images/lima copy.svg';
@@ -382,7 +296,10 @@ class $AssetsImagesGen {
   String get routineSvg => 'assets/images/routine.svg';
 
   /// File path: assets/images/run.png
-  AssetGenImage get run => const AssetGenImage('assets/images/run.png');
+  AssetGenImage get runPng => const AssetGenImage('assets/images/run.png');
+
+  /// File path: assets/images/run.svg
+  String get runSvg => 'assets/images/run.svg';
 
   /// File path: assets/images/sad copy.png
   AssetGenImage get sadCopy =>
@@ -470,18 +387,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/timer.svg
   String get timer => 'assets/images/timer.svg';
 
-  /// File path: assets/images/timerr.png
-  AssetGenImage get timerr => const AssetGenImage('assets/images/timerr.png');
-
   /// File path: assets/images/tren.png
   AssetGenImage get trenPng => const AssetGenImage('assets/images/tren.png');
 
   /// File path: assets/images/tren.svg
   String get trenSvg => 'assets/images/tren.svg';
-
-  /// File path: assets/images/unusual copy.png
-  AssetGenImage get unusualCopy =>
-      const AssetGenImage('assets/images/unusual copy.png');
 
   /// File path: assets/images/unusual.png
   AssetGenImage get unusualPng =>
@@ -503,6 +413,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/wakeUp.svg
   String get wakeUpSvg => 'assets/images/wakeUp.svg';
+
+  /// File path: assets/images/wal1.svg
+  String get wal1 => 'assets/images/wal1.svg';
 
   /// File path: assets/images/walk.png
   AssetGenImage get walkPng => const AssetGenImage('assets/images/walk.png');
@@ -534,95 +447,59 @@ class $AssetsImagesGen {
   AssetGenImage get wallpaper6 =>
       const AssetGenImage('assets/images/wallpaper 6.png');
 
+  /// File path: assets/images/wallpaper.png
+  AssetGenImage get wallpaper =>
+      const AssetGenImage('assets/images/wallpaper.png');
+
+  /// File path: assets/images/wallpaperr.png
+  AssetGenImage get wallpaperr =>
+      const AssetGenImage('assets/images/wallpaperr.png');
+
   /// File path: assets/images/wash_clothes.png
-  AssetGenImage get washClothesPng =>
+  AssetGenImage get washClothes =>
       const AssetGenImage('assets/images/wash_clothes.png');
 
-  /// File path: assets/images/wash_clothes.svg
-  String get washClothesSvg => 'assets/images/wash_clothes.svg';
-
   /// File path: assets/images/wash_dishes.png
-  AssetGenImage get washDishesPng =>
+  AssetGenImage get washDishes =>
       const AssetGenImage('assets/images/wash_dishes.png');
 
-  /// File path: assets/images/wash_dishes.svg
-  String get washDishesSvg => 'assets/images/wash_dishes.svg';
-
   /// File path: assets/images/watch.png
-  AssetGenImage get watchPng => const AssetGenImage('assets/images/watch.png');
+  AssetGenImage get watch => const AssetGenImage('assets/images/watch.png');
 
-  /// File path: assets/images/watch.svg
-  String get watchSvg => 'assets/images/watch.svg';
-
-  /// File path: assets/images/woman.svg
-  String get woman => 'assets/images/woman.svg';
+  /// File path: assets/images/water.png
+  AssetGenImage get water => const AssetGenImage('assets/images/water.png');
 
   /// File path: assets/images/yoga.png
-  AssetGenImage get yogaPng => const AssetGenImage('assets/images/yoga.png');
-
-  /// File path: assets/images/yoga.svg
-  String get yogaSvg => 'assets/images/yoga.svg';
+  AssetGenImage get yoga => const AssetGenImage('assets/images/yoga.png');
 
   /// List of all assets
   List<dynamic> get values => [
-    aaCopy,
-    aa,
     affirmation,
-    afirmation,
-    amazingPng,
-    amazingSvg,
-    astronot,
-    badPng,
-    badSvg,
-    bedPng,
-    bedSvg,
+    amazing,
+    bad,
+    bed,
     berlian,
     berlin,
-    bgLoginCopy,
-    bgLoginPng,
-    bgLoginSvg,
-    blogCopy,
-    blogPng,
-    blogSvg,
-    blogjurnal,
-    bookPng,
-    bookSvg,
-    catPng,
-    catSvg,
-    challengePng,
-    challengeSvg,
-    cleanPng,
-    cleanSvg,
-    coursePng,
-    courseSvg,
-    deepworkPng,
-    deepworkSvg,
-    detoxPng,
-    detoxSvg,
+    bgLogin,
+    blog,
+    book,
+    cat,
+    challenge,
+    clean,
+    course,
+    deepwork,
+    detox,
     diamond,
-    drinkCopy,
-    drinkPng,
-    drinkSvg,
-    duaCopy,
+    drink,
     dua,
     eat,
-    empatCopy,
     empat,
-    enamCopy,
     enam,
-    exercisePng,
-    exerciseSvg,
-    facePng,
-    faceSvg,
-    flag,
-    formPng,
-    formSvg,
-    fruitsPng,
-    fruitsSvg,
-    getDiamond,
-    goodCopy,
-    goodPng,
-    goodSvg,
+    exercise,
+    face,
+    form,
+    fruits,
+    good,
     google,
     gratitudePng,
     gratitudeSvg,
@@ -640,6 +517,7 @@ class $AssetsImagesGen {
     kalenderSvg,
     learnPng,
     learnSvg,
+    lian,
     limaCopy,
     lima,
     loading,
@@ -674,7 +552,8 @@ class $AssetsImagesGen {
     reflectionSvg,
     routinePng,
     routineSvg,
-    run,
+    runPng,
+    runSvg,
     sadCopy,
     sad,
     saladPng,
@@ -702,16 +581,15 @@ class $AssetsImagesGen {
     tigaCopy,
     tiga,
     timer,
-    timerr,
     trenPng,
     trenSvg,
-    unusualCopy,
     unusualPng,
     unusualSvg,
     vitaminPng,
     vitaminSvg,
     wakeUpPng,
     wakeUpSvg,
+    wal1,
     walkPng,
     walkSvg,
     wallpaper1,
@@ -720,15 +598,13 @@ class $AssetsImagesGen {
     wallpaper4,
     wallpaper5,
     wallpaper6,
-    washClothesPng,
-    washClothesSvg,
-    washDishesPng,
-    washDishesSvg,
-    watchPng,
-    watchSvg,
-    woman,
-    yogaPng,
-    yogaSvg,
+    wallpaper,
+    wallpaperr,
+    washClothes,
+    washDishes,
+    watch,
+    water,
+    yoga,
   ];
 }
 

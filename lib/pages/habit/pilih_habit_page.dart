@@ -10,6 +10,8 @@ import '../../providers/habit_provider.dart';
 import 'widgets/add_habit_header.dart';
 import 'widgets/habit_section.dart';
 import 'widgets/unique_habit_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 
 class PilihHabitPage extends StatelessWidget {
   const PilihHabitPage({super.key});
@@ -42,14 +44,20 @@ class PilihHabitPage extends StatelessWidget {
                         child: Container(
                           width: double.infinity,
                           decoration: const BoxDecoration(
-                            color: AppColors.orange100, // Warna solid base konten
+                            color:
+                                AppColors.orange100, // Warna solid base konten
                             borderRadius: BorderRadius.vertical(
                               top: Radius.circular(32),
                             ),
                           ),
                           child: SingleChildScrollView(
                             // Padding ekstra di bawah agar konten terakhir tidak tertutup tombol
-                            padding: const EdgeInsets.only(left: 20, right: 20, top: 24, bottom: 120),
+                            padding: const EdgeInsets.only(
+                              left: 20,
+                              right: 20,
+                              top: 24,
+                              bottom: 120,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -82,9 +90,8 @@ class PilihHabitPage extends StatelessWidget {
                                 /// UNIQUE HABIT
                                 Text(
                                   "Be unique",
-                                  style: AppTextStyles.sectionTitleBold.copyWith(
-                                    color: AppColors.coklat700,
-                                  ),
+                                  style: AppTextStyles.sectionTitleBold
+                                      .copyWith(color: AppColors.coklat700),
                                 ),
 
                                 const SizedBox(height: 12),
@@ -96,9 +103,7 @@ class PilihHabitPage extends StatelessWidget {
                                 /// HABIT SECTIONS
                                 ...provider.sections.entries.map(
                                   (section) => Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: 28,
-                                    ),
+                                    padding: const EdgeInsets.only(bottom: 28),
                                     child: HabitSection(
                                       title: section.key,
                                       habits: section.value,
@@ -131,7 +136,9 @@ class PilihHabitPage extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            AppColors.orange100.withOpacity(0.0), // Transparan di atas
+                            AppColors.orange100.withOpacity(
+                              0.0,
+                            ), // Transparan di atas
                             AppColors.orange100.withOpacity(0.8),
                             AppColors.orange100, // Solid di bawah
                             AppColors.orange100, // Pastikan benar-benar solid
@@ -148,9 +155,30 @@ class PilihHabitPage extends StatelessWidget {
                       child: SafeArea(
                         top: false,
                         child: CustomButton(
-                          text: "Habit selected",
+                          text: "Add Selected Habits",
                           onTap: () {
-                            print("Pilihan: ${provider.selectedHabits}");
+                            // 1. Ambil daftar habit yang dicentang
+                            final selectedList = provider.selectedHabits;
+
+                            // 2. Looping: Kirim setiap nama habit ke Laravel via BLoC
+                            for (String habitName in selectedList) {
+                              context.read<DashboardBloc>().add(
+                                DashboardEvent.addHabit(habitName),
+                              );
+                            }
+
+                            // 3. Tampilkan pesan sukses
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '${selectedList.length} Habit berhasil ditambahkan!',
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+
+                            // 4. Kembali ke halaman Dashboard Utama
+                            Navigator.pop(context);
                           },
                         ),
                       ),
