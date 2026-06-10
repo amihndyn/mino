@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_sizes.dart';
-import 'package:mino/models/progress_model.dart';
+import 'package:mino/models/progress_model.dart'; // Tetap biarkan jika MonthData masih dipakai di tempat lain
 import 'package:mino/pages/journal/widgets/monthly_reflection.dart';
 import 'package:mino/widgets/dialogs/month_picker_sheet.dart';
 import 'package:mino/core/constants/app_colors.dart';
@@ -10,6 +10,9 @@ import 'package:mino/pages/journal/widgets/period_switcher.dart';
 import 'package:mino/pages/journal/widgets/goal_card.dart';
 import 'package:mino/pages/journal/widgets/activity_card.dart';
 import 'package:mino/pages/journal/widgets/weekly_reflection.dart';
+
+// 🔥 IMPORT MODEL PROGRESS BARU KAMU DI SINI
+import 'package:mino/core/data/model/response/dashboard_response.dart'; 
 
 class ProgressPage extends StatefulWidget {
   final int currentTabIndex;
@@ -29,18 +32,38 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
   bool _isWeekly = true;
   String _selectedMonth = 'May 2026';
 
-  final List<MonthData> _monthlyData = [
-    MonthData(month: 'May 2026', goalPercent: 0.84, weeklyBars: [3.2, 2.8, 3.5, 2.0]),
-    MonthData(month: 'April 2026', goalPercent: 0.72, weeklyBars: [2.5, 3.0, 2.8, 3.2]),
-    MonthData(month: 'March 2026', goalPercent: 0.65, weeklyBars: [2.0, 2.2, 2.5, 2.8]),
-    MonthData(month: 'February 2026', goalPercent: 0.50, weeklyBars: [1.5, 2.0, 2.2, 2.5]),
-    MonthData(month: 'January 2026', goalPercent: 0.45, weeklyBars: [1.0, 1.2, 1.5, 1.8]),
-    MonthData(month: 'December 2025', goalPercent: 0.30, weeklyBars: [0.8, 1.0, 1.2, 1.5]),
+  // 🔥 1. Ubah List Dummy menggunakan objek Progress asli dari backend
+  final List<Progress> _monthlyData = [
+    Progress(
+      month: 'May 2026', 
+      weeklyGoalPercent: 0.84, 
+      monthlyGoalPercent: 0.84, 
+      weeklyBars: [3.2, 2.8, 3.5, 2.0],
+      monthlyBars: [3.2, 2.8, 3.5, 2.0], // Diisi dummy data samakan saja dulu
+    ),
+    Progress(
+      month: 'April 2026', 
+      weeklyGoalPercent: 0.72, 
+      monthlyGoalPercent: 0.72, 
+      weeklyBars: [2.5, 3.0, 2.8, 3.2],
+      monthlyBars: [2.5, 3.0, 2.8, 3.2],
+    ),
+    Progress(
+      month: 'March 2026', 
+      weeklyGoalPercent: 0.65, 
+      monthlyGoalPercent: 0.65, 
+      weeklyBars: [2.0, 2.2, 2.5, 2.8],
+      monthlyBars: [2.0, 2.2, 2.5, 2.8],
+    ),
   ];
 
   late AnimationController _animCtrl;
 
-  MonthData get _currentMonthData => _monthlyData.firstWhere((d) => d.month == _selectedMonth);
+  // 🔥 2. Kembalian fungsi getter ini sekarang bertipe Progress
+  Progress get _currentMonthData => _monthlyData.firstWhere(
+        (d) => d.month == _selectedMonth,
+        orElse: () => _monthlyData.first,
+      );
 
   @override
   void initState() {
@@ -64,7 +87,7 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
       backgroundColor: Colors.transparent,
       builder: (_) => MonthPickerSheet(
         selectedMonth: _selectedMonth,
-        months: _monthlyData.map((d) => d.month).toList(),
+        months: _monthlyData.map((d) => d.month ?? '').toList(),
         onSelected: (month) {
           setState(() => _selectedMonth = month);
           _animCtrl.forward(from: 0);
@@ -76,9 +99,14 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final activeGoalData = _isWeekly
-        ? MonthData(month: 'This Week', goalPercent: 0.84, weeklyBars: [])
-        : _currentMonthData;
+    // 🔥 3. Bungkus activeGoalData lama ke format MonthData demi GoalCard (karena GoalCard masih pakai model lama)
+    final activeGoalData = MonthData(
+      month: _isWeekly ? 'This Week' : _currentMonthData.month ?? '',
+      goalPercent: _isWeekly 
+          ? (_currentMonthData.weeklyGoalPercent ?? 0.0) 
+          : (_currentMonthData.monthlyGoalPercent ?? 0.0),
+      weeklyBars: _currentMonthData.weeklyBars ?? [],
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +134,6 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
               ),
               const SizedBox(height: 26),
               
-              // Period Switcher diturunkan ke sini agar tidak ikut ke-scroll
               PeriodSwitcher(
                 isWeekly: _isWeekly,
                 onChanged: (val) => setState(() => _isWeekly = val),
@@ -124,7 +151,7 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 26), // Jarak atas sebelum GoalCard
+                  const SizedBox(height: 26), 
                   
                   GoalCard(
                     isWeekly: _isWeekly,
@@ -132,10 +159,11 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
                   ),
                   const SizedBox(height: 26),
                   
+                  // 🔥 4. SEKARANG SUDAH PAS DENGAN PARAMETER BARU DI ACTIVITYCARD
                   ActivityCard(
                     isWeekly: _isWeekly,
                     selectedMonth: _selectedMonth,
-                    currentMonthData: _currentMonthData,
+                    currentProgressData: _currentMonthData, // Mengirim objek Progress, bukan MonthData
                     onMonthPickerTap: _showMonthPicker,
                   ),
                   const SizedBox(height: 26),
@@ -144,7 +172,7 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
                       ? const WeeklyReflection() 
                       : MonthlyReflection(selectedMonth: _selectedMonth),
                   
-                  const SizedBox(height: 130), // Jarak aman untuk bottom navbar
+                  const SizedBox(height: 130), 
                 ],
               ),
             ),

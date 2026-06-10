@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mino/models/challenge_data.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/navbar/bottom_navbar.dart';
+import 'package:mino/widgets/button/custom_button.dart';
+
 
 class ChallengeDetailPage extends StatefulWidget {
   final ChallengeData challenge;
@@ -16,18 +18,9 @@ class ChallengeDetailPage extends StatefulWidget {
 }
 
 class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
-  late bool _isFavorite;
-
-  @override
-  void initState() {
-    super.initState();
-    _isFavorite = widget.challenge.isFavorite;
-  }
 
   @override
   Widget build(BuildContext context) {
-    const Color bgColor = Color(0xff462F21);
-    const Color accentColor = Color(0xffF2CD94);
 
     return Scaffold(
       extendBody: true,
@@ -56,7 +49,7 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
               children: [
                 CustomAppBar(
                   title: widget.challenge.title,
-                  onBackPressed: () => Navigator.pop(context),
+                 
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -70,7 +63,7 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
                         /// Banner Challenge
                         Container(
                           width: double.infinity,
-                          height: 233,
+                          height: 300,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
@@ -86,7 +79,7 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(24),
-                            child: _buildChallengeImage(widget.challenge.imageAsset),
+                            child: _buildChallengeImage(widget.challenge.detailImageAsset),
                           ),
                         ),
 
@@ -96,14 +89,14 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
                         Row(
                           children: [
                             _buildChip(
-                              assetPath: 'assets/images/berlian.png',
+                              assetPath: 'assets/images/diamond.png',
                               label: '+${widget.challenge.diamondReward}',
                               textColor: const Color(0xff18C3F7),
                               bgColor: const Color(0xff1A365D).withOpacity(0.6),
                             ),
                             const SizedBox(width: 10),
                             _buildChip(
-                              assetPath: 'assets/images/flag.png',
+                              assetPath: 'assets/images/redflag.png',
                               label: '${widget.challenge.durationDays} days',
                               textColor: const Color(0xffFF6B6B),
                               bgColor: const Color(0xff5C251E).withOpacity(0.6),
@@ -166,85 +159,24 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
               child: Row(
                 children: [
                   /// TOMBOL UTAMA: Add to Routine
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('"${widget.challenge.title}" has been added to your routine!'),
-                            backgroundColor: bgColor,
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: 58,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0xff2C1B12).withOpacity(0.85),
-                              const Color(0xff1C100A).withOpacity(0.95),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(
-                            color: accentColor.withOpacity(0.15),
-                          ),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Add to my routine',
-                            style: TextStyle(
-                              color: Color(0xffE5C185),
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
+                 Expanded(
+  child: SizedBox(
+    height: 50,
+    child: CustomButton(
+      text: 'Add to my routine',
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '"${widget.challenge.title}" has been added to your routine!',
+            ),
+          ),
+        );
+      },
+    ),
+  ),
+),
                   const SizedBox(width: 12),
-
-                  /// 🔥 TOMBOL BARU: Add to Favorite
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isFavorite = !_isFavorite;
-                        widget.challenge.isFavorite = _isFavorite;
-                      });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(_isFavorite 
-                              ? 'Added to Favorites!' 
-                              : 'Removed from Favorites!'),
-                          duration: const Duration(seconds: 1),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      height: 58,
-                      width: 58,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            const Color(0xff2C1B12).withOpacity(0.85),
-                            const Color(0xff1C100A).withOpacity(0.95),
-                          ],
-                        ),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: accentColor.withOpacity(0.15),
-                        ),
-                      ),
-                      child: Icon(
-                        _isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: _isFavorite ? Colors.redAccent : const Color(0xffE5C185),
-                        size: 24,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -281,21 +213,14 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
   }
 
   Widget _buildChallengeImage(String assetPath) {
-    // Jika data model challenge lawas masih mengirimkan ekstensi .svg, jalankan fungsi pembersihan/replace string otomatis ke .png
-    final cleanPath = assetPath.toLowerCase().endsWith('.svg')
-        ? '${assetPath.substring(0, assetPath.length - 4)}.png'
-        : assetPath;
+  final imagePath = assetPath.isNotEmpty
+      ? assetPath
+      : widget.challenge.imageAsset;
 
-    return Image.asset(
-      cleanPath, 
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) => const Center(
-        child: Icon(
-          Icons.image_not_supported_rounded,
-          color: Color(0xffF2CD94),
-          size: 40,
-        ),
-      ),
-    );
-  }
+  return Image.asset(
+  imagePath,
+  fit: BoxFit.cover,
+  alignment: Alignment.topCenter,
+);
+}
 }

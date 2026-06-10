@@ -3,26 +3,25 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mino/core/data/datasource/auth_remote_datasource.dart';
 import 'package:mino/core/data/datasource/dashboard_remote_datasource.dart';
 import 'package:mino/core/data/repositories/dashboard_repository.dart';
+import 'package:mino/core/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:mino/core/presentation/home/bloc/focus_timer/focus_timer_bloc.dart';
 import 'package:mino/pages/auth/login_page.dart';
+import 'package:mino/models/profile_model.dart'; // 💡 Diambil dari main
 import 'package:provider/provider.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mino/providers/moodjournal_provider.dart';
 import 'package:mino/pages/splash/splash_screen.dart';
 
-// Import AuthProvider baru Anda (Arsitektur ideal)
 import 'package:mino/providers/auth_provider.dart';
-// Urutan path folder repo-mu
 import 'providers/habit_provider.dart';
 import 'providers/journal_provider.dart';
 import 'providers/mood_provider.dart';
 import 'providers/challenge_provider.dart';
 import 'providers/profile_provider.dart';
 import 'providers/theme_provider.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' as bloc; // 🔥 Tetap gunakan alias agar tidak bentrok dengan keyword Provider bawaan
+import 'package:flutter_bloc/flutter_bloc.dart' as bloc; 
 import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 
-// 🔥 IMPORT FILE FOCUS TIMER YANG BARU DIBUAT
 import 'package:mino/core/data/datasource/focus_timer_remote_datasource.dart';
 import 'package:mino/core/data/repositories/focus_timer_repository.dart';
 
@@ -48,15 +47,31 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MoodJournalProvider()),
         ChangeNotifierProvider(create: (_) => MoodProvider()),
         ChangeNotifierProvider(create: (_) => ChallengeProvider()),
-        ChangeNotifierProvider(create: (_) => ProfileProvider()),
+
+        // 💡 EKSEKUSI PROFILE_PROVIDER DARI MAIN (Dengan data default Nana)
+        ChangeNotifierProvider(
+          create: (_) {
+            final provider = ProfileProvider();
+            provider.setProfile(
+              ProfileModel(
+                name: 'Nana',
+                email: 'nanana.trkj2028@idn.ac.id',
+                avatar: 'assets/images/default.png',
+                streak: 0,
+                totalHabits: 0,
+              ),
+            );
+            return provider;
+          },
+        ),
+
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
 
-        // Terapkan AuthProvider Anda di sini menggantikan BLoC lama:
         ChangeNotifierProvider(
           create: (_) => AuthProvider(AuthRemoteDatasource()),
         ),
 
-        // 🔥 DAFTAR DASHBOARD BLOC
+        // 🔥 FITUR KAMU (HEAD): BLOC DASHBOARD
         bloc.BlocProvider(
           create: (context) => DashboardBloc(
             DashboardRepository(
@@ -65,7 +80,7 @@ class MainApp extends StatelessWidget {
           ),
         ),
 
-        // 🔥 DAFTAR FOCUS TIMER BLOC (YANG BARU)
+        // 🔥 FITUR KAMU (HEAD): BLOC FOCUS TIMER
         bloc.BlocProvider(
           create: (context) => FocusTimerBloc(
             FocusTimerRepository(
@@ -74,7 +89,7 @@ class MainApp extends StatelessWidget {
           ),
         ),
 
-        // Reflection
+        // 🔥 FITUR KAMU (HEAD): BLOC REFLECTION
         bloc.BlocProvider(
           create: (context) => ReflectionBloc(
             ReflectionRepositoryImpl(
@@ -82,10 +97,20 @@ class MainApp extends StatelessWidget {
             ),
           ),
         ),
+        
+        // ── 🛠️ TAMBAHKAN BLOC LOGOUT DI SINI ──
+        bloc.BlocProvider(
+          create: (context) => LogoutBloc(AuthRemoteDatasource()),
+        ),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
+        // 💡 FITUR THEME DARI MAIN (Menggunakan Font Poppins)
+        theme: ThemeData(
+          textTheme: GoogleFonts.poppinsTextTheme(),
+          fontFamily: GoogleFonts.poppins().fontFamily,
+        ),
+        home: const SplashScreen(),
       ),
     );
   }

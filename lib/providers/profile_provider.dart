@@ -31,6 +31,25 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // UPDATE
+ void updateProfile({
+  required String name,
+  required String email,
+  required String avatar,
+}) {
+  if (_profile == null) return;
+
+  _profile = ProfileModel(
+    name: name,
+    email: email,
+    avatar: avatar,
+    streak: _profile!.streak,
+    totalHabits: _profile!.totalHabits,
+  );
+
+  notifyListeners();
+}
+
   // UPDATE AVATAR
   void updateAvatar(String avatar) {
     if (_profile == null) return;

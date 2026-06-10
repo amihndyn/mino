@@ -57,7 +57,7 @@ class FinishTimerPage extends StatelessWidget {
                   // ── 2. Gambar Karakter Selesai ──
                   SvgPicture.asset(
                     'assets/images/enam.svg', 
-                    height: 250,
+                    height: 550,
                   ),
 
                   const SizedBox(height: 40),

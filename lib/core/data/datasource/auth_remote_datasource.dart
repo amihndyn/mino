@@ -29,21 +29,32 @@ class AuthRemoteDatasource {
     }
   }
 
-  Future<Either<String, String>> logout() async {
-    final authData = await AuthLocalDatasource().getAuthData();
-    final response = await http.post(
-      Uri.parse('${Variable.baseUrl}/api/logout'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${authData.token}',
-      },
-    );
+Future<Either<String, String>> logout() async {
+    try {
+      final authLocalDatasource = AuthLocalDatasource(); // Inisialisasi local datasource
+      final authData = await authLocalDatasource.getAuthData();
+      
+      final response = await http.post(
+        Uri.parse('${Variable.baseUrl}/api/logout'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${authData.token}',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      return const Right('logout berhasil');
-    } else {
-      return Left(response.body);
+      if (response.statusCode == 200) {
+        // ── 🛠️ WAJIB: Hapus session/token di lokal HP jika API sukses ──
+        await authLocalDatasource.removeAuthData();
+        return const Right('logout berhasil');
+      } else {
+        // Opsional: Jika token di backend ternyata sudah expired, 
+        // sebaiknya lokal data tetap dihapus agar user tidak stuck.
+        await authLocalDatasource.removeAuthData(); 
+        return Left(response.body);
+      }
+    } catch (e) {
+      return Left(e.toString());
     }
   }
 

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mino/core/presentation/home/bloc/focus_timer/focus_timer_bloc.dart';
 import 'package:mino/pages/timer/running_timer_page.dart';
 import 'package:mino/pages/timer/widgets/pomodoro_tab_menu.dart';
-// 💡 .dart.dart diubah menjadi .dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'widgets/balloon_slider.dart';
 import 'package:mino/pages/timer/affirmation_page.dart'; 
+import 'package:mino/pages/challenge/find_page.dart';
 
 class TimerPage extends StatefulWidget {
   const TimerPage({super.key});
@@ -24,18 +24,16 @@ class _TimerPageState extends State<TimerPage> {
   Widget build(BuildContext context) {
     bool isAffirmation = _selectedTabIndex == 2;
 
-    // 🔥 1. BUNGKUS MULAI DARI SINI
     return BlocListener<FocusTimerBloc, FocusTimerState>(
       listener: (context, state) {
         state.maybeWhen(
           started: (timerId) {
-            // Jika sukses dapat ID dari Laravel, langsung pindah halaman!
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => RunningTimerPage(
                   minutes: _timerValue.toInt(),
-                  timerId: timerId, // 🔥 Kirim ID ini ke halaman berikutnya
+                  timerId: timerId, 
                 ),
               ),
             );
@@ -48,14 +46,13 @@ class _TimerPageState extends State<TimerPage> {
           orElse: () {},
         );
       },
-      child: Scaffold( // <-- Scaffold milikmu sekarang menjadi child di sini
+      child: Scaffold( 
         backgroundColor: const Color(0xFF140C08), 
         body: Stack(
           children: [
             // ── SITUASI 1: JIKA USER MEMILIH TAB AFIRMASI (Index 2) ──
             if (isAffirmation)
               AffirmationPage(
-                // Callback untuk kembali ke halaman Timer (Index 1)
                 onBack: () {
                   setState(() {
                     _selectedTabIndex = 1; 
@@ -65,7 +62,7 @@ class _TimerPageState extends State<TimerPage> {
 
             // ── SITUASI 2: JIKA BUKAN TAB AFIRMASI (Index 0 atau 1) ──
             else ...[
-              // Background Default Utama
+              // Background Default Utama (Pertahankan dari HEAD)
               Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -75,14 +72,14 @@ class _TimerPageState extends State<TimerPage> {
                 ),
               ),
 
-              // Konten Foreground (AppBar, Menu Tab Oval, & Konten Tengah)
+              // Konten Foreground (Menggunakan logika navigasi terbaru dari main)
               SafeArea(
                 child: Column(
                   children: [
                     const SizedBox(height: 10),
                     
                     const CustomAppBar(
-                      title: 'Pomodoro', 
+                      title: 'Timer', 
                     ),
                     
                     const SizedBox(height: 20),
@@ -90,13 +87,23 @@ class _TimerPageState extends State<TimerPage> {
                     PomodoroTabMenu(
                       selectedIndex: _selectedTabIndex,
                       onTabChanged: (index) {
+                        if (index == 0) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const FindPage(),
+                            ),
+                          );
+                          return;
+                        }
+
                         setState(() {
                           _selectedTabIndex = index;
                         });
                       },
                     ),
                     
-                    // Isi Konten Tengah (Challenge / Timer Content)
+                    // Isi Konten Tengah
                     Expanded(
                       child: _buildBodyContent(),
                     ),
@@ -107,10 +114,8 @@ class _TimerPageState extends State<TimerPage> {
           ],
         ),
       ),
-    ); // <-- Tutup BlocListener
+    ); 
   }
-
-  // ... (lanjut ke fungsi _buildBodyContent di bawahnya)
 
   // Fungsi pembantu untuk menukar konten tengah berdasarkan tab
   Widget _buildBodyContent() {
@@ -143,21 +148,18 @@ class _TimerPageState extends State<TimerPage> {
               ),
             ),
             const Spacer(),
-// ... potongan kode di dalam _buildBodyContent() -> case 1:
-              Padding(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: SizedBox(
-                  width: 200, 
-                  child: CustomButton(
-                    text: 'Next',
-                    onTap: () {
-                      // 🔥 2. PANGGIL EVENT START KE BLOC SAAT TOMBOL NEXT DITEKAN
-                      context.read<FocusTimerBloc>().add(const FocusTimerEvent.startFocus());
-                    },
-                  ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: SizedBox(
+                width: 200, 
+                child: CustomButton(
+                  text: 'Next',
+                  onTap: () {
+                    context.read<FocusTimerBloc>().add(const FocusTimerEvent.startFocus());
+                  },
                 ),
               ),
-              // ...
+            ),
           ],
         );
       default:
