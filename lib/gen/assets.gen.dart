@@ -54,14 +54,15 @@ class $AssetsImagesGen {
   /// File path: assets/images/amazing.png
   AssetGenImage get amazing => const AssetGenImage('assets/images/amazing.png');
 
+  /// File path: assets/images/astronout.png
+  AssetGenImage get astronout =>
+      const AssetGenImage('assets/images/astronout.png');
+
   /// File path: assets/images/bad.png
   AssetGenImage get bad => const AssetGenImage('assets/images/bad.png');
 
   /// File path: assets/images/bed.png
   AssetGenImage get bed => const AssetGenImage('assets/images/bed.png');
-
-  /// File path: assets/images/berlian.svg
-  String get berlian => 'assets/images/berlian.svg';
 
   /// File path: assets/images/berlin.png
   AssetGenImage get berlin => const AssetGenImage('assets/images/berlin.png');
@@ -86,6 +87,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/clean.png
   AssetGenImage get clean => const AssetGenImage('assets/images/clean.png');
 
+  /// File path: assets/images/cleans.png
+  AssetGenImage get cleans => const AssetGenImage('assets/images/cleans.png');
+
   /// File path: assets/images/course.png
   AssetGenImage get course => const AssetGenImage('assets/images/course.png');
 
@@ -93,20 +97,37 @@ class $AssetsImagesGen {
   AssetGenImage get deepwork =>
       const AssetGenImage('assets/images/deepwork.png');
 
+  /// File path: assets/images/default.png
+  AssetGenImage get defaultPng =>
+      const AssetGenImage('assets/images/default.png');
+
   /// File path: assets/images/detox.png
   AssetGenImage get detox => const AssetGenImage('assets/images/detox.png');
 
+  /// File path: assets/images/detoxs.png
+  AssetGenImage get detoxs => const AssetGenImage('assets/images/detoxs.png');
+
+  /// File path: assets/images/diamond.png
+  AssetGenImage get diamondPng =>
+      const AssetGenImage('assets/images/diamond.png');
+
   /// File path: assets/images/diamond.svg
-  String get diamond => 'assets/images/diamond.svg';
+  String get diamondSvg => 'assets/images/diamond.svg';
 
   /// File path: assets/images/drink.png
   AssetGenImage get drink => const AssetGenImage('assets/images/drink.png');
+
+  /// File path: assets/images/drinks.png
+  AssetGenImage get drinks => const AssetGenImage('assets/images/drinks.png');
 
   /// File path: assets/images/dua.svg
   String get dua => 'assets/images/dua.svg';
 
   /// File path: assets/images/eat.png
   AssetGenImage get eat => const AssetGenImage('assets/images/eat.png');
+
+  /// File path: assets/images/eats.png
+  AssetGenImage get eats => const AssetGenImage('assets/images/eats.png');
 
   /// File path: assets/images/empat.svg
   String get empat => 'assets/images/empat.svg';
@@ -139,6 +160,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/gratitude.svg
   String get gratitudeSvg => 'assets/images/gratitude.svg';
+
+  /// File path: assets/images/grats.png
+  AssetGenImage get grats => const AssetGenImage('assets/images/grats.png');
 
   /// File path: assets/images/greybook.svg
   String get greybook => 'assets/images/greybook.svg';
@@ -202,8 +226,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.svg
   String get logoSvg => 'assets/images/logo.svg';
 
+  /// File path: assets/images/man.png
+  AssetGenImage get manPng => const AssetGenImage('assets/images/man.png');
+
   /// File path: assets/images/man.svg
-  String get man => 'assets/images/man.svg';
+  String get manSvg => 'assets/images/man.svg';
 
   /// File path: assets/images/many_diamond.svg
   String get manyDiamond => 'assets/images/many_diamond.svg';
@@ -250,6 +277,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/okey.png
   AssetGenImage get okey => const AssetGenImage('assets/images/okey.png');
 
+  /// File path: assets/images/phones.png
+  AssetGenImage get phones => const AssetGenImage('assets/images/phones.png');
+
   /// File path: assets/images/pilates.png
   AssetGenImage get pilatesPng =>
       const AssetGenImage('assets/images/pilates.png');
@@ -281,6 +311,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/read.svg
   String get readSvg => 'assets/images/read.svg';
 
+  /// File path: assets/images/redflag.png
+  AssetGenImage get redflag => const AssetGenImage('assets/images/redflag.png');
+
   /// File path: assets/images/reflection.png
   AssetGenImage get reflectionPng =>
       const AssetGenImage('assets/images/reflection.png');
@@ -295,11 +328,18 @@ class $AssetsImagesGen {
   /// File path: assets/images/routine.svg
   String get routineSvg => 'assets/images/routine.svg';
 
+  /// File path: assets/images/routines.png
+  AssetGenImage get routines =>
+      const AssetGenImage('assets/images/routines.png');
+
   /// File path: assets/images/run.png
   AssetGenImage get runPng => const AssetGenImage('assets/images/run.png');
 
   /// File path: assets/images/run.svg
   String get runSvg => 'assets/images/run.svg';
+
+  /// File path: assets/images/runs.png
+  AssetGenImage get runs => const AssetGenImage('assets/images/runs.png');
 
   /// File path: assets/images/sad copy.png
   AssetGenImage get sadCopy =>
@@ -339,6 +379,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/skincare.svg
   String get skincareSvg => 'assets/images/skincare.svg';
+
+  /// File path: assets/images/skincares.png
+  AssetGenImage get skincares =>
+      const AssetGenImage('assets/images/skincares.png');
 
   /// File path: assets/images/smile.png
   AssetGenImage get smilePng => const AssetGenImage('assets/images/smile.png');
@@ -384,8 +428,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/tiga.svg
   String get tiga => 'assets/images/tiga.svg';
 
+  /// File path: assets/images/timer.png
+  AssetGenImage get timerPng => const AssetGenImage('assets/images/timer.png');
+
   /// File path: assets/images/timer.svg
-  String get timer => 'assets/images/timer.svg';
+  String get timerSvg => 'assets/images/timer.svg';
 
   /// File path: assets/images/tren.png
   AssetGenImage get trenPng => const AssetGenImage('assets/images/tren.png');
@@ -469,16 +516,25 @@ class $AssetsImagesGen {
   /// File path: assets/images/water.png
   AssetGenImage get water => const AssetGenImage('assets/images/water.png');
 
+  /// File path: assets/images/woman.png
+  AssetGenImage get woman => const AssetGenImage('assets/images/woman.png');
+
+  /// File path: assets/images/works.png
+  AssetGenImage get works => const AssetGenImage('assets/images/works.png');
+
   /// File path: assets/images/yoga.png
   AssetGenImage get yoga => const AssetGenImage('assets/images/yoga.png');
+
+  /// File path: assets/images/yogas.png
+  AssetGenImage get yogas => const AssetGenImage('assets/images/yogas.png');
 
   /// List of all assets
   List<dynamic> get values => [
     affirmation,
     amazing,
+    astronout,
     bad,
     bed,
-    berlian,
     berlin,
     bgLogin,
     blog,
@@ -486,13 +542,19 @@ class $AssetsImagesGen {
     cat,
     challenge,
     clean,
+    cleans,
     course,
     deepwork,
+    defaultPng,
     detox,
-    diamond,
+    detoxs,
+    diamondPng,
+    diamondSvg,
     drink,
+    drinks,
     dua,
     eat,
+    eats,
     empat,
     enam,
     exercise,
@@ -503,6 +565,7 @@ class $AssetsImagesGen {
     google,
     gratitudePng,
     gratitudeSvg,
+    grats,
     greybook,
     gymPng,
     gymSvg,
@@ -523,7 +586,8 @@ class $AssetsImagesGen {
     loading,
     logoPng,
     logoSvg,
-    man,
+    manPng,
+    manSvg,
     manyDiamond,
     meditationPng,
     meditationSvg,
@@ -538,6 +602,7 @@ class $AssetsImagesGen {
     okay,
     okeyCopy,
     okey,
+    phones,
     pilatesPng,
     pilatesSvg,
     planPng,
@@ -548,12 +613,15 @@ class $AssetsImagesGen {
     profileNotif,
     readPng,
     readSvg,
+    redflag,
     reflectionPng,
     reflectionSvg,
     routinePng,
     routineSvg,
+    routines,
     runPng,
     runSvg,
+    runs,
     sadCopy,
     sad,
     saladPng,
@@ -566,6 +634,7 @@ class $AssetsImagesGen {
     skinSvg,
     skincarePng,
     skincareSvg,
+    skincares,
     smilePng,
     smileSvg,
     starsPng,
@@ -580,7 +649,8 @@ class $AssetsImagesGen {
     tensi2,
     tigaCopy,
     tiga,
-    timer,
+    timerPng,
+    timerSvg,
     trenPng,
     trenSvg,
     unusualPng,
@@ -604,7 +674,10 @@ class $AssetsImagesGen {
     washDishes,
     watch,
     water,
+    woman,
+    works,
     yoga,
+    yogas,
   ];
 }
 

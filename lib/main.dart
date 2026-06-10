@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mino/core/data/datasource/auth_remote_datasource.dart';
 import 'package:mino/core/data/datasource/dashboard_remote_datasource.dart';
+import 'package:mino/core/data/datasource/user_challenge_local_datasource.dart';
+import 'package:mino/core/data/datasource/user_challenge_remote_datasource.dart';
 import 'package:mino/core/data/repositories/dashboard_repository.dart';
+import 'package:mino/core/data/repositories/user_challenge_repository.dart';
 import 'package:mino/core/presentation/auth/bloc/logout/logout_bloc.dart';
+import 'package:mino/core/presentation/auth/bloc/user_challenge/user_challenge_bloc.dart';
 import 'package:mino/core/presentation/home/bloc/focus_timer/focus_timer_bloc.dart';
 import 'package:mino/pages/auth/login_page.dart';
 import 'package:mino/models/profile_model.dart'; // 💡 Diambil dari main
@@ -102,6 +106,16 @@ class MainApp extends StatelessWidget {
         bloc.BlocProvider(
           create: (context) => LogoutBloc(AuthRemoteDatasource()),
         ),
+// 🔥 FITUR BARU: BLOC USER CHALLENGE (DENGAN OFFLINE CACHING)
+        bloc.BlocProvider(
+          create: (context) => UserChallengeBloc(
+            UserChallengeRepository(
+              remoteDatasource: UserChallengeRemoteDatasource(),
+              localDatasource: UserChallengeLocalDatasource(),
+            ),
+          )..add(const UserChallengeEvent.fetchUserChallenges()), // Otomatis fetch data tantangan saat aplikasi terbuka
+        ),
+        
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
