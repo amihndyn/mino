@@ -100,7 +100,7 @@ class PilihHabitPage extends StatelessWidget {
 
                                 const SizedBox(height: 32),
 
-                                /// HABIT SECTIONS
+                                /// HABIT SECTIONS DENGAN VALIDASI DUPLIKASI
                                 ...provider.sections.entries.map(
                                   (section) => Padding(
                                     padding: const EdgeInsets.only(bottom: 28),
@@ -109,7 +109,58 @@ class PilihHabitPage extends StatelessWidget {
                                       habits: section.value,
                                       selectedHabits: provider.selectedHabits,
                                       onSelect: (value) {
-                                        provider.toggleHabit(value);
+                                        // 🔥 LANGKAH 1: Ambil data dashboard saat ini dari DashboardBloc
+                                        final dashboardState = context
+                                            .read<DashboardBloc>()
+                                            .state;
+                                        List<String> currentHabitNames = [];
+
+                                        dashboardState.maybeWhen(
+                                          success: (response) {
+                                            // Kumpulkan semua nama habit yang sudah nampang di halaman utama hari ini
+                                            currentHabitNames =
+                                                response.dashboard?.todayHabits
+                                                    ?.map(
+                                                      (h) => h.habitName ?? '',
+                                                    )
+                                                    .where(
+                                                      (name) => name.isNotEmpty,
+                                                    )
+                                                    .toList() ??
+                                                [];
+                                          },
+                                          orElse: () {},
+                                        );
+
+                                        // 🔥 LANGKAH 2: Validasi pencegahan duplikasi nama habit template
+                                        // Jika status habit sudah dipilih sebelumnya (ingin membatalkan pilihan/uncheck), loloskan validasi
+                                        if (provider.selectedHabits.contains(
+                                          value,
+                                        )) {
+                                          provider.toggleHabit(value);
+                                        } else if (provider
+                                            .isHabitAlreadyExists(
+                                              value,
+                                              currentHabitNames,
+                                            )) {
+                                          // ❌ Jika sudah ada di Dashboard, munculkan peringatan SnackBar
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).clearSnackBars(); // Bersihkan snackbar lama agar tidak menumpuk
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Habit "$value" sudah terdaftar di Dashboard hari ini!',
+                                              ),
+                                              backgroundColor: Colors.redAccent,
+                                            ),
+                                          );
+                                        } else {
+                                          // ✅ Jika belum ada di Dashboard, masukkan ke list pilihan
+                                          provider.toggleHabit(value);
+                                        }
                                       },
                                     ),
                                   ),

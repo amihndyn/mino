@@ -1,25 +1,27 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/models/progress_model.dart';
+// 🔥 Ganti import progress_model dummy ke file model dashboard kamu
+import 'package:mino/core/data/model/response/dashboard_response.dart';
 
 class ActivityCard extends StatelessWidget {
   final bool isWeekly;
   final String selectedMonth;
-  final MonthData? currentMonthData;
+  final Progress? currentProgressData; // 🔥 Diubah dari MonthData? menjadi Progress?
   final VoidCallback onMonthPickerTap;
 
   const ActivityCard({
     super.key,
     required this.isWeekly,
     required this.selectedMonth,
-    required this.currentMonthData,
+    required this.currentProgressData,
     required this.onMonthPickerTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final weeklyData = [2.2, 1.8, 0.9, 2.0, 1.5, 2.2, 2.2];
+    // 1. 🔥 Ambil data mingguan dari backend (jika null, buat array kosong)
+    final List<double> chartData = currentProgressData?.weeklyBars ?? [];
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(32),
@@ -47,23 +49,21 @@ class ActivityCard extends StatelessWidget {
                         Text(
                           isWeekly ? 'Weekly Activity' : 'Monthly Activity',
                           style: const TextStyle(
-                            color: Color(0xFFF5E6D3),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 1
-                          ),
+                              color: Color(0xFFF5E6D3),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           isWeekly
-                              ? 'Your habit consistency\nthis week'
-                              : 'Your habit consistency\nin $selectedMonth',
+                              ? 'Your habit consistency this week'
+                              : 'Your habit consistency in $selectedMonth',
                           style: const TextStyle(
-                            color: Color(0xFFE6A84A),
-                            fontSize: 17,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 1
-                          ),
+                              color: Color(0xFFE6A84A),
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 1),
                         ),
                       ],
                     ),
@@ -72,12 +72,15 @@ class ActivityCard extends StatelessWidget {
                     GestureDetector(
                       onTap: onMonthPickerTap,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 18, vertical: 9),
                         decoration: BoxDecoration(
-                          color: AppColors.coklat800.withAlpha((0.8 * 255).toInt()),
+                          color: AppColors.coklat800
+                              .withAlpha((0.8 * 255).toInt()),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: AppColors.orange700.withAlpha((0.5 * 255).toInt()),
+                            color: AppColors.orange700
+                                .withAlpha((0.5 * 255).toInt()),
                           ),
                         ),
                         child: Row(
@@ -106,9 +109,10 @@ class ActivityCard extends StatelessWidget {
               const SizedBox(height: 28),
               SizedBox(
                 height: 220,
+                // 2. 🔥 Dua-duanya sekarang menggunakan data riil `chartData` dari Laravel
                 child: isWeekly
-                    ? _buildWeeklyChart(weeklyData)
-                    : _buildMonthlyChart(currentMonthData!.weeklyBars),
+                    ? _buildWeeklyChart(chartData)
+                    : _buildMonthlyChart(chartData),
               ),
             ],
           ),
@@ -118,8 +122,10 @@ class ActivityCard extends StatelessWidget {
   }
 
   Widget _buildWeeklyChart(List<double> weeklyData) {
-    final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
-    final yAxisLabels = ['4', '3', '2', '1', '0'];
+    // Label hari disesuaikan dengan data (jika backend mengirim 4 data, tampilkan 4 bar)
+    final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    // 🔥 Sumbu Y diubah menjadi persentase agar singkron dengan data riil 0.0 - 1.0
+    final yAxisLabels = ['100%', '75%', '50%', '25%', '0%'];
 
     return IntrinsicHeight(
       child: Row(
@@ -152,16 +158,19 @@ class ActivityCard extends StatelessWidget {
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 400),
                       width: 28,
-                      height: weeklyData[index] * 40,
+                      // 🔥 Pengali diubah ke 160 agar tinggi Bar maksimal pas di 160px
+                      height: (weeklyData[index] * 160).clamp(0.0, 160.0),
                       decoration: const BoxDecoration(
                         color: AppColors.orange800,
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(7)),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(7)),
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      days[index],
-                      style: const TextStyle(color: AppColors.orange100, fontSize: 13),
+                      index < days.length ? days[index] : 'Day ${index + 1}',
+                      style: const TextStyle(
+                          color: AppColors.orange100, fontSize: 13),
                     ),
                   ],
                 ),
@@ -174,8 +183,9 @@ class ActivityCard extends StatelessWidget {
   }
 
   Widget _buildMonthlyChart(List<double> barData) {
-    final days = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'];
-    final yAxisLabels = ['4', '3', '2', '1', '0'];
+    // 🔥 Disesuaikan dengan data 4 minggu terakhir dari backend
+    final weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+    final yAxisLabels = ['100%', '75%', '50%', '25%', '0%'];
 
     return IntrinsicHeight(
       child: Row(
@@ -207,17 +217,20 @@ class ActivityCard extends StatelessWidget {
                   children: [
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 400),
-                      width: 50,
-                      height: barData[index] * 40,
+                      width: 45, // Dipersempit sedikit agar pas dengan layout 4 bar
+                      // 🔥 Pengali diubah ke 160 agar singkron dengan skala persentase
+                      height: (barData[index] * 160).clamp(0.0, 160.0),
                       decoration: const BoxDecoration(
                         color: AppColors.orange800,
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(7)),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(7)),
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      days[index],
-                      style: const TextStyle(color: AppColors.orange100, fontSize: 13),
+                      index < weeks.length ? weeks[index] : 'Wk ${index + 1}',
+                      style: const TextStyle(
+                          color: AppColors.orange100, fontSize: 13),
                     ),
                   ],
                 ),

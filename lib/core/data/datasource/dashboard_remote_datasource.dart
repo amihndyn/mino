@@ -7,14 +7,25 @@ import 'package:mino/core/data/datasource/auth_local_datasource.dart';
 import 'package:mino/core/data/model/response/dashboard_response.dart';
 
 class DashboardRemoteDatasource {
-  Future<Either<String, DashboardResponseModel>> getDashboard() async {
+// 🔥 SEKARANG MENERIMA PARAMETER {int? month}
+  Future<Either<String, DashboardResponseModel>> getDashboard({int? month}) async {
     try {
-      // 1. Ambil token token login dari Local Storage
+      // 1. Ambil token login dari Local Storage
       final authData = await AuthLocalDatasource().getAuthData();
 
-      // 2. Tembak API Laravel
+      // 2. Susun URL beserta Query Parameter secara dinamis untuk http package
+      final Map<String, String> queryParameters = {
+        if (month != null) 'month': month.toString(), // 🔥 Kirim id bulan ke Laravel jika tidak null
+      };
+
+      // Menggabungkan baseUrl + path + query parameters
+      final uri = Uri.parse('${Variable.baseUrl}/api/dashboard').replace(
+        queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
+      );
+
+      // 3. Tembak API Laravel
       final response = await http.get(
-        Uri.parse('${Variable.baseUrl}/api/dashboard'),
+        uri, // 🔥 Menggunakan uri yang sudah disisipi query parameter
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Accept': 'application/json',
@@ -22,14 +33,14 @@ class DashboardRemoteDatasource {
         },
       );
 
-      // 3. Cek Status Code
+      // 4. Cek Status Code
       if (response.statusCode == 200) {
         return Right(DashboardResponseModel.fromJson(response.body));
       } else {
         return Left('Server Error: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      print('🔥 ERROR FETCH DASHBOARD: $e'); // Tambahkan print ini
+      print('🔥 ERROR FETCH DASHBOARD: $e');
       return Left(e.toString());
     }
   }

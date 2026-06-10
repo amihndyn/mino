@@ -4,6 +4,8 @@ import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:mino/core/constants/app_colors.dart';
 
+// ... kode import tetap sama ...
+
 class WriteJournalScreen extends StatefulWidget {
   const WriteJournalScreen({super.key});
 
@@ -48,36 +50,35 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
     super.dispose();
   }
 
-  void _handleSave() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const HomePage()),
-      (route) => false,
-    );
+  // MODIFIKASI: Mengembalikan data ke halaman JournalingPage
+void _handleSave() {
+    final Map<String, String> journalData = {
+      "title": _titleController.text.trim(),
+      "content": _contentController.text.trim(),
+    };
+    
+    Navigator.pop(context, journalData); // 🔥 Kembalikan map data ke penekan tombol awal
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true, // Diubah ke true agar layout menyesuaikan keyboard
       body: Stack(
         children: [
-          // ── 1. Background Gambar Full Screen (Diubah ke SVG) ─────────
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',
               fit: BoxFit.cover,
             ),
           ),
-
-          // Area Konten Utama
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
                 
-                // ── 3. Input Judul / Topic (Kursor Aktif Otomatis) ───────────
+                // Input Judul
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 28),
                   child: TextField(
@@ -101,18 +102,14 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(
-                        left: 16,
-                        top: 2,
-                        bottom: 4,
-                      ),
+                      contentPadding: EdgeInsets.only(left: 16, top: 2, bottom: 4),
                     ),
                   ),
                 ),
 
                 const Spacer(),
 
-                // ── 4. Logika Tombol Bawah (Cancel / Save) ───────────────────
+                // Kertas Input Isi Jurnal
                 Center(
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.85, 
@@ -120,7 +117,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Lapisan Kertas Belakang
                         Transform.rotate(
                           angle: -6 * (math.pi / 180), 
                           child: Container(
@@ -133,7 +129,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                           ),
                         ),
                         
-                        // Kertas Utama Paling Atas (Input Isi Jurnal)
                         Container(
                           decoration: BoxDecoration(
                             color: const Color(0xFFF7EAD3), 
@@ -161,7 +156,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                               height: 1.5,
                             ),
                             decoration: const InputDecoration(
-                              hintText: 'Enter topic',
+                              hintText: 'Write your thoughts here...', // Diubah agar berbeda dengan judul
                               hintStyle: TextStyle(
                                 color: Colors.black26, 
                                 fontSize: 16,
@@ -178,63 +173,61 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
 
                 const Spacer(),
 
-                // ── 5. Logika Tombol Bawah Menggunakan Cukup Ukuran Saja ──────
+                // Animasi Tombol Bawah
                 Center(
-  child: AnimatedCrossFade(
-    duration: const Duration(milliseconds: 200),
-    crossFadeState: _isButtonsRowVisible
-        ? CrossFadeState.showSecond
-        : CrossFadeState.showFirst,
+                  child: AnimatedCrossFade(
+                    duration: const Duration(milliseconds: 200),
+                    crossFadeState: _isButtonsRowVisible
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
 
-    // Kondisi Kosong: Tombol Tunggal (Cancel)
-    firstChild: Container(
-      height: 80, // 🔥 Beri ruang atas-bawah agar glow tidak terpotong
-      alignment: Alignment.center,
-      child: FittedBox(
-        fit: BoxFit.none,
-        child: SizedBox(
-          height: 44,
-          width: 140,
-          child: CustomButton(
-            text: 'Cancel',
-            onTap: () => Navigator.pop(context),
-          ),
-        ),
-      ),
-    ),
+                    firstChild: Container(
+                      height: 80, 
+                      alignment: Alignment.center,
+                      child: FittedBox(
+                        fit: BoxFit.none,
+                        child: SizedBox(
+                          height: 44,
+                          width: 140,
+                          child: CustomButton(
+                            text: 'Cancel',
+                            onTap: () => Navigator.pop(context),
+                          ),
+                        ),
+                      ),
+                    ),
 
-    // Kondisi Terisi: Tombol Cancel & Save Berdampingan
-    secondChild: Container(
-      height: 80, // 🔥 Beri ruang atas-bawah agar glow tidak terpotong
-      alignment: Alignment.center,
-      child: FittedBox( // 🔥 Mencegah error Overflow saat animasi transisi berjalan
-        fit: BoxFit.none,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 44,
-              width: 140,
-              child: CustomButton(
-                text: 'Cancel',
-                onTap: () => Navigator.pop(context),
-              ),
-            ),
-            const SizedBox(width: 32),
-            SizedBox(
-              height: 44,
-              width: 140,
-              child: CustomButton(
-                text: 'Save',
-                onTap: _handleSave,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ),
-),
+                    secondChild: Container(
+                      height: 80, 
+                      alignment: Alignment.center,
+                      child: FittedBox( 
+                        fit: BoxFit.none,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 44,
+                              width: 140,
+                              child: CustomButton(
+                                text: 'Cancel',
+                                onTap: () => Navigator.pop(context),
+                              ),
+                            ),
+                            const SizedBox(width: 32),
+                            SizedBox(
+                              height: 44,
+                              width: 140,
+                              child: CustomButton(
+                                text: 'Save',
+                                onTap: _handleSave,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
               ],
             ),

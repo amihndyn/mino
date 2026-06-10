@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _navIndex = 0; 
+  int _navIndex = 0;
 
   @override
   void initState() {
@@ -26,7 +26,9 @@ class _HomePageState extends State<HomePage> {
     // 🔥 1. Pemicu API: Ambil data dashboard begitu halaman pertama kali dimuat
     // Sesuaikan 'const DashboardEvent.fetch()' dengan nama event fetch milik BLoC-mu (misal: GetDashboardData())
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DashboardBloc>().add(const DashboardEvent.fetchDashboardData()); 
+      context.read<DashboardBloc>().add(
+        const DashboardEvent.fetchDashboardData(),
+      );
     });
   }
 
@@ -34,21 +36,18 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // 🔥 2. Ambil data list tantangan dari ChallengeProvider bawaan MultiProvider-mu
     // Ini solusi cerdas supaya widget ChallengeSection kamu tidak nyari data ke BLoC yang emang ga ada data challengenya.
-    final choiceChallenges = context.watch<ChallengeProvider>().challenges; 
+    final choiceChallenges = context.watch<ChallengeProvider>().challenges;
 
     return Scaffold(
-      extendBody: true, 
+      extendBody: true,
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent, 
+      backgroundColor: Colors.transparent,
 
       body: Stack(
         children: [
           /// BACKGROUND UTAMA
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
 
           /// KONTEN UTAMA MENGGUNAKAN BLOCBUILDER
@@ -79,10 +78,19 @@ class _HomePageState extends State<HomePage> {
                     bottom: false,
                     child: Column(
                       children: [
-                        // OPER DATA USER KE HEADER
-                        HomeHeader(
-                          name: user?.name ?? 'Guest',
-                          diamonds: user?.diamonds ?? 0,
+                        Builder(
+                          builder: (context) {
+                            // Ambil data user paling fresh yang ada di memori Bloc saat ini
+                            final currentDiamonds = user?.diamonds ?? 0;
+                            final currentName = user?.name ?? 'Guest';
+
+                            return HomeHeader(
+                              // Tambahkan key unik ini agar Flutter dipaksa merender ulang angka diamond baru
+                              key: ValueKey('${user?.diamonds}_${user?.name}'),
+                              name: currentName,
+                              diamonds: currentDiamonds,
+                            );
+                          },
                         ),
 
                         Expanded(
@@ -91,12 +99,17 @@ class _HomePageState extends State<HomePage> {
                             child: Column(
                               children: [
                                 // 🔥 3. PROGRESS CARD (Ambil data summary habit dari Laravel)
-                                // Jika TodaysProgressCard milikmu minta parameter challenge, isi sementara dengan 0 
+                                // Jika TodaysProgressCard milikmu minta parameter challenge, isi sementara dengan 0
                                 // sampai backend Laravel-mu menyediakan datanya di kelas Summary.
                                 TodaysProgressCard(
-                                  completedHabits: summary?.habitsCompletedToday ?? 0,
+                                  // Tambahkan key unik ini agar progress bar/lingkaran langsung berubah saat habit dicentang
+                                  key: ValueKey(
+                                    '${summary?.habitsCompletedToday}_${summary?.habitsTotal}',
+                                  ),
+                                  completedHabits:
+                                      summary?.habitsCompletedToday ?? 0,
                                   totalHabits: summary?.habitsTotal ?? 0,
-                                  completedChallenges: 0, // Buka pasang jika widget-mu membutuhkannya
+                                  completedChallenges: 0,
                                   totalChallenges: 0,
                                 ),
                                 const SizedBox(height: 24),
@@ -110,9 +123,7 @@ class _HomePageState extends State<HomePage> {
                                 const SizedBox(height: 24),
 
                                 // 🔥 5. CHALLENGE SECTION (Ambil aman dari Provider)
-                                ChallengeSection(
-                                  challenges: choiceChallenges,
-                                ),
+                                ChallengeSection(challenges: choiceChallenges),
 
                                 // Ruang ekstra di bawah agar konten tidak tertutup navbar
                                 const SizedBox(height: 120),
@@ -131,7 +142,7 @@ class _HomePageState extends State<HomePage> {
       ),
 
       bottomNavigationBar: BottomNavbar(
-        currentIndex: _navIndex, 
+        currentIndex: _navIndex,
         onTap: (i) {
           setState(() {
             _navIndex = i;

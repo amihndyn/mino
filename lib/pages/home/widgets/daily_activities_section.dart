@@ -17,7 +17,6 @@ class DailyActivitiesSection extends StatelessWidget {
   });
 
   // Fungsi pembantu perpindahan ke halaman Edit
-// Fungsi pembantu perpindahan ke halaman Edit
   void _handleEdit(BuildContext context, dynamic habitItem) async {
     final String currentTitle = habitItem.habitName ?? '';
     final int habitId = habitItem.userHabitId ?? 0;
@@ -35,13 +34,12 @@ class DailyActivitiesSection extends StatelessWidget {
       debugPrint("Kirim edit ke server! Nama baru: $updatedTitle");
       
       // 🔥 AKTIFKAN EVENT BLOC UNTUK EDIT:
-      // Pastikan kamu punya event editHabit di DashboardBloc kamu!
       context.read<DashboardBloc>().add(DashboardEvent.editHabit(habitId, updatedTitle));
     }
   }
 
   // Fungsi pembantu menampilkan pop-up konfirmasi hapus
-void _handleDelete(BuildContext context, dynamic habitItem) async {
+  void _handleDelete(BuildContext context, dynamic habitItem) async {
     final String currentTitle = habitItem.habitName ?? '';
     final int habitId = habitItem.userHabitId ?? 0;
 
@@ -82,8 +80,6 @@ void _handleDelete(BuildContext context, dynamic habitItem) async {
             ),
           ),
 
-        // 🔥 PERBAIKAN UTAMA: Loop data dengan nama variabel yang valid
-// 🔥 PERBAIKAN UTAMA: Loop data dengan nama variabel yang valid
         ...habits.map((item) {
           final String title = item.habitName ?? 'No Title';
           final bool isCompleted = item.isCompletedToday ?? false;
@@ -102,7 +98,13 @@ void _handleDelete(BuildContext context, dynamic habitItem) async {
               imageAsset: assetPath, // Kirim path gambar yang sudah dinamis ke Card
               isCompleted: isCompleted,
               onToggle: () {
-                context.read<DashboardBloc>().add(DashboardEvent.toggleHabit(item.userHabitId ?? 0));
+                // 🔥 PERBAIKAN UTAMA: Sekarang mengirimkan id dan status boolean-nya saat ini (isCompleted)
+                context.read<DashboardBloc>().add(
+                  DashboardEvent.toggleHabit(
+                    item.userHabitId ?? 0, 
+                    isCompleted,
+                  ),
+                );
               },
               onEdit: () => _handleEdit(context, item),
               onDelete: () => _handleDelete(context, item),

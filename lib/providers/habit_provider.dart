@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class HabitProvider extends ChangeNotifier {
-  // Menyimpan daftar habit yang dicentang oleh user
+  // Menyimpan daftar habit yang dicentang oleh user saat memilih
   final List<String> _selectedHabits = [];
   List<String> get selectedHabits => _selectedHabits;
 
-  // ── 1. MASTER TEMPLATE DEFAULT (Langsung dipakai oleh UI) ──
+  // ── 1. MASTER TEMPLATE DEFAULT ──
   final Map<String, List<Map<String, dynamic>>> sections = {
     "Practice self-care": [
       {"title": "Cold shower", "icon": "assets/images/shower.png"},
@@ -42,7 +42,7 @@ class HabitProvider extends ChangeNotifier {
     ],
   };
 
-  // ── 2. DYNAMIC ICON HELPER (Untuk memunculkan gambar di Dashboard) ──
+  // ── 2. DYNAMIC ICON HELPER ──
   String? getIconPath(String habitName) {
     for (var category in sections.values) {
       for (var habit in category) {
@@ -51,11 +51,10 @@ class HabitProvider extends ChangeNotifier {
         }
       }
     }
-    // Jika tidak ketemu di katalog, berarti ini habit buatan user (Custom) -> return null
     return null; 
   }
 
-  // ── 3. FUNGSI MANAJEMEN STATE ──────────────────────────────────────────
+  // ── 3. FUNGSI MANAJEMEN STATE ──
   void toggleHabit(String habit) {
     if (_selectedHabits.contains(habit)) {
       _selectedHabits.remove(habit);
@@ -68,5 +67,13 @@ class HabitProvider extends ChangeNotifier {
   void clearSelectedHabits() {
     _selectedHabits.clear();
     notifyListeners();
+  }
+
+  // 🔥 FUNGSI BARU: Validasi apakah habit sudah ada di dashboard hari ini
+  // Parameter 'existingHabitNames' dikirim dari UI (mengambil daftar nama dari DashboardBloc)
+  bool isHabitAlreadyExists(String habitName, List<String> existingHabitNames) {
+    return existingHabitNames.any(
+      (existingName) => existingName.trim().toLowerCase() == habitName.trim().toLowerCase()
+    );
   }
 }

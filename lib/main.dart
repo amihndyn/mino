@@ -26,6 +26,9 @@ import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 import 'package:mino/core/data/datasource/focus_timer_remote_datasource.dart';
 import 'package:mino/core/data/repositories/focus_timer_repository.dart';
 
+import 'package:mino/core/data/datasource/reflection_remote_datasource.dart';
+import 'package:mino/core/data/repositories/reflection_repository.dart';
+import 'package:mino/core/presentation/home/bloc/reflection/reflection_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,10 +73,19 @@ class MainApp extends StatelessWidget {
             ),
           ),
         ),
+
+        // Reflection
+        bloc.BlocProvider(
+          create: (context) => ReflectionBloc(
+            ReflectionRepositoryImpl(
+              remoteDatasource: ReflectionRemoteDatasource(),
+            ),
+          ),
+        ),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: LoginPage(),
+        home: SplashScreen(),
       ),
     );
   }
