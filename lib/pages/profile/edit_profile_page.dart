@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'choose_avatar_page.dart'; // 🛠️ Pastikan import halaman choose avatar kamu
+import 'package:mino/providers/profile_provider.dart';
+import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -11,7 +13,7 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   // 1. Inisialisasi Avatar Default awal
-  String _selectedAvatar = 'assets/images/man.png';
+  String _selectedAvatar = 'assets/images/default.png';
 
   // 2. Inisialisasi Controller di dalam State agar tidak me-reset saat diketik
   late final TextEditingController _nameController;
@@ -19,14 +21,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController _phoneController;
   late final TextEditingController _addressController;
 
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: 'Miner');
-    _emailController = TextEditingController(text: 'miner@gmail.com');
-    _phoneController = TextEditingController(text: '+62 890 1234 5678');
-    _addressController = TextEditingController(text: 'Jl. Bukittinggi');
+ @override
+void initState() {
+  super.initState();
+
+  _nameController = TextEditingController();
+  _emailController = TextEditingController();
+  _phoneController = TextEditingController();
+  _addressController = TextEditingController();
+} 
+
+bool _isLoaded = false;
+
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+
+  if (!_isLoaded) {
+    final profile =
+        context.read<ProfileProvider>().profile;
+
+    if (profile != null) {
+      _selectedAvatar = profile.avatar;
+      _nameController.text = profile.name;
+      _emailController.text = profile.email;
+    }
+
+    _isLoaded = true;
   }
+}
 
   @override
   void dispose() {
@@ -40,19 +63,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Fungsi untuk membuka halaman pilih avatar dan menerima hasilnya
   Future<void> _goToChooseAvatarPage() async {
-    final String? result = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ChooseAvatarPage(),
+  final String? result =
+      await showModalBottomSheet<String>(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    builder: (_) => const ChooseAvatarPage(),
+  );
+
+  if (result != null) {
+    setState(() {
+      _selectedAvatar = result;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Avatar has changed'),
       ),
     );
-
-    if (result != null) {
-      setState(() {
-        _selectedAvatar = result;
-      });
-    }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -103,19 +133,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               width: 2,
                             ),
                           ),
-                          child: ClipOval(
-                            child: Image.asset(
-                              _selectedAvatar,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => const Icon(
-                                Icons.person,
-                                size: 58,
-                                color: Color(0xFFB98A45),
-                              ),
-                            ),
-                          ),
+                         child: ClipOval(
+  child: Padding(
+    padding: const EdgeInsets.all(18),
+    child: Image.asset(
+      _selectedAvatar,
+      fit: BoxFit.contain,
+    ),
+  ),
+),
                         ),
-                        const Positioned(
+                        Positioned(
                           right: -2,
                           bottom: -2,
                           child: Container(
@@ -175,10 +203,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: GestureDetector(
                       onTap: () {
-                        // Tambahkan fungsi aksi simpan perubahan di sini
-                        // Contoh membawa data kembali ke halaman profil:
-                        // Navigator.pop(context);
-                      },
+                        context.read<ProfileProvider>().updateProfile(
+                          name: _nameController.text,
+                          email: _emailController.text,
+                          avatar: _selectedAvatar,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                'Avatar has changed',
+                                ),
+                                backgroundColor: const Color(0xFF3A2823),
+                                behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      duration: const Duration(seconds: 2),
+    ),
+  );
+
+  Navigator.pop(context);
+},
                       child: Container(
                         width: double.infinity,
                         height: 58,

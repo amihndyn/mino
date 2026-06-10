@@ -1,73 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/core/constants/app_sizes.dart';
-import 'package:mino/core/constants/app_text_styles.dart';
 
 class ChooseAvatarPage extends StatelessWidget {
-  const ChooseAvatarPage({
-    super.key,
-  });
+  const ChooseAvatarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // List path diubah ekstensinya menjadi .png
     final avatars = [
       'assets/images/man.png',
-      'assets/images/astronot.png',
+      'assets/images/astronout.png',
       'assets/images/woman.png',
     ];
 
-    return Scaffold(
-      backgroundColor: AppColors.coklat900,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          'Choose Avatar',
-          style: AppTextStyles.pageTitleBold,
+    return Container(
+      height: 320,
+
+      decoration: const BoxDecoration(
+        color: Color(0xFF2F211D),
+
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(32),
+          topRight: Radius.circular(32),
         ),
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(
-          AppSizes.lg,
-        ),
-        itemCount: avatars.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: AppSizes.lg,
-          mainAxisSpacing: AppSizes.lg,
-        ),
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.pop(context, avatars[index]);
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.orange400,
-                  width: 2,
-                ),
-              ),
-              // Menggunakan ClipOval + Image.asset agar gambar PNG terpotong sempurna menjadi lingkaran
-              child: ClipOval(
-                child: Image.asset(
-                  avatars[index],
-                  fit: BoxFit.cover,
-                  // Pengaman jika gambar gagal dimuat, menampilkan icon avatar default
-                  errorBuilder: (context, error, stackTrace) => const Center(
-                    child: Icon(
-                      Icons.account_circle,
-                      color: AppColors.orange400,
-                      size: 48,
+
+      child: Column(
+        children: [
+          const SizedBox(height: 24),
+
+          Container(
+            width: 50,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          const Text(
+            'Choose Your Avatar',
+            style: TextStyle(
+              color: Color(0xFFF3E7D7),
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(height: 40),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: avatars.map((avatar) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pop(context, avatar);
+                },
+
+                child: Container(
+                  width: 90,
+                  height: 120,
+
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.03),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+
+                  child: Center(
+                    child: Image.asset(
+                      avatar,
+                      width: 70,
                     ),
                   ),
                 ),
-              ),
-            ),
-          );
-        },
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }

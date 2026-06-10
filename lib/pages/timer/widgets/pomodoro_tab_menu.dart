@@ -12,47 +12,83 @@ class PomodoroTabMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      {'icon': '🗓️', 'text': 'Challenge'},
-      {'icon': '⏰', 'text': 'Timer'},
-      {'icon': '🎫', 'text': 'Afirmation'},
-    ];
-
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: 10,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(tabs.length, (index) {
-          final isActive = index == selectedIndex;
-          return GestureDetector(
-            onTap: () => onTabChanged(index),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: isActive ? Colors.white.withValues(alpha: 0.1) : Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isActive ? const Color(0xFFE8A838) : const Color(0xFF9A8675).withValues(alpha: 0.5),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Text(tabs[index]['icon']!),
-                  const SizedBox(width: 6),
-                  Text(
-                    tabs[index]['text']!,
-                    style: TextStyle(
-                      color: isActive ? Colors.white : Colors.white70,
-                      fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
+        children: [
+          _buildTab(
+            index: 0,
+            label: 'Challenge',
+            assetPath: 'assets/images/challenge.png',
+          ),
+
+          _buildTab(
+            index: 1,
+            label: 'Timer',
+            assetPath: 'assets/images/timer.png',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTab({
+    required int index,
+    required String label,
+    required String assetPath,
+  }) {
+    final bool isSelected = selectedIndex == index;
+
+    const Color themeGold = Color(0xffF2CD94);
+
+    return GestureDetector(
+      onTap: () => onTabChanged(index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 10,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.white.withOpacity(0.12)
+              : Colors.black.withOpacity(0.25),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isSelected
+                ? themeGold.withOpacity(0.8)
+                : Colors.white10,
+            width: 1.2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Opacity(
+              opacity: isSelected ? 1.0 : 0.4,
+              child: Image.asset(
+                assetPath,
+                width: 18,
+                height: 18,
               ),
             ),
-          );
-        }),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected
+                    ? Colors.white
+                    : Colors.white70,
+                fontSize: 14,
+                fontWeight: isSelected
+                    ? FontWeight.bold
+                    : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

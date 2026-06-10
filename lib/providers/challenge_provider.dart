@@ -28,15 +28,16 @@ class ChallengeProvider extends ChangeNotifier {
 
       // 🔥 Diperbaiki: Menggunakan properti dari ChallengeData yang sebenarnya
       _challenges[index] = ChallengeData(
-        id: oldChallenge.id,
-        title: oldChallenge.title,
-        description: oldChallenge.description,
-        imageAsset: oldChallenge.imageAsset,
-        diamondReward: oldChallenge.diamondReward,
-        durationDays: oldChallenge.durationDays,
-        dateInfo: oldChallenge.dateInfo,
-        isCompleted: !oldChallenge.isCompleted, // Membalikkan status boolean
-      );
+  id: oldChallenge.id,
+  title: oldChallenge.title,
+  imageAsset: oldChallenge.imageAsset,
+  detailImageAsset: oldChallenge.detailImageAsset,
+  description: oldChallenge.description,
+  diamondReward: oldChallenge.diamondReward,
+  durationDays: oldChallenge.durationDays,
+  dateInfo: oldChallenge.dateInfo,
+  isCompleted: !oldChallenge.isCompleted,
+);
 
       notifyListeners();
     }

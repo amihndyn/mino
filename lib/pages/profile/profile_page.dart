@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
+import 'package:mino/widgets/navbar/bottom_navbar.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/profile_stats_section.dart';
 import 'choose_avatar_page.dart'; // 🛠️ Import halaman choose avatar kamu
@@ -13,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   // 1. Definisikan avatar default awal
-  String _selectedAvatar = 'assets/images/man.png';
+  String _selectedAvatar = 'assets/images/default.png';
 
   final TextEditingController _nameController = TextEditingController(text: 'Nana');
   final TextEditingController _addressController = TextEditingController(text: 'Jl. Bukittinggi');
@@ -21,21 +22,32 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _emailController = TextEditingController(text: 'nanana.trkj2028@idn.ac.id');
 
   // 2. Fungsi untuk berpindah halaman dan menangkap avatar baru
-  Future<void> _goToChooseAvatarPage() async {
-    final String? result = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ChooseAvatarPage(),
+ Future<void> _goToChooseAvatarPage() async {
+  final String? result = await showModalBottomSheet<String>(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    builder: (context) => const ChooseAvatarPage(),
+  );
+
+  if (result != null) {
+    setState(() {
+      _selectedAvatar = result;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Avatar has changed'),
+        backgroundColor: const Color(0xFF3A2823),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        duration: const Duration(seconds: 2),
       ),
     );
-
-    // Jika user memilih avatar (tidak menekan tombol back kosong)
-    if (result != null) {
-      setState(() {
-        _selectedAvatar = result;
-      });
-    }
   }
+}
 
   @override
   void dispose() {
@@ -51,7 +63,9 @@ class _ProfilePageState extends State<ProfilePage> {
     const Color accentColor = Color(0xFFF2D1A2);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      extendBody: true, // Wajib agar background tembus ke bawah navbar
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent, // Wajib agar scaffold transparan
       body: Stack(
         children: [
           // BACKGROUND (PNG)
@@ -65,9 +79,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
           // CONTENT
           SafeArea(
+            bottom: false,
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(bottom: 40),
+              padding: const EdgeInsets.only(bottom: 120),
               child: Column(
                 children: [
                   const CustomAppBar(title: 'Profile'),
@@ -128,7 +143,11 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavbar(currentIndex: 4,
+      onTap: (index) {},
+      ),
     );
+    
   }
 
   Widget _buildEditableProfileField({

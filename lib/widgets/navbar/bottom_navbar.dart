@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/journal/journal_parent_screen.dart';
 import 'package:mino/widgets/cards/add_menu_popup.dart';
 
 import '../../pages/home/home_page.dart';
-import '../../pages/journal/note_list_page.dart';
 import '../../pages/profile/profile_page.dart';
 import '../../pages/challenge/find_page.dart';
 
@@ -98,20 +96,29 @@ class BottomNavbar extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         children: [
           Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 80,
-              decoration: const BoxDecoration(
-                gradient: bgGradient,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(28),
-                  topRight: Radius.circular(28),
-                ),
-              ),
-            ),
-          ),
+  bottom: 0,
+  left: 0,
+  right: 0,
+  child: Container(
+    height: 80,
+    decoration: BoxDecoration(
+      gradient: bgGradient,
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(28),
+        topRight: Radius.circular(28),
+      ),
+
+      boxShadow: [
+        BoxShadow(
+    color: const Color(0xFFE6A84A).withOpacity(0.20),
+    blurRadius: 30,
+    spreadRadius: 3,
+    offset: const Offset(0, -2),
+  ),
+      ],
+    ),
+  ),
+),
 
           Positioned(
             top: 8,

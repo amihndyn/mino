@@ -6,6 +6,7 @@ import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'widgets/balloon_slider.dart';
 import 'package:mino/pages/timer/affirmation_page.dart'; 
+import 'package:mino/pages/challenge/find_page.dart';
 
 class TimerPage extends StatefulWidget {
   const TimerPage({super.key});
@@ -56,20 +57,31 @@ class _TimerPageState extends State<TimerPage> {
                 children: [
                   const SizedBox(height: 10),
                   
+                  
                   const CustomAppBar(
-                    title: 'Pomodoro', 
+                    title: 'Timer', 
                   ),
                   
                   const SizedBox(height: 20),
 
                   PomodoroTabMenu(
-                    selectedIndex: _selectedTabIndex,
-                    onTabChanged: (index) {
-                      setState(() {
-                        _selectedTabIndex = index;
-                      });
-                    },
-                  ),
+  selectedIndex: _selectedTabIndex,
+  onTabChanged: (index) {
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const FindPage(),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _selectedTabIndex = index;
+    });
+  },
+),
                   
                   // Isi Konten Tengah (Challenge / Timer Content)
                   Expanded(
