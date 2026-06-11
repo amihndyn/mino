@@ -83,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Scaffold(
-      extendBody: false,
+      extendBody: true,
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -105,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: const EdgeInsets.only(bottom: 120),
               child: Column(
                 children: [
-                  const CustomAppBar(title: 'Profile', showBackButton: false,),
+                  const CustomAppBar(title: 'Profile'),
                   const SizedBox(height: 20),
 
                   ProfileCard(
