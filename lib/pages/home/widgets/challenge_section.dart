@@ -1,44 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // 🔥 Import Bloc
 import 'package:mino/core/constants/app_colors.dart';
+// Ambil patch bloc & model kamu, sesuaikan path import ini jika letaknya berbeda:
+// import 'package:mino/bloc/dashboard/dashboard_bloc.dart';
 import 'challenge_progress_card.dart';
 
 class ChallengeSection extends StatelessWidget {
-  const ChallengeSection({super.key});
+  // 🔥 1. Terima parameter data list challenges hasil lemparan dari HomePage / DashboardBloc
+  final List<dynamic> challenges;
+
+  const ChallengeSection({
+    super.key,
+    required this.challenges, // Wajib diisi dari luar
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [ // 🔥 MODIFIKASI: Hapus kata 'const' di sini agar tidak memicu error tumpukan widget
+      children: [
         const Text(
           "Challenge",
           style: TextStyle(
-            color: AppColors.orange300, // Warna emas/krem
+            color: AppColors.orange300,
             fontSize: 22,
             fontWeight: FontWeight.w600,
             letterSpacing: 1,
           ),
         ),
-        
+
         const SizedBox(height: 16),
 
-        // Kartu Pertama (Disesuaikan ke asset .png yang kamu punya dari FindPage)
-        const ChallengeProgressCard(
-          title: "Release tension in your body",
-          imageAsset: 'assets/images/note2.png', // 🔥 Diubah ke routine.png agar sesuai data asset kamu
-          currentProgress: 12,
-          totalProgress: 30,
-        ),
-        
-        const SizedBox(height: 12),
+        // 🔥 2. Cek jika data challenges kosong dari API Laravel
+        if (challenges.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              "No challenges available today.",
+              style: TextStyle(color: Colors.white60, fontSize: 14),
+            ),
+          ),
 
-        // Kartu Kedua (Disesuaikan ke .png)
-        const ChallengeProgressCard(
-          title: "Clean your home",
-          imageAsset: 'assets/images/water.png', 
-          currentProgress: 5,
-          totalProgress: 30,
-        ),
+        // 🔥 3. Loop data secara dinamis menggunakan perulangan Iterable map (.toList())
+        ...challenges.map((item) {
+          // Asumsi field dari JSON Laravel: item.title, item.current, item.total, item.is_completed, item.image
+          // Sesuaikan nama field di bawah ini dengan respon database API Laravel kamu ya!
+          final String title = item.title;
+          final int current = item.currentProgress;
+          final int total = item.totalProgress;
+          final bool checked = item.isCompleted;
+          final String? image = item.imageAsset;
+
+          return Padding(
+            padding: const EdgeInsets.only(
+              bottom: 12,
+            ), // Jarak antar kartu tantangan
+            child: ChallengeProgressCard(
+              title: title,
+              imageAsset:
+                  image ??
+                  'assets/images/note2.png', // Fallback asset jika null
+              currentProgress: current,
+              totalProgress: total,
+              isChecked: checked, // 🔥 SINKRON: Mengisi parameter wajib baru
+              onToggle: () {
+                // 🔥 4. AKSI TAP: Kirim Event ke Bloc untuk menembak API Laravel
+                // context.read<DashboardBloc>().add(ToggleChallengeEvent(challengeId: item['id']));
+
+                // Info log sementara untuk testing klik
+                print("Tantangan '${title}' di-klik!");
+              },
+            ),
+          );
+        }).toList(),
       ],
     );
   }

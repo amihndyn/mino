@@ -4,10 +4,11 @@ import 'package:mino/widgets/button/custom_button.dart';
 import 'package:mino/core/constants/app_colors.dart';
 
 class JournalPromptView extends StatelessWidget {
+  // 🔥 Variabel mood (UI Ami) + Logic 2 parameter (Sausan)
   final String mood;
   final String moodLabel;
   final Color moodColor;
-  final Function(String) onNoteAdded;
+  final Function(String title, String content) onNoteAdded; 
 
   const JournalPromptView({
     super.key,
@@ -22,7 +23,7 @@ class JournalPromptView extends StatelessWidget {
     return Container(
       width: 370,
       height: 412,
-      margin: const EdgeInsets.symmetric(horizontal: 0.4), 
+      margin: const EdgeInsets.symmetric(horizontal: 0.4), // UI Ami
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       decoration: BoxDecoration(
         color: const Color(0xFFF6E3BC), 
@@ -39,11 +40,7 @@ class JournalPromptView extends StatelessWidget {
             errorBuilder: (context, error, stackTrace) => const SizedBox(
               height: 130,
               child: Center(
-                child: Icon(
-                  Icons.image_not_supported, 
-                  color: AppColors.coklat900,
-                  size: 32,
-                ),
+                child: Icon(Icons.image_not_supported, color: AppColors.coklat900, size: 32),
               ),
             ),
           ),
@@ -65,10 +62,7 @@ class JournalPromptView extends StatelessWidget {
           const Text(
             "It's not mandatory, but this will be very helpful",
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: AppColors.coklat900, 
-              fontSize: 12,
-            ),
+            style: TextStyle(color: AppColors.coklat900, fontSize: 12),
           ),
           
           const SizedBox(height: 20),
@@ -79,11 +73,12 @@ class JournalPromptView extends StatelessWidget {
             child: CustomButton(
               text: 'Add note',
               onTap: () async {
-                // Meneruskan data mood ke halaman WriteJournalScreen
-                final result = await Navigator.push<String>(
+                // 🔥 Logic Sausan: Menangkap Map data dari halaman WriteJournalScreen
+                final Map<String, String>? result = await Navigator.push<Map<String, String>>(
                   context,
                   MaterialPageRoute(
                     builder: (_) => WriteJournalScreen(
+                      // Mengirimkan UI parameter Ami ke halaman selanjutnya
                       mood: mood,
                       moodLabel: moodLabel,
                       moodColor: moodColor,
@@ -91,8 +86,9 @@ class JournalPromptView extends StatelessWidget {
                   ),
                 );
                 
-                if (result != null && result.isNotEmpty) {
-                  onNoteAdded(result);
+                // Logic Sausan: Kirim data terpisah (title & content) ke parent state
+                if (result != null && result['title'] != null && result['content'] != null) {
+                  onNoteAdded(result['title']!, result['content']!);
                 }
               },
             ),

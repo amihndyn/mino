@@ -1,47 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 import 'package:mino/pages/habit/edit_uniqur_habit_page.dart';
 import 'package:mino/pages/home/widgets/activity_item_card.dart';
-
-// IMPORT FILE EDIT DAN DIALOG YANG SUDAH KITA PISAH TADI (PILIHAN A)
 import 'package:mino/pages/habit/widgets/delete_habit_dialog.dart';
+import 'package:provider/provider.dart';
+import 'package:mino/providers/habit_provider.dart'; // Sesuaikan path provider-mu ya!
 
 class DailyActivitiesSection extends StatelessWidget {
-  const DailyActivitiesSection({super.key});
+  final List<dynamic> habits; // Data berupa list of TodayHabit dari API
 
-  // Fungsi pembantu untuk menangani perpindahan ke halaman Edit
-  void _handleEdit(BuildContext context, String habitName) async {
+  const DailyActivitiesSection({
+    super.key,
+    required this.habits,
+  });
+
+  // Fungsi pembantu perpindahan ke halaman Edit
+  void _handleEdit(BuildContext context, dynamic habitItem) async {
+    final String currentTitle = habitItem.habitName ?? '';
+    final int habitId = habitItem.userHabitId ?? 0;
+
+    // Buka halaman EditHabitPage dan tunggu user menekan tombol "Save"
     final updatedTitle = await Navigator.push<String>(
       context,
       MaterialPageRoute(
-        builder: (context) => EditHabitPage(habitName: habitName),
+        builder: (context) => EditHabitPage(habitName: currentTitle),
       ),
     );
 
-    if (updatedTitle != null) {
-      debugPrint("Berhasil Edit! Nama baru: $updatedTitle");
-      // TODO: Sinkronisasikan perubahan nama ini ke state / database kamu
+    // Jika user menekan Save dan namanya berubah, kirim ke BLoC / API!
+    if (updatedTitle != null && updatedTitle != currentTitle && context.mounted) {
+      debugPrint("Kirim edit ke server! Nama baru: $updatedTitle");
+      
+      // 🔥 AKTIFKAN EVENT BLOC UNTUK EDIT:
+      context.read<DashboardBloc>().add(DashboardEvent.editHabit(habitId, updatedTitle));
     }
   }
 
-  // Fungsi pembantu untuk menampilkan pop-up konfirmasi hapus
-  void _handleDelete(BuildContext context, String habitName) async {
+  // Fungsi pembantu menampilkan pop-up konfirmasi hapus
+  void _handleDelete(BuildContext context, dynamic habitItem) async {
+    final String currentTitle = habitItem.habitName ?? '';
+    final int habitId = habitItem.userHabitId ?? 0;
+
     final bool? confirmDelete = await showDialog<bool>(
       context: context,
-      barrierDismissible: false, // User wajib klik tombol di dalam dialog
+      barrierDismissible: false,
       builder: (context) => const DeleteHabitDialog(),
     );
 
-    if (confirmDelete == true) {
-      debugPrint("Berhasil Hapus! Habit '$habitName' telah dihapus.");
-      // TODO: Jalankan fungsi untuk menghapus data dari list kamu di sini
+    if (confirmDelete == true && context.mounted) {
+      // 🔥 AKTIFKAN: Kirim event hapus data ke BLoC
+      context.read<DashboardBloc>().add(DashboardEvent.deleteHabit(habitId));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    const Color titleColor = Color(0xffF2CD94);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -56,31 +71,46 @@ class DailyActivitiesSection extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        // CARD 1: Take a deep breath
-        ActivityItemCard(
-          title: "Take a deep breath",
-          imageAsset: 'assets/images/book.png',
-          onEdit: () => _handleEdit(context, "Take a deep breath"),
-          onDelete: () => _handleDelete(context, "Take a deep breath"),
-        ),
-        const SizedBox(height: 14),
+        if (habits.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 14),
+            child: Text(
+              "No daily activities set for today.",
+              style: TextStyle(color: Colors.white60, fontSize: 14),
+            ),
+          ),
 
-        // CARD 2: Smile for a few seconds
-        ActivityItemCard(
-          title: "Smile for a few seconds",
-          imageAsset: 'assets/images/smile.png',
-          onEdit: () => _handleEdit(context, "Smile for a few seconds"),
-          onDelete: () => _handleDelete(context, "Smile for a few seconds"),
-        ),
-        const SizedBox(height: 14),
+        ...habits.map((item) {
+          final String title = item.habitName ?? 'No Title';
+          final bool isCompleted = item.isCompletedToday ?? false;
+          
+          // 🔥 PERBAIKAN IKON DINAMIS: 
+          // 1. Tanya ke HabitProvider, "Eh, habit dengan nama ini path gambarnya apa?"
+          final String? iconPath = context.read<HabitProvider>().getIconPath(title);
+          
+          // 2. Jika ketemu, pakai gambar itu. Jika null (Custom), pakai gambar Bintang!
+          final String assetPath = iconPath ?? 'assets/images/stars.png'; 
 
-        // CARD 3: Fix your posture
-        ActivityItemCard(
-          title: "Fix your posture",
-          imageAsset: 'assets/images/exercise.png',
-          onEdit: () => _handleEdit(context, "Fix your posture"),
-          onDelete: () => _handleDelete(context, "Fix your posture"),
-        ),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: ActivityItemCard(
+              title: title,
+              imageAsset: assetPath, // Kirim path gambar yang sudah dinamis ke Card
+              isCompleted: isCompleted,
+              onToggle: () {
+                // 🔥 PERBAIKAN UTAMA: Sekarang mengirimkan id dan status boolean-nya saat ini (isCompleted)
+                context.read<DashboardBloc>().add(
+                  DashboardEvent.toggleHabit(
+                    item.userHabitId ?? 0, 
+                    isCompleted,
+                  ),
+                );
+              },
+              onEdit: () => _handleEdit(context, item),
+              onDelete: () => _handleDelete(context, item),
+            ),
+          );
+        }).toList(),
       ],
     );
   }

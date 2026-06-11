@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/mood/mood_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 
 class ReflectionCard extends StatelessWidget {
-  const ReflectionCard({super.key});
+  // 🔥 1. Tambahkan status penanda dari Laravel via Bloc apakah hari ini sudah isi mood/refleksi
+  final bool isReflectionAdded; 
+
+  const ReflectionCard({
+    super.key,
+    this.isReflectionAdded = false, // Default-kan ke false jika belum terisi
+  });
 
   @override
   Widget build(BuildContext context) {
-    // WARNA
     const Color darkBrownColor = Color(0xff422E22);
     const Color cardBorderColor = Color(0xffFFF2D4);
 
@@ -38,9 +42,10 @@ class ReflectionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Add Reflection",
-                  style: TextStyle(
+                // 🔥 2. Judul berubah dinamis sesuai status input
+                Text(
+                  isReflectionAdded ? "Reflection Added" : "Add Reflection",
+                  style: const TextStyle(
                     color: darkBrownColor,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -48,9 +53,13 @@ class ReflectionCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  "How are you feeling today?",
-                  style: TextStyle(
+                
+                // 🔥 3. Sub-deskripsi juga ikut berubah dinamis
+                Text(
+                  isReflectionAdded 
+                      ? "Great job tracking your mood today!" 
+                      : "How are you feeling today?",
+                  style: const TextStyle(
                     color: darkBrownColor,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -58,21 +67,39 @@ class ReflectionCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
 
-                // CUSTOM BUTTON
+                // 🔥 4. Atur tombol secara kondisional
                 SizedBox(
-                  width: 140, // Ukuran lebar pas 140px
-                  height: 33, // Ukuran tinggi pas 33px
-                  child: CustomButton(
-                    text: "Add",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const MoodPage(),
+                  width: 140, 
+                  height: 33, 
+                  child: isReflectionAdded
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: const Row(
+                            children: [
+                              Icon(Icons.check_circle_rounded, color: darkBrownColor, size: 20),
+                              SizedBox(width: 6),
+                              Text(
+                                "Completed",
+                                style: TextStyle(
+                                  color: darkBrownColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : CustomButton(
+                          text: "Add",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MoodPage(),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ],
             ),
@@ -80,13 +107,12 @@ class ReflectionCard extends StatelessWidget {
           
           const SizedBox(width: 12),
 
-          // RIGHT IMAGE (Diubah ke PNG)
+          // RIGHT IMAGE 
           Image.asset(
             'assets/images/reflection.png',
             width: 113,
             height: 93,
             fit: BoxFit.contain,
-            // Menggunakan errorBuilder sebagai fallback jika PNG gagal dimuat
             errorBuilder: (context, error, stackTrace) => const SizedBox(
               width: 113,
               height: 93,

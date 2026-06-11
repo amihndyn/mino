@@ -6,7 +6,6 @@ import 'habit_option_card.dart';
 class HabitSection extends StatelessWidget {
   final String title;
   final List<Map<String, dynamic>> habits;
-  // Ubah tipe datanya jadi List<String>
   final List<String> selectedHabits; 
   final Function(String) onSelect;
 
@@ -35,12 +34,13 @@ class HabitSection extends StatelessWidget {
           runSpacing: 10,
           children: habits.map((habit) {
             final habitName = habit['title'] as String;
-            final imagePath = habit['icon'] as String;
+            
+            // 🔥 PERBAIKAN DI SINI: Berikan tanda tanya (?) agar menjadi String nullable
+            final imagePath = habit['icon'] as String?;
 
             return HabitOptionCard(
               title: habitName,
-              imagePath: imagePath,
-              // Cek apakah habitName ada di dalam list pilihan
+              imagePath: imagePath, // Mengirim path yang bisa bernilai null ke Card
               isSelected: selectedHabits.contains(habitName), 
               onTap: () => onSelect(habitName),
             );

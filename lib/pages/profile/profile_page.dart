@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mino/core/data/model/response/profile_response_model.dart';
+import 'package:mino/core/data/provider/profile_provider.dart';
+import 'package:mino/pages/profile/edit_profile_page.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
+
 import 'package:mino/widgets/navbar/bottom_navbar.dart';
 import 'widgets/profile_card.dart';
 import 'widgets/profile_stats_section.dart';
-import 'choose_avatar_page.dart'; // 🛠️ Import halaman choose avatar kamu
+import 'choose_avatar_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,59 +18,74 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // 1. Definisikan avatar default awal
-  String _selectedAvatar = 'assets/images/default.png';
+  @override
+  void initState() {
+    super.initState();
+    // Memanggil API secara langsung tanpa post-frame callback
+    context.read<ProfileProvider>().fetchProfile();
+  }
 
-  final TextEditingController _nameController = TextEditingController(text: 'Nana');
-  final TextEditingController _addressController = TextEditingController(text: 'Jl. Bukittinggi');
-  final TextEditingController _phoneController = TextEditingController(text: '+62 890 1234 5678');
-  final TextEditingController _emailController = TextEditingController(text: 'nanana.trkj2028@idn.ac.id');
+  Future<void> _goToChooseAvatarPage() async {
+    final String? result = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => const ChooseAvatarPage(),
+    );
 
-  // 2. Fungsi untuk berpindah halaman dan menangkap avatar baru
- Future<void> _goToChooseAvatarPage() async {
-  final String? result = await showModalBottomSheet<String>(
-    context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
-    builder: (context) => const ChooseAvatarPage(),
-  );
-
-  if (result != null) {
-    setState(() {
-      _selectedAvatar = result;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Avatar has changed'),
-        backgroundColor: const Color(0xFF3A2823),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+    if (result != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Avatar has changed'),
+          backgroundColor: const Color(0xFF3A2823),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          duration: const Duration(seconds: 2),
         ),
-        duration: const Duration(seconds: 2),
+      );
+    }
+  }
+
+  // ── Navigasi ke Edit Profile dengan semua data ──
+  void _onEditProfileTap() {
+    final profileData = context.read<ProfileProvider>().profileData;
+    final user = profileData?.user;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfilePage(
+          user: UserProfile(
+            name: user?.name ?? '',
+            email: user?.email ?? '',
+            gender: user?.gender,
+            ttl: user?.ttl,
+            photoUrl: user?.photoUrl,
+          ),
+        ),
       ),
     );
-  }
-}
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _addressController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    const Color accentColor = Color(0xFFF2D1A2);
+    // Ambil data dari ProfileProvider
+    final profileProvider = context.watch<ProfileProvider>();
+    final userData = profileProvider.profileData?.user;
+
+    // Tentukan avatar (dari API atau default)
+    String avatarPath = userData?.photoUrl ?? 'assets/images/default.png';
+    // Fallback jika photoUrl null atau empty
+    if (avatarPath.isEmpty) {
+      avatarPath = 'assets/images/default.png';
+    }
 
     return Scaffold(
-      extendBody: true, // Wajib agar background tembus ke bawah navbar
+      extendBody: false,
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent, // Wajib agar scaffold transparan
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // BACKGROUND (PNG)
@@ -85,66 +105,39 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: const EdgeInsets.only(bottom: 120),
               child: Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0), // Horizontal padding dihapus agar benar-benar di tengah layar
-                    child: Center(
-                      child: Text(
-                        'Profile',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFF7EFE7), 
-                        ),
-                      ),
-                    ),
+                  // ✨ Menggunakan CustomAppBar dari branch Sausan
+                  const CustomAppBar(
+                    title: 'Profile', 
+                    showBackButton: false,
                   ),
                   const SizedBox(height: 20),
 
-                  // 3. Pasang variabel avatar dan fungsi tap ke ProfileCard
                   ProfileCard(
-                    avatarPath: _selectedAvatar,
+                    avatarPath: avatarPath,
                     onAvatarTap: _goToChooseAvatarPage,
+                    onEditProfileTap: _onEditProfileTap,
                   ),
 
                   const SizedBox(height: 24),
 
-                  // FORM INPUT FIELDS
-                  _buildEditableProfileField(
+                  // Tampilkan data dari API
+                  _buildReadOnlyPillField(
+                    text: userData?.name ?? '-',
                     icon: Icons.person_outline,
-                    label: 'Name',
-                    controller: _nameController,
-                    keyboardType: TextInputType.name,
                   ),
-                  const SizedBox(height: 12),
-                  _buildEditableProfileField(
-                    icon: Icons.email_outlined,
-                    label: 'Email Address',
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
+                  _buildReadOnlyPillField(
+                    text: userData?.gender ?? '-',
+                    imagePath: 'assets/icons/gender.png',
                   ),
-                  const SizedBox(height: 28),
+                  _buildReadOnlyPillField(
+                    text: userData?.ttl ?? '-',
+                    icon: Icons.cake_outlined,
+                  ),
+                  _buildReadOnlyPillField(
+                    text: userData?.email ?? '-',
+                    icon: Icons.mail_outline,
+                  ),
 
-                  // LOGOUT BUTTON
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.logout, color: accentColor),
-                        const SizedBox(width: 12),
-                        GestureDetector(
-                          onTap: () {},
-                          child: const Text(
-                            'Log Out',
-                            style: TextStyle(
-                              color: accentColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   const SizedBox(height: 28),
 
                   // STATS GRID
@@ -155,41 +148,63 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavbar(currentIndex: 4,
-      onTap: (index) {},
+      bottomNavigationBar: BottomNavbar(
+        currentIndex: 4,
+        onTap: (index) {},
       ),
     );
-    
   }
 
-  Widget _buildEditableProfileField({
-    required IconData icon,
-    required String label,
-    required TextEditingController controller,
-    required TextInputType keyboardType,
+  // ── 🛠️ WIDGET HELPER READ-ONLY BENTUK OVAL (RATA KIRI DENGAN DYNAMIC ICON) ──
+  Widget _buildReadOnlyPillField({
+    required String text,
+    IconData? icon,
+    String? imagePath,
   }) {
-    const Color themeGold = Color(0xFFF2D1A2);
+    const Color themeGold = Color(0xFFE2AC6B);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
       child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.04),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: themeGold.withOpacity(0.4), width: 2.2),
+          borderRadius: BorderRadius.circular(40),
+          border: Border.all(color: themeGold, width: 1.5),
         ),
-        child: TextFormField(
-          controller: controller,
-          keyboardType: keyboardType,
-          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
-          cursorColor: themeGold,
-          decoration: InputDecoration(
-            labelText: label,
-            labelStyle: TextStyle(color: themeGold.withOpacity(0.7), fontSize: 13, fontWeight: FontWeight.w600),
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            prefixIcon: Icon(icon, color: themeGold, size: 22),
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // Cek apakah pakai imagePath (.png) atau pakai Icon bawaan Flutter
+            if (imagePath != null)
+              Image.asset(
+                imagePath,
+                width: 24,
+                height: 24,
+                color: themeGold,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                  Icons.image_not_supported,
+                  color: themeGold,
+                  size: 24,
+                ),
+              )
+            else if (icon != null)
+              Icon(icon, color: themeGold, size: 24),
+
+            const SizedBox(width: 16), // Jarak antara icon dan teks
+
+            Flexible(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: themeGold,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.5,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       ),
     );

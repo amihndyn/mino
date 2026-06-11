@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
-import 'package:mino/core/constants/app_colors.dart'; 
+import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_text_styles.dart';
+import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 import 'package:mino/pages/habit/widgets/create_habit_card.dart';
 import 'package:mino/widgets/button/custom_button.dart';
+import 'package:provider/provider.dart';
 
 class CreateUniqueHabitPage extends StatefulWidget {
   const CreateUniqueHabitPage({super.key});
@@ -41,29 +43,34 @@ class _CreateUniqueHabitPageState extends State<CreateUniqueHabitPage> {
         children: [
           /// BACKGROUND UTAMA (Bagian gelap di atas - Diubah ke SVG)
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
 
           /// KONTEN UTAMA
           SafeArea(
-            bottom: false, // Memastikan warna cream container bawah mentok hingga akhir layar
+            bottom:
+                false, // Memastikan warna cream container bawah mentok hingga akhir layar
             child: Column(
               children: [
                 // Menyisakan ruang kosong di atas agar background asli terlihat sedikit
-                const Spacer(flex: 1), 
+                const Spacer(flex: 1),
 
                 Expanded(
-                  flex: 14, // Membuat container cream memakan porsi besar ke bawah
+                  flex:
+                      14, // Membuat container cream memakan porsi besar ke bawah
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                    ),
                     decoration: const BoxDecoration(
-                      color: AppColors.orange100, // Warna cream/beige lembut sesuai desain kamu
+                      color: AppColors
+                          .orange100, // Warna cream/beige lembut sesuai desain kamu
                       borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(32), // Sudut melengkung di atas sheet
+                        top: Radius.circular(
+                          32,
+                        ), // Sudut melengkung di atas sheet
                       ),
                     ),
                     child: Column(
@@ -91,13 +98,13 @@ class _CreateUniqueHabitPageState extends State<CreateUniqueHabitPage> {
                         const SizedBox(height: 32),
 
                         /// INPUT FIELD CARD
-                        CreateHabitCard(
-                          controller: habitController,
-                        ),
+                        CreateHabitCard(controller: habitController),
 
                         // Spacer fleksibel untuk mendorong tombol ke bawah
-                        const Spacer(), 
+                        const Spacer(),
 
+                        /// TOMBOL SAVE (Kondisional)
+                        // Hanya muncul jika text field tidak kosong
                         /// TOMBOL SAVE (Kondisional)
                         // Hanya muncul jika text field tidak kosong
                         if (habitController.text.trim().isNotEmpty)
@@ -106,7 +113,28 @@ class _CreateUniqueHabitPageState extends State<CreateUniqueHabitPage> {
                             child: CustomButton(
                               text: "Save",
                               onTap: () {
-                                print("Habit Baru Disimpan: ${habitController.text}");
+                                // 🔥 AMBIL TEKS NYA DAN KIRIM KE BLOC
+                                final String uniqueName = habitController.text
+                                    .trim();
+
+                                context.read<DashboardBloc>().add(
+                                  DashboardEvent.addHabit(uniqueName),
+                                );
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Custom habit berhasil dibuat!',
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+
+                                // 3. LANGSUNG KEMBALI KE DASHBOARD UTAMA (Hapus semua tumpukan halaman PilihHabit)
+                                Navigator.popUntil(
+                                  context,
+                                  (route) => route.isFirst,
+                                );
                               },
                             ),
                           ),

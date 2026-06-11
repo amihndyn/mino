@@ -1,51 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart'; // WAJIB IMPORT INI
+import 'package:flutter_slidable/flutter_slidable.dart';
 
-class ActiveChallengeListPage extends StatelessWidget {
+class ChallengeModel {
+  final String iconPath;
+  final String title;
+  int current;
+  final int total;
+  bool isCompleted;
+
+  ChallengeModel({
+    required this.iconPath,
+    required this.title,
+    required this.current,
+    required this.total,
+    this.isCompleted = false,
+  });
+}
+
+class ActiveChallengeListPage extends StatefulWidget {
   const ActiveChallengeListPage({super.key});
 
-  // --- FUNGSI POP UP DELETE ---
-  void _showDeleteDialog(BuildContext context, String type) {
+  @override
+  State<ActiveChallengeListPage> createState() => _ActiveChallengeListPageState();
+}
+
+class _ActiveChallengeListPageState extends State<ActiveChallengeListPage> {
+  final List<ChallengeModel> _challenges = [
+    ChallengeModel(iconPath: 'assets/icons/tension.png', title: 'Release tension in your body', current: 12, total: 30),
+    ChallengeModel(iconPath: 'assets/icons/clean.png', title: 'Clean your home', current: 5, total: 30),
+    ChallengeModel(iconPath: 'assets/icons/healthy.png', title: 'Eat healthy', current: 12, total: 30),
+    ChallengeModel(iconPath: 'assets/icons/hair.png', title: 'Hair care day', current: 5, total: 30),
+  ];
+
+  void _showDeleteDialog(BuildContext context, int index) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: const Color(0xFF332218),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'Delete $type?',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                const Text(
+                  'Delete Challenge?',
+                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'The progress this $type cannot\nbe recovered once deleted. 💎',
+                  'The progress this challenge cannot\nbe recovered once deleted. 💎',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 13,
-                    height: 1.4,
-                  ),
+                  style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13, height: 1.4),
                 ),
                 const SizedBox(height: 24),
                 Row(
                   children: [
-                    // TOMBOL DELETE
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          // TODO: Tambahkan logika hapus data di sini
-                          Navigator.pop(context); 
+                          setState(() {
+                            _challenges.removeAt(index);
+                          });
+                          Navigator.pop(context);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -56,41 +74,25 @@ class ActiveChallengeListPage extends StatelessWidget {
                           alignment: Alignment.center,
                           child: const Text(
                             'Delete',
-                            style: TextStyle(
-                              color: Color(0xFFE6A84A),
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextStyle(color: Color(0xFFE6A84A), fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 12),
-                    // TOMBOL CANCEL (Custom Button onTap)
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context); // Tutup pop up
-                        },
+                        onTap: () => Navigator.pop(context),
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
                             color: const Color(0xFF4A3424),
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFE6A84A).withOpacity(0.2),
-                                blurRadius: 10,
-                                spreadRadius: 1,
-                              ),
-                            ],
                           ),
                           alignment: Alignment.center,
                           child: const Text(
                             'Cancel',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
@@ -107,8 +109,19 @@ class ActiveChallengeListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int completedCount = _challenges.where((c) => c.isCompleted).length;
+    int totalCount = _challenges.length;
+
+    // LOGIKA FILTER: Ambil yang BELUM dicentang saja
+    List<ChallengeModel> displayChallenges = _challenges.where((c) => !c.isCompleted).toList();
+
+    // PENGECUALIAN: Jika semua sudah dicentang, tampilkan yang paling atas (index ke-0)
+    if (displayChallenges.isEmpty && _challenges.isNotEmpty) {
+      displayChallenges = [_challenges.first];
+    }
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1A110A), 
+      backgroundColor: const Color(0xFF1A110A),
       body: Stack(
         children: [
           Positioned.fill(
@@ -118,7 +131,6 @@ class ActiveChallengeListPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // APP BAR CUSTOM
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
@@ -134,7 +146,6 @@ class ActiveChallengeListPage extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
@@ -142,19 +153,21 @@ class ActiveChallengeListPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // KOTAK PROGRESS
-                        _buildTopProgressCard(),
+                        _buildTopProgressCard(completedCount, totalCount),
                         const SizedBox(height: 32),
-
-                        const Text('The overall challenge', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                        const Text(
+                          'The overall challenge',
+                          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
                         const SizedBox(height: 16),
-
-                        // LIST CHALLENGE (Tambahkan context di parameter pertama)
-                        _buildChallengeItem(context, 'assets/icons/tension.png', 'Release tension in your body', 12, 30),
-                        _buildChallengeItem(context, 'assets/icons/clean.png', 'Clean your home', 5, 30),
-                        _buildChallengeItem(context, 'assets/icons/healthy.png', 'Eat healthy', 12, 30),
-                        _buildChallengeItem(context, 'assets/icons/hair.png', 'Hair care day', 5, 30),
                         
+                        // LOOPING MENGGUNAKAN DATA YANG SUDAH DIFILTER
+                        ...List.generate(displayChallenges.length, (index) {
+                          final challenge = displayChallenges[index];
+                          // Cari index asli di list utama
+                          final masterIndex = _challenges.indexOf(challenge);
+                          return _buildChallengeItem(context, challenge, masterIndex);
+                        }),
                         const SizedBox(height: 40),
                       ],
                     ),
@@ -168,7 +181,9 @@ class ActiveChallengeListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTopProgressCard() {
+  Widget _buildTopProgressCard(int completed, int total) {
+    double progressValue = total > 0 ? (completed / total) : 0.0;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -189,7 +204,7 @@ class ActiveChallengeListPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
                   children: [
-                    const Text('2/9', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
+                    Text('$completed/$total', style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
                     const SizedBox(width: 8),
                     Text('Completed', style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12)),
                   ],
@@ -197,7 +212,12 @@ class ActiveChallengeListPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: const LinearProgressIndicator(value: 2/9, backgroundColor: Colors.white24, color: Color(0xFFE6A84A), minHeight: 6),
+                  child: LinearProgressIndicator(
+                    value: progressValue,
+                    backgroundColor: Colors.white24,
+                    color: const Color(0xFFE6A84A),
+                    minHeight: 6,
+                  ),
                 ),
               ],
             ),
@@ -211,7 +231,7 @@ class ActiveChallengeListPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Icon(Icons.diamond, color: Color(0xFF1CB0F6), size: 22), 
+                    Icon(Icons.diamond, color: Color(0xFF1CB0F6), size: 22),
                     SizedBox(width: 6),
                     Text('+7', style: TextStyle(color: Color(0xFFE6A84A), fontSize: 22, fontWeight: FontWeight.bold)),
                   ],
@@ -226,29 +246,23 @@ class ActiveChallengeListPage extends StatelessWidget {
     );
   }
 
-  // --- CHALLENGE ITEM DENGAN SLIDABLE (TANPA TOMBOL EDIT) ---
-  Widget _buildChallengeItem(BuildContext context, String iconPath, String title, int current, int total) {
+  Widget _buildChallengeItem(BuildContext context, ChallengeModel challenge, int index) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Slidable(
-        key: ValueKey(title),
+        key: ValueKey(challenge.title),
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
-          // Ratio dikecilkan jadi 0.45 karena cuma butuh 2 tombol
-          extentRatio: 0.45, 
+          extentRatio: 0.45,
           children: [
-            // 1. TOMBOL STOPWATCH
             CustomSlidableAction(
-              onPressed: (context) {
-                // TODO: Navigasi ke page timer
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => TimerPage()));
-              },
+              onPressed: (context) {},
               backgroundColor: Colors.transparent,
               padding: EdgeInsets.zero,
               child: Container(
                 margin: const EdgeInsets.only(left: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFC4F0FF), 
+                  color: const Color(0xFFC4F0FF),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(
@@ -256,18 +270,16 @@ class ActiveChallengeListPage extends StatelessWidget {
                 ),
               ),
             ),
-            
-            // 2. TOMBOL DELETE (Tidak ada tombol Edit)
             CustomSlidableAction(
               onPressed: (context) {
-                _showDeleteDialog(context, 'Challenge'); // Panggil Dialog Pop-up
+                _showDeleteDialog(context, index);
               },
               backgroundColor: Colors.transparent,
               padding: EdgeInsets.zero,
               child: Container(
                 margin: const EdgeInsets.only(left: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFC92A2A), 
+                  color: const Color(0xFFC92A2A),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(
@@ -280,19 +292,27 @@ class ActiveChallengeListPage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           decoration: BoxDecoration(
-            color: const Color(0xFF5C4731), 
-            borderRadius: BorderRadius.circular(16)
+            color: const Color(0xFF5C4731),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             children: [
-              // Emoji dummy (bisa diganti dengan Image.asset(iconPath) jika gambar sudah siap)
-              const CircleAvatar(backgroundColor: Colors.white24, child: Icon(Icons.star, color: Colors.white)), 
+              const CircleAvatar(
+                backgroundColor: Colors.white24,
+                child: Icon(Icons.star, color: Colors.white),
+              ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                    Text(
+                      challenge.title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
@@ -300,7 +320,7 @@ class ActiveChallengeListPage extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: LinearProgressIndicator(
-                              value: current / total,
+                              value: challenge.current / challenge.total,
                               backgroundColor: Colors.white24,
                               color: const Color(0xFFE6A84A),
                               minHeight: 6,
@@ -308,19 +328,47 @@ class ActiveChallengeListPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 10),
-                        Text('$current/$total', style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12)),
+                        Text(
+                          '${challenge.current}/${challenge.total}',
+                          style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 16),
-              Container(
-                width: 26, height: 26, 
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle, 
-                  border: Border.all(color: Colors.white, width: 1.5)
-                )
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    challenge.isCompleted = !challenge.isCompleted;
+                    if (challenge.isCompleted) {
+                      if (challenge.current < challenge.total) {
+                        challenge.current++;
+                      }
+                    } else {
+                      if (challenge.current > 0) {
+                        challenge.current--;
+                      }
+                    }
+                  });
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: challenge.isCompleted ? const Color(0xFFE6A84A) : Colors.transparent,
+                    border: Border.all(
+                      color: challenge.isCompleted ? const Color(0xFFE6A84A) : Colors.white,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: challenge.isCompleted
+                      ? const Icon(Icons.check, color: Colors.black, size: 18)
+                      : null,
+                ),
               ),
             ],
           ),

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mino/pages/mood/journaling_page.dart';
 import 'package:mino/providers/moodjournal_provider.dart';
 import 'package:mino/widgets/button/custom_button.dart';
-import 'package:provider/provider.dart';
 import 'package:mino/pages/mood/widgets/mood_grid.dart';
 import 'package:mino/core/constants/app_colors.dart';
+import 'package:provider/provider.dart';
 
 class MoodPage extends StatefulWidget {
   const MoodPage({super.key});
@@ -16,7 +16,6 @@ class MoodPage extends StatefulWidget {
 class _MoodScreenState extends State<MoodPage> {
   String? _selectedMood;
 
-  // Mengubah semua ekstensi ikon mood ke .png sesuai dengan format aset terbaru
   final List<MoodItem> _moods = const [
     MoodItem(imagePath: 'assets/images/amazing.png', label: 'Amazing'),
     MoodItem(imagePath: 'assets/images/good.png', label: 'Good'),
@@ -27,51 +26,46 @@ class _MoodScreenState extends State<MoodPage> {
 
   void _onNext() {
     if (_selectedMood == null) {
-      // ── Tampilkan Custom Popup Lebih Kecil & Sederhana ──
+      // ── Tampilkan Custom Popup Peringatan ──
       showDialog<void>(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext dialogContext) {
           return Dialog(
-            backgroundColor: Colors.transparent, // Biar background dialog jadi transparan
+            backgroundColor: Colors.transparent,
             child: SizedBox(
-              width: 280, // ── 1. MENGUNCI LEBAR CARD AGAR LEBIH KECIL ──
+              width: 280,
               child: Container(
-                padding: const EdgeInsets.all(24), // Padding disesuaikan agar lebih compact
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: AppColors.coklat900, 
-                  borderRadius: BorderRadius.circular(20), // Rounded corner halus
+                  color: AppColors.coklat900,
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: AppColors.orange500.withValues(alpha: 0.3), 
+                    color: AppColors.orange500.withValues(alpha: 0.3),
                     width: 1,
                   ),
-                  // ── 2. MENAMBAHKAN SHADOW PADA ROUNDED CARD ──
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.4),
                       blurRadius: 16,
                       spreadRadius: 5,
-                      offset: const Offset(0, 8), // Shadow mengarah ke bawah
+                      offset: const Offset(0, 8),
                     ),
                   ],
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Ikon Peringatan
                     Image.asset(
                       'assets/images/mood_warning.png',
-                      height: 50, // Diperkecil sedikit dari 60 ke 50
+                      height: 50,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.sentiment_satisfied_alt_rounded,
                         color: Color(0xFFE8A838),
                         size: 50,
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
-                    // Judul (Bahasa Inggris)
                     const Text(
                       'Mood Required',
                       style: TextStyle(
@@ -80,10 +74,7 @@ class _MoodScreenState extends State<MoodPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(height: 8),
-
-                    // Deskripsi (Bahasa Inggris)
                     const Text(
                       'Please select your mood first\nbefore continuing.',
                       textAlign: TextAlign.center,
@@ -93,19 +84,14 @@ class _MoodScreenState extends State<MoodPage> {
                         height: 1.4,
                       ),
                     ),
-
                     const SizedBox(height: 24),
-
-                    // ── 3. SATU TOMBOL YANG SEDERHANA (FLAT & CLEAN) ──
                     GestureDetector(
-                      onTap: () {
-                        Navigator.pop(dialogContext); // Menutup popup
-                      },
+                      onTap: () => Navigator.pop(dialogContext),
                       child: Container(
-                        width: double.infinity, // Memenuhi lebar dalam card
+                        width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: AppColors.orange500, // Warna solid yang kontras
+                          color: AppColors.orange500,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(
@@ -126,35 +112,32 @@ class _MoodScreenState extends State<MoodPage> {
           );
         },
       );
-      
-      return; // Stop eksekusi kode di bawahnya
+      return;
     }
 
-    // ── Jika mood sudah dipilih, lanjut ke halaman berikutnya ──
+
+    // Kirim event save ke bloc
     context.read<MoodJournalProvider>().setMood(_selectedMood!);
 
+    // 2. Pindah halaman ke JournalingPage menggunakan Navigator.push biasa
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const JournalingPage(),
-      ),
+      MaterialPageRoute(builder: (context) => const JournalingPage()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 🔥 Bungkus body dengan BlocListener untuk memantau status penyimpanan data ke Laravel
       body: Stack(
         children: [
-          // ── Background utama aplikasi ──────────────────
+          // Background utama
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
 
-          // ── Card pembungkus konten utama (Bottom Sheet Style) ──
+          // Card pembungkus konten utama
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -167,14 +150,13 @@ class _MoodScreenState extends State<MoodPage> {
                   topRight: Radius.circular(32),
                 ),
               ),
-
               child: SafeArea(
                 top: false,
                 child: Column(
                   children: [
                     const SizedBox(height: 30),
 
-                    // ── Top Bar (Teks tengah & Cancel terkontrol) ──
+                    // Top Bar
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 28),
                       child: Stack(
@@ -198,7 +180,7 @@ class _MoodScreenState extends State<MoodPage> {
                               child: const Text(
                                 'cancel',
                                 style: TextStyle(
-                                  color: Colors.grey, // Warna abu-abu untuk teks "Cancel"
+                                  color: Colors.grey,
                                   fontSize: 16,
                                 ),
                               ),
@@ -210,7 +192,7 @@ class _MoodScreenState extends State<MoodPage> {
 
                     const Spacer(flex: 5),
 
-                    // ── Pertanyaan utama ─────────────────────────────
+                    // Pertanyaan utama
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 32),
                       child: Text(
@@ -227,7 +209,7 @@ class _MoodScreenState extends State<MoodPage> {
 
                     const Spacer(flex: 2),
 
-                    // ── Grid Emojis ──────────────────────────────────
+                    // Grid Emojis
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: MoodGrid(
@@ -241,7 +223,7 @@ class _MoodScreenState extends State<MoodPage> {
 
                     const Spacer(flex: 4),
 
-                    // ── Tombol Bawah menggunakan CustomButton ─────────
+                    // Tombol Bawah
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
@@ -250,10 +232,7 @@ class _MoodScreenState extends State<MoodPage> {
                       child: SizedBox(
                         width: double.infinity,
                         height: 45,
-                        child: CustomButton(
-                          text: 'Next',
-                          onTap: _onNext,
-                        ),
+                        child: CustomButton(text: 'Next', onTap: _onNext),
                       ),
                     ),
                   ],

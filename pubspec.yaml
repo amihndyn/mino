@@ -17,9 +17,13 @@ dependencies:
   qr_flutter: ^4.1.0
   google_fonts: ^8.1.0
 
-  # State Management (Flutter BLoC dihapus agar fokus menggunakan Provider)
+  # State Management
   provider: ^6.1.2
   dartz: ^0.10.1
+  flutter_bloc: ^9.1.1
+  http: ^1.2.0
+  cached_network_image: ^3.3.1
+
 
   # Local Storage & Database
   shared_preferences: ^2.5.5

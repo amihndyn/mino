@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mino/pages/auth/login_page.dart';
 import 'package:provider/provider.dart';
 
 import 'package:mino/pages/auth/confirm_password_screen.dart'; 
@@ -78,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
       
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const ConfirmPassword4()),
+        MaterialPageRoute(builder: (_) => const LoginPage()),
         (route) => false,
       );
     } else {

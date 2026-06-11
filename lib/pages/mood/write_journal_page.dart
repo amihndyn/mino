@@ -5,6 +5,8 @@ import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:mino/core/constants/app_colors.dart';
 
+// ... kode import tetap sama ...
+
 class WriteJournalScreen extends StatefulWidget {
   final String mood;
   final String moodLabel;
@@ -62,18 +64,20 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
     super.dispose();
   }
 
+  // MODIFIKASI: Mengembalikan data ke halaman JournalingPage
   void _handleSave() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const HomePage()),
-      (route) => false,
-    );
+    final Map<String, String> journalData = {
+      "title": _titleController.text.trim(),
+      "content": _contentController.text.trim(),
+    };
+    
+    Navigator.pop(context, journalData); // 🔥 Kembalikan map data ke penekan tombol awal
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true, // Diubah ke true agar layout menyesuaikan keyboard
       body: Stack(
         children: [
           // ── Background Gambar Full Screen ─────────
@@ -83,8 +87,6 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
               fit: BoxFit.cover,
             ),
           ),
-
-          // Area Konten Utama
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +199,8 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                               height: 1.5,
                             ),
                             decoration: const InputDecoration(
-                              hintText: 'Write down your thoughts here...',
+                              // Hint text dari Sausan agar berbeda dengan judul
+                              hintText: 'Write your thoughts here...', 
                               hintStyle: TextStyle(
                                 color: Colors.black26, 
                                 fontSize: 16,
@@ -214,7 +217,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
 
                 const Spacer(),
 
-                // ── Logika Tombol Bawah ──────
+                // ── Animasi Tombol Bawah ──────
                 Center(
                   child: AnimatedCrossFade(
                     duration: const Duration(milliseconds: 200),

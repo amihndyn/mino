@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_slidable/flutter_slidable.dart'; // UI Ami
+import 'package:flutter_bloc/flutter_bloc.dart'; // Logic Sausan
+import 'package:provider/provider.dart'; // Logic Sausan
+import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
+import 'package:mino/providers/challenge_provider.dart'; 
 
 // Sesuaikan path import di bawah ini dengan struktur foldermu
+import 'package:mino/core/data/model/response/dashboard_response.dart';
 import 'package:mino/pages/challenge/widgets/active_challenge_list_page.dart';
 import 'package:mino/pages/habit/widgets/active_habit_list_page.dart';
 import 'package:mino/pages/home/widgets/todays_progress_card.dart';
 import 'widgets/home_header.dart';
 import '../../widgets/navbar/bottom_navbar.dart'; 
 
-// Variabel global agar tutorial hanya jalan 1x selama aplikasi hidup
+// Variabel global agar tutorial hanya jalan 1x selama aplikasi hidup (Ami)
 bool _hasShownHabitTutorial = false;
 
 class HomePage extends StatefulWidget {
@@ -20,8 +25,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _navIndex = 0;
+  
+  // 🔥 Map lokal agar tombol ceklis bisa ditekan tanpa merusak properti final model API
+  final Map<int, bool> _toggledHabits = {};
 
-  // --- FUNGSI POP UP DELETE ---
+  @override
+  void initState() {
+    super.initState();
+    // 🔥 Pemicu API: Ambil data dashboard begitu halaman dimuat (Sausan)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<DashboardBloc>().add(
+        const DashboardEvent.fetchDashboardData(),
+      );
+    });
+  }
+
+  // --- FUNGSI POP UP DELETE (Ami) ---
   void _showDeleteDialog(BuildContext context, String type) {
     showDialog(
       context: context,
@@ -75,48 +94,82 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // 🔥 Ambil data list tantangan dari ChallengeProvider (Sausan)
+    final choiceChallenges = context.watch<ChallengeProvider>().challenges;
+
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      backgroundColor: const Color(0xFF1A110A),
+      backgroundColor: const Color(0xFF1A110A), // UI Ami
       body: Stack(
         children: [
-          // Background Image
+          // Background Image (Sama untuk keduanya)
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png', 
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
 
-          // Main Content
-          SafeArea(
-            bottom: false,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 1. Panggil Header
-                  const HomeHeader(),
-                  const SizedBox(height: 24),
+          // Main Content dibungkus BlocBuilder (Sausan)
+          BlocBuilder<DashboardBloc, DashboardState>(
+            builder: (context, state) {
+              return state.when(
+                initial: () => const Center(child: CircularProgressIndicator(color: Colors.white)),
+                loading: () => const Center(child: CircularProgressIndicator(color: Colors.white)),
+                error: (message) => Center(
+                  child: Text(
+                    "Gagal memuat data:\n$message",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+                success: (response) {
+                  // Ekstrak data dari state success (Sausan)
+                  final dashboardData = response.dashboard;
+                  final user = dashboardData?.user;
+                  final summary = dashboardData?.summary;
+                  final habits = dashboardData?.todayHabits ?? [];
 
-                  // 2. Panggil Card Progress Hari Ini
-                  const TodaysProgressCard(),
-                  const SizedBox(height: 32),
+                  // Tampilkan UI Ami yang disuntik data Sausan
+                  return SafeArea(
+                    bottom: false,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 1. Header (UI Ami + Data Sausan)
+                          HomeHeader(
+                            key: ValueKey('${user?.diamonds}_${user?.name}'),
+                            name: user?.name ?? 'Guest',
+                            diamonds: user?.diamonds ?? 0,
+                          ),
+                          const SizedBox(height: 24),
 
-                  // 3. Section Habit (Ditulis Langsung)
-                  _buildHabitSection(context),
-                  const SizedBox(height: 32),
+                          // 2. Card Progress (UI Ami + Data Sausan)
+                          TodaysProgressCard(
+                            key: ValueKey('${summary?.habitsCompletedToday}_${summary?.habitsTotal}'),
+                            completedHabits: summary?.habitsCompletedToday ?? 0,
+                            totalHabits: summary?.habitsTotal ?? 0,
+                            completedChallenges: 0,
+                            totalChallenges: 0,
+                          ),
+                          const SizedBox(height: 32),
 
-                  // 4. Section Challenge (Ditulis Langsung)
-                  _buildChallengeSection(context),
+                          // 3. Section Habit (UI Ami + List Dinamis Sausan)
+                          _buildHabitSection(context, habits, summary),
+                          const SizedBox(height: 32),
 
-                  const SizedBox(height: 120), // Spasi aman untuk Bottom NavBar
-                ],
-              ),
-            ),
+                          // 4. Section Challenge (UI Ami + List Dinamis Provider)
+                          _buildChallengeSection(context, choiceChallenges),
+
+                          const SizedBox(height: 120), // Spasi aman untuk Bottom NavBar
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
@@ -128,9 +181,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   // ===========================================================================
-  // SECTION HABIT
+  // SECTION HABIT (Logic Dinamis)
   // ===========================================================================
-  Widget _buildHabitSection(BuildContext context) {
+  Widget _buildHabitSection(BuildContext context, List<TodayHabit> habits, dynamic summary) {
+    int completedHabits = summary?.habitsCompletedToday ?? 0;
+    int totalHabits = summary?.habitsTotal ?? (habits.isNotEmpty ? habits.length : 1);
+    double progress = totalHabits > 0 ? (completedHabits / totalHabits) : 0.0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -151,9 +208,32 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 16),
 
-        // CUMA AMBIL 2 ITEM DARI ACTIVE HABIT
-        _buildHabitItem(context, '📚', 'Take a deep breath', isTutorial: true),
-        _buildHabitItem(context, '🌞', 'Smile for a few seconds'),
+        // Mapping Data Habit Backend ke UI Slidable Ami
+        if (habits.isEmpty)
+          const Text('No habits for today. Take a rest! ☕', style: TextStyle(color: Colors.white70))
+        else
+          ...habits.asMap().entries.take(3).map((entry) {
+            int index = entry.key;
+            TodayHabit habit = entry.value;
+            
+            int habitId = habit.userHabitId ?? 0;
+            // Cek status ceklis dari local state, jika belum ada ambil dari value API backend
+            bool isCompleted = _toggledHabits.containsKey(habitId)
+                ? _toggledHabits[habitId]!
+                : (habit.isCompletedToday ?? false);
+
+            // FIX: Menggunakan data asli model (habitName) menggantikan emoji/title lama yang merah
+            return _buildHabitItem(
+              context, 
+              '✨', 
+              habit.habitName ?? 'Habit', 
+              isTutorial: index == 0, // Tutorial cuma muncul di item pertama
+              isCompleted: isCompleted,
+              habitId: habitId,
+              streak: habit.streak ?? 0,
+            );
+          }).toList(),
+
         const SizedBox(height: 8),
 
         Row(
@@ -163,18 +243,19 @@ class _HomePageState extends State<HomePage> {
               width: 100,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: const LinearProgressIndicator(value: 2/7, backgroundColor: Colors.white24, color: Color(0xFFE6A84A), minHeight: 6),
+                child: LinearProgressIndicator(value: progress, backgroundColor: Colors.white24, color: const Color(0xFFE6A84A), minHeight: 6),
               ),
             ),
             const SizedBox(width: 12),
-            const Text('2/7 habits completed', style: TextStyle(color: Color(0xFFE6A84A), fontSize: 12)),
+            Text('$completedHabits/$totalHabits habits completed', style: const TextStyle(color: Color(0xFFE6A84A), fontSize: 12)),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildHabitItem(BuildContext context, String emoji, String title, {bool isTutorial = false}) {
+  Widget _buildHabitItem(BuildContext context, String emoji, String title, {bool isTutorial = false, bool isCompleted = false, int habitId = 0, int streak = 0}) {
+    // UI Item persis seperti milik Ami
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Slidable(
@@ -221,8 +302,50 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(emoji, style: const TextStyle(fontSize: 24)),
                   const SizedBox(width: 16),
-                  Expanded(child: Text(title, style: const TextStyle(color: Color(0xFF4A3A2A), fontWeight: FontWeight.w500))),
-                  Container(width: 24, height: 24, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: const Color(0xFF4A3A2A), width: 1.5))),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title, 
+                          style: TextStyle(
+                            color: const Color(0xFF4A3A2A), 
+                            fontWeight: FontWeight.w500,
+                            decoration: isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
+                          ),
+                        ),
+                        if (streak > 0) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            '🔥 $streak day streak',
+                            style: TextStyle(color: const Color(0xFF4A3A2A).withOpacity(0.6), fontSize: 11),
+                          ),
+                        ]
+                      ],
+                    ),
+                  ),
+                  
+                  // Klik Ceklis Interaktif (Ami UI style)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _toggledHabits[habitId] = !isCompleted;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: 24, 
+                      height: 24, 
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle, 
+                        color: isCompleted ? const Color(0xFF4A3A2A) : Colors.transparent,
+                        border: Border.all(color: const Color(0xFF4A3A2A), width: 1.5),
+                      ),
+                      child: isCompleted
+                          ? const Icon(Icons.check, color: Color(0xFFEEDDCC), size: 16)
+                          : null,
+                    ),
+                  ),
                 ],
               ),
             );
@@ -233,9 +356,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   // ===========================================================================
-  // SECTION CHALLENGE
+  // SECTION CHALLENGE (Logic Dinamis)
   // ===========================================================================
-  Widget _buildChallengeSection(BuildContext context) {
+  Widget _buildChallengeSection(BuildContext context, List challenges) {
+    // Default dummy untuk progress jika tidak ada summary challenge dari backend
+    int completedChallenges = 1; 
+    int totalChallenges = challenges.isNotEmpty ? challenges.length : 2;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -256,9 +383,21 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 16),
 
-        // CUMA AMBIL 2 ITEM DARI ACTIVE CHALLENGE
-        _buildChallengeItem(context, 'assets/icons/tension.png', 'Release tension in your body', 12, 30),
-        _buildChallengeItem(context, 'assets/icons/clean.png', 'Clean your home', 5, 30),
+        // Mapping Data Challenge Backend ke UI Slidable Ami
+        if (challenges.isEmpty)
+          const Text('No active challenges. Take one!', style: TextStyle(color: Colors.white70))
+        else
+          ...challenges.take(2).map((challenge) {
+            // CATATAN: Sesuaikan .title, .current, .total dengan model Dart kamu
+            return _buildChallengeItem(
+              context, 
+              'assets/icons/tension.png', // Ikon sementara, bisa diganti pakai logic if/else
+              challenge.title ?? challenge.name ?? 'Challenge', 
+              challenge.currentProgress ?? 0, 
+              challenge.target ?? 30
+            );
+          }).toList(),
+
         const SizedBox(height: 8),
 
         Row(
@@ -268,11 +407,11 @@ class _HomePageState extends State<HomePage> {
               width: 100,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: const LinearProgressIndicator(value: 1/2, backgroundColor: Colors.white24, color: Color(0xFFE6A84A), minHeight: 6),
+                child: LinearProgressIndicator(value: completedChallenges / totalChallenges, backgroundColor: Colors.white24, color: const Color(0xFFE6A84A), minHeight: 6),
               ),
             ),
             const SizedBox(width: 12),
-            const Text('1/2 challenge completed', style: TextStyle(color: Color(0xFFE6A84A), fontSize: 12)),
+            Text('$completedChallenges/$totalChallenges challenge completed', style: const TextStyle(color: Color(0xFFE6A84A), fontSize: 12)),
           ],
         ),
       ],
@@ -280,6 +419,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildChallengeItem(BuildContext context, String iconPath, String title, int current, int total) {
+    // UI Item persis seperti milik Ami
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Slidable(
@@ -305,7 +445,7 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(color: const Color(0xFF6A594A), borderRadius: BorderRadius.circular(16)),
           child: Row(
             children: [
-              const CircleAvatar(backgroundColor: Colors.white24, child: Icon(Icons.star, color: Colors.white)), // Ganti image asset jika ada
+              const CircleAvatar(backgroundColor: Colors.white24, child: Icon(Icons.star, color: Colors.white)),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -318,7 +458,7 @@ class _HomePageState extends State<HomePage> {
                         Expanded(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: LinearProgressIndicator(value: current / total, backgroundColor: Colors.white24, color: const Color(0xFFE6A84A), minHeight: 6),
+                            child: LinearProgressIndicator(value: total == 0 ? 0 : current / total, backgroundColor: Colors.white24, color: const Color(0xFFE6A84A), minHeight: 6),
                           ),
                         ),
                         const SizedBox(width: 10),

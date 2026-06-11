@@ -1,11 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart'; // WAJIB IMPORT INI
+import 'package:flutter_slidable/flutter_slidable.dart';
 
-class ActiveHabitListPage extends StatelessWidget {
+// 1. MEMBUAT MODEL DATA UNTUK HABIT
+class HabitModel {
+  final String emoji;
+  final String title;
+  bool isCompleted;
+
+  HabitModel({
+    required this.emoji,
+    required this.title,
+    this.isCompleted = false,
+  });
+}
+
+class ActiveHabitListPage extends StatefulWidget {
   const ActiveHabitListPage({super.key});
 
+  @override
+  State<ActiveHabitListPage> createState() => _ActiveHabitListPageState();
+}
+
+class _ActiveHabitListPageState extends State<ActiveHabitListPage> {
+  // 2. KUMPULAN DATA HABIT (STATE)
+  final List<HabitModel> _habits = [
+    HabitModel(emoji: '📚', title: 'Take a deep breath'),
+    HabitModel(emoji: '🌞', title: 'Smile for a few seconds'),
+    HabitModel(emoji: '🧘', title: 'Fix your posture'),
+    HabitModel(emoji: '💻', title: 'Creative Time'),
+    HabitModel(emoji: '📔', title: 'Journaling'),
+    HabitModel(emoji: '🎙️', title: 'Listen to Podcast'),
+  ];
+
   // --- FUNGSI POP UP DELETE ---
-  void _showDeleteDialog(BuildContext context, String type) {
+  void _showDeleteDialog(BuildContext context, int index) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -19,9 +47,9 @@ class ActiveHabitListPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'Delete $type?',
-                  style: const TextStyle(
+                const Text(
+                  'Delete Habit?',
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -29,7 +57,7 @@ class ActiveHabitListPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'The progress this $type cannot\nbe recovered once deleted. 💎',
+                  'The progress this habit cannot\nbe recovered once deleted. 💎',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.8),
@@ -44,7 +72,9 @@ class ActiveHabitListPage extends StatelessWidget {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          // TODO: Tambahkan logika hapus data di sini
+                          setState(() {
+                            _habits.removeAt(index); // Hapus data habit dari list
+                          });
                           Navigator.pop(context); 
                         },
                         child: Container(
@@ -59,30 +89,21 @@ class ActiveHabitListPage extends StatelessWidget {
                             style: TextStyle(
                               color: Color(0xFFE6A84A),
                               fontWeight: FontWeight.w600,
-                            ),
+                              ),
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 12),
-                    // TOMBOL CANCEL (Custom Button onTap)
+                    // TOMBOL CANCEL
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context); // Tutup pop up
-                        },
+                        onTap: () => Navigator.pop(context),
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
                             color: const Color(0xFF4A3424),
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFE6A84A).withOpacity(0.2),
-                                blurRadius: 10,
-                                spreadRadius: 1,
-                              ),
-                            ],
                           ),
                           alignment: Alignment.center,
                           child: const Text(
@@ -107,6 +128,10 @@ class ActiveHabitListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Menghitung progress secara otomatis berdasarkan jumlah data di list
+    int completedCount = _habits.where((h) => h.isCompleted).length;
+    int totalCount = _habits.length;
+
     return Scaffold(
       backgroundColor: const Color(0xFF1A110A), 
       body: Stack(
@@ -142,20 +167,17 @@ class ActiveHabitListPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // KOTAK PROGRESS
-                        _buildTopProgressCard(),
+                        // KOTAK PROGRESS OTOMATIS
+                        _buildTopProgressCard(completedCount, totalCount),
                         const SizedBox(height: 32),
 
                         const Text('The overall habit', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 16),
 
-                        // LIST HABIT (Sekarang me-lempar context ke dalam fungsi)
-                        _buildHabitItem(context, '📚', 'Take a deep breath'),
-                        _buildHabitItem(context, '🌞', 'Smile for a few seconds'),
-                        _buildHabitItem(context, '🧘', 'Fix your posture'),
-                        _buildHabitItem(context, '💻', 'Creative Time'),
-                        _buildHabitItem(context, '📔', 'Journaling'),
-                        _buildHabitItem(context, '🎙️', 'Listen to Podcast'),
+                        // LOOPING DATA HABIT SECARA DINAMIS
+                        ...List.generate(_habits.length, (index) {
+                          return _buildHabitItem(context, _habits[index], index);
+                        }),
                         
                         const SizedBox(height: 40),
                       ],
@@ -170,7 +192,10 @@ class ActiveHabitListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTopProgressCard() {
+  // Widget Card Progress Atas
+  Widget _buildTopProgressCard(int completed, int total) {
+    double progressValue = total > 0 ? (completed / total) : 0.0;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -191,7 +216,7 @@ class ActiveHabitListPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
                   children: [
-                    const Text('2/9', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
+                    Text('$completed/$total', style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
                     const SizedBox(width: 8),
                     Text('Completed', style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12)),
                   ],
@@ -199,7 +224,12 @@ class ActiveHabitListPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: const LinearProgressIndicator(value: 2/9, backgroundColor: Colors.white24, color: Color(0xFFE6A84A), minHeight: 6),
+                  child: LinearProgressIndicator(
+                    value: progressValue, 
+                    backgroundColor: Colors.white24, 
+                    color: const Color(0xFFE6A84A), 
+                    minHeight: 6,
+                  ),
                 ),
               ],
             ),
@@ -228,22 +258,19 @@ class ActiveHabitListPage extends StatelessWidget {
     );
   }
 
-  // --- HABIT ITEM DENGAN SLIDABLE ---
-  Widget _buildHabitItem(BuildContext context, String emoji, String title) {
+  // --- WIDGET LIST ITEM HABIT ---
+  Widget _buildHabitItem(BuildContext context, HabitModel habit, int index) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Slidable(
-        key: ValueKey(title),
+        key: ValueKey(habit.title),
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
-          extentRatio: 0.65, // Lebar area swipe
+          extentRatio: 0.65, 
           children: [
             // TOMBOL STOPWATCH
             CustomSlidableAction(
-              onPressed: (context) {
-                // TODO: Navigasi ke page timer
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => TimerPage()));
-              },
+              onPressed: (context) {},
               backgroundColor: Colors.transparent,
               padding: EdgeInsets.zero,
               child: Container(
@@ -260,9 +287,7 @@ class ActiveHabitListPage extends StatelessWidget {
             
             // TOMBOL EDIT
             CustomSlidableAction(
-              onPressed: (context) {
-                // TODO: Edit
-              },
+              onPressed: (context) {},
               backgroundColor: Colors.transparent,
               padding: EdgeInsets.zero,
               child: Container(
@@ -280,7 +305,7 @@ class ActiveHabitListPage extends StatelessWidget {
             // TOMBOL DELETE
             CustomSlidableAction(
               onPressed: (context) {
-                _showDeleteDialog(context, 'Habit'); // Panggil Dialog Pop-up
+                _showDeleteDialog(context, index); 
               },
               backgroundColor: Colors.transparent,
               padding: EdgeInsets.zero,
@@ -305,15 +330,41 @@ class ActiveHabitListPage extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Text(emoji, style: const TextStyle(fontSize: 24)),
+              Text(habit.emoji, style: const TextStyle(fontSize: 24)),
               const SizedBox(width: 16),
-              Expanded(child: Text(title, style: const TextStyle(color: Color(0xFF4A3A2A), fontWeight: FontWeight.w500))),
-              Container(
-                width: 24, height: 24, 
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle, 
-                  border: Border.all(color: const Color(0xFF4A3A2A), width: 1.5)
-                )
+              Expanded(
+                child: Text(
+                  habit.title, 
+                  style: TextStyle(
+                    color: const Color(0xFF4A3A2A), 
+                    fontWeight: FontWeight.w500,
+                    // Opsional: memberi efek coret pada teks jika habit selesai dicentang
+                    decoration: habit.isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
+                  ),
+                ),
+              ),
+              
+              // 3. BULATAN CENTANG DENGAN ANIMATED CONTAINER & GESTURE DETECTOR
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    habit.isCompleted = !habit.isCompleted;
+                  });
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 24, 
+                  height: 24, 
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle, 
+                    // Jika selesai, lingkaran akan terisi warna penuh
+                    color: habit.isCompleted ? const Color(0xFF4A3A2A) : Colors.transparent,
+                    border: Border.all(color: const Color(0xFF4A3A2A), width: 1.5)
+                  ),
+                  child: habit.isCompleted
+                      ? const Icon(Icons.check, color: Color(0xFFEEDDCC), size: 16)
+                      : null,
+                ),
               ),
             ],
           ),

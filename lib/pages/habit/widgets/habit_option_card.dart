@@ -5,7 +5,7 @@ import '../../../core/constants/app_text_styles.dart';
 
 class HabitOptionCard extends StatelessWidget {
   final String title;
-  final String imagePath; // Pastikan data yang dikirim nanti adalah path file .png
+  final String? imagePath; // Di sini sudah benar String? (nullable)
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -25,7 +25,7 @@ class HabitOptionCard extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(
           horizontal: 14,
-          vertical: 8, // Ukuran vertical mengecil agar proporsional seperti kapsul
+          vertical: 8, 
         ),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.biru500 : const Color(0xFFFFF8EC), 
@@ -42,24 +42,28 @@ class HabitOptionCard extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // DIUBAH KE PNG: Menggunakan Image.asset bawaan Flutter
-            Image.asset(
-              imagePath,
-              width: 24,
-              height: 24,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                // Fallback jika file PNG belum ada di folder asset agar tidak crash
-                return Container(
-                  width: 24,
-                  height: 24,
-                  decoration: const BoxDecoration(
-                    color: Colors.grey,
-                    shape: BoxShape.circle,
+            // 🔥 PERBAIKAN DI SINI: Cek apakah imagePath ada atau null
+            imagePath != null
+                ? Image.asset(
+                    imagePath!, // Pakai tanda seru (!) karena kita sudah yakin tidak null
+                    width: 24,
+                    height: 24,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Fallback jika path ada di database tapi file PNG-nya belum ditaruh di folder asset
+                      return const Icon(
+                        Icons.star_rounded,
+                        color: Colors.orange,
+                        size: 24,
+                      );
+                    },
+                  )
+                : const Icon(
+                    // 🔥 Fallback jika memang dari awal imagePath-nya null (Habit Custom/Baru)
+                    Icons.star_rounded,
+                    color: Colors.orange,
+                    size: 24,
                   ),
-                );
-              },
-            ),
             
             const SizedBox(width: 8),
             
@@ -67,7 +71,8 @@ class HabitOptionCard extends StatelessWidget {
               child: Text(
                 title,
                 style: AppTextStyles.secondaryMedium.copyWith(
-                  color: AppColors.coklat700,
+                  // Sedikit tips: jika card sedang di-select, teksnya bisa diubah putih agar kontras dengan warna biru500
+                  color: isSelected ? Colors.white : AppColors.coklat700,
                 ),
               ),
             ),

@@ -4,6 +4,8 @@ import 'package:mino/pages/auth/confirm_password_screen.dart';
 import 'package:mino/pages/auth/register_page.dart';
 import 'package:mino/widgets/textfields/custom_textfield.dart';
 import '../../widgets/button/custom_button.dart';
+import 'package:provider/provider.dart';
+import 'package:mino/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,9 +17,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  
-  // State lokal untuk simulasi loading button
-  bool _isLocalLoading = false;
 
   @override
   void dispose() {
@@ -26,8 +25,10 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // FUNGSI BYPASS: Langsung masuk tanpa cek API / simpan data
-  void _onLoginTap() async {
+  // HAPUS bool _isLocalLoading = false; dari atas karena kita pakai Provider sekarang
+
+  // UBAH FUNGSI LOGIN MENJADI SEPERTI INI
+  Future<void> _onLoginTap() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -38,26 +39,39 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    // Mulai animasi loading di tombol
-    setState(() {
-      _isLocalLoading = true;
-    });
+    // Panggil AuthProvider untuk melakukan http request ke Laravel
+    final authProvider = context.read<AuthProvider>();
 
-    // Simulasi loading cepat selama 1 detik
-    await Future.delayed(const Duration(seconds: 1));
+    // Tunggu proses login ke API selesai
+    final errorMessage = await authProvider.login(
+      email: email,
+      password: password,
+    );
 
     if (!mounted) return;
 
-    setState(() {
-      _isLocalLoading = false;
-    });
+    if (errorMessage == null) {
+      // JIKA BERHASIL LOGIN (Token berhasil disimpan)
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login berhasil!'),
+          backgroundColor: Colors.green,
+        ),
+      );
 
-    // LANGSUNG PINDAH KE CONFIRM PASSWORD (Hapus stack ke belakang)
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const ConfirmPassword4()),
-      (route) => false,
-    );
+      // Pindah ke Dashboard (Pastikan tujuannya benar ke halaman utama)
+      Navigator.pushAndRemoveUntil(
+        context,
+        // Ganti ConfirmPassword4() dengan halaman tujuan aslimu, misal Dashboard() atau MainNavBar()
+        MaterialPageRoute(builder: (_) => const ConfirmPassword4()),
+        (route) => false,
+      );
+    } else {
+      // JIKA GAGAL (Sandi salah, email tidak ada, dll)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+      );
+    }
   }
 
   @override
@@ -70,10 +84,7 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             width: double.infinity,
             height: double.infinity,
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
 
           // 2. KONTEN UTAMA
@@ -106,45 +117,39 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(color: Colors.white70),
                     ),
                     const SizedBox(height: 40),
-                    
+
                     CustomTextField(
                       hintText: 'Email',
                       controller: _emailController,
                     ),
                     const SizedBox(height: 16),
-                    
+
                     CustomTextField(
                       hintText: 'Password',
                       isPassword: true,
                       controller: _passwordController,
                     ),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Menggunakan state lokal, tombol tetap ada saat loading
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CustomButton(
-                            text: _isLocalLoading ? '' : 'Login',
-                            onTap: _isLocalLoading ? () {} : _onLoginTap,
-                          ),
-                          if (_isLocalLoading)
-                            const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 3,
-                              ),
-                            ),
-                        ],
-                      ),
+                    // GANTI TOMBOL LAMA DENGAN CONSUMER INI
+                    Consumer<AuthProvider>(
+                      builder: (context, authProvider, child) {
+                        return SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: authProvider.isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.orange,
+                                  ),
+                                )
+                              : CustomButton(text: 'Login', onTap: _onLoginTap),
+                        );
+                      },
                     ),
-                    
+
                     const SizedBox(height: 16),
                     GestureDetector(
                       onTap: () {},
@@ -158,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 24),
                     Row(
-                      children: const [
+                      children: [
                         Expanded(child: Divider(color: Colors.white30)),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -171,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    
+
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -187,17 +192,23 @@ class _LoginPageState extends State<LoginPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             // DIUBAH KE SVG: Ikon Google
-                            SvgPicture.asset('assets/images/google.svg', height: 20),
+                            SvgPicture.asset(
+                              'assets/images/google.svg',
+                              height: 20,
+                            ),
                             const SizedBox(width: 10),
                             const Text(
                               'Continue with google',
-                              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 40),
                     GestureDetector(
                       onTap: () {
