@@ -24,10 +24,6 @@ class HomeHeader extends StatelessWidget {
 
         children: [
           GreetingSection(),
-
-          SizedBox(height: 28),
-
-          WeeklyCalendar(),
         ],
       ),
     );

@@ -1,11 +1,21 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; 
 import 'package:mino/pages/home/home_page.dart'; 
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:mino/core/constants/app_colors.dart';
 
 class WriteJournalScreen extends StatefulWidget {
-  const WriteJournalScreen({super.key});
+  final String mood;
+  final String moodLabel;
+  final Color moodColor;
+
+  const WriteJournalScreen({
+    super.key,
+    required this.mood,
+    required this.moodLabel,
+    required this.moodColor,
+  });
 
   @override
   State<WriteJournalScreen> createState() => _WriteJournalScreenState();
@@ -22,12 +32,16 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
   final FocusNode _contentFocusNode = FocusNode();
 
   bool _isButtonsRowVisible = false;
+  late String _currentDate; 
 
   @override
   void initState() {
     super.initState();
     _titleController.addListener(_validateInputs);
     _contentController.addListener(_validateInputs);
+    
+    // Format sesuai gambar: "Sunday, 26 May 2026"
+    _currentDate = DateFormat('EEEE, d MMMM yyyy').format(DateTime.now());
   }
 
   void _validateInputs() {
@@ -62,7 +76,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          // ── 1. Background Gambar Full Screen (Diubah ke SVG) ─────────
+          // ── Background Gambar Full Screen ─────────
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',
@@ -75,75 +89,97 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
                 
-                // ── 3. Input Judul / Topic (Kursor Aktif Otomatis) ───────────
+                // ── Header: Judul + Tanggal (Kiri) & Chip Mood (Kanan) ──
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 28),
-                  child: TextField(
-                    controller: _titleController,
-                    focusNode: _titleFocusNode,
-                    autofocus: true,
-                    cursorColor: AppColors.coklat100,
-                    cursorWidth: 1.5,
-                    cursorRadius: const Radius.circular(2),
-                    textInputAction: TextInputAction.next,
-                    style: const TextStyle(
-                      color: AppColors.coklat100,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    decoration: const InputDecoration(
-                      hintText: 'Enter topic',
-                      hintStyle: TextStyle(
-                        color: AppColors.coklat100,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Sisi Kiri: Blok teks Judul & Tanggal dibawahnya
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: _titleController,
+                              focusNode: _titleFocusNode,
+                              autofocus: true,
+                              cursorColor: const Color(0xFFE8C37C),
+                              cursorWidth: 1.5,
+                              style: const TextStyle(
+                                color: Color(0xFFE8C37C), // Warna krem emas sesuai gambar
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: 'Enter topic',
+                                hintStyle: TextStyle(
+                                  color: Colors.white38,
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                border: InputBorder.none,
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            // Tanggal berada tepat di bawah Judul
+                            Text(
+                              _currentDate,
+                              style: const TextStyle(
+                                color: Colors.white54, // Abu-abu semi transparan
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(
-                        left: 16,
-                        top: 2,
-                        bottom: 4,
-                      ),
-                    ),
+                      
+                      const SizedBox(width: 12),
+
+                      // Sisi Kanan: Chip Mood Kapsul (Sesuai image_564562.png)
+                      _buildMoodChip(),
+                    ],
                   ),
                 ),
 
                 const Spacer(),
 
-                // ── 4. Logika Tombol Bawah (Cancel / Save) ───────────────────
+                // ── Tumpukan Kertas (Input Isi Jurnal) ───────────────────
                 Center(
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.85, 
-                    height: MediaQuery.of(context).size.height * 0.48, 
+                    width: MediaQuery.of(context).size.width * 0.88, 
+                    height: MediaQuery.of(context).size.height * 0.52, 
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Lapisan Kertas Belakang
                         Transform.rotate(
-                          angle: -6 * (math.pi / 180), 
+                          angle: -4 * (math.pi / 180), 
                           child: Container(
-                            margin: const EdgeInsets.only(bottom: 12, right: 8),
+                            margin: const EdgeInsets.only(bottom: 12, right: 6),
                             decoration: BoxDecoration(
                               color: const Color(0xFFF2E2C9),
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(color: darkBrownBorder, width: borderWidth),
                             ),
                           ),
                         ),
                         
-                        // Kertas Utama Paling Atas (Input Isi Jurnal)
                         Container(
                           decoration: BoxDecoration(
                             color: const Color(0xFFF7EAD3), 
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(color: darkBrownBorder, width: borderWidth),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
+                                color: Colors.black.withOpacity(0.15),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
@@ -161,7 +197,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                               height: 1.5,
                             ),
                             decoration: const InputDecoration(
-                              hintText: 'Enter topic',
+                              hintText: 'Write down your thoughts here...',
                               hintStyle: TextStyle(
                                 color: Colors.black26, 
                                 fontSize: 16,
@@ -178,66 +214,119 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
 
                 const Spacer(),
 
-                // ── 5. Logika Tombol Bawah Menggunakan Cukup Ukuran Saja ──────
+                // ── Logika Tombol Bawah ──────
                 Center(
-  child: AnimatedCrossFade(
-    duration: const Duration(milliseconds: 200),
-    crossFadeState: _isButtonsRowVisible
-        ? CrossFadeState.showSecond
-        : CrossFadeState.showFirst,
+                  child: AnimatedCrossFade(
+                    duration: const Duration(milliseconds: 200),
+                    crossFadeState: _isButtonsRowVisible
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
 
-    // Kondisi Kosong: Tombol Tunggal (Cancel)
-    firstChild: Container(
-      height: 80, // 🔥 Beri ruang atas-bawah agar glow tidak terpotong
-      alignment: Alignment.center,
-      child: FittedBox(
-        fit: BoxFit.none,
-        child: SizedBox(
-          height: 44,
-          width: 140,
-          child: CustomButton(
-            text: 'Cancel',
-            onTap: () => Navigator.pop(context),
-          ),
-        ),
-      ),
-    ),
+                    firstChild: Container(
+                      height: 80, 
+                      alignment: Alignment.center,
+                      child: FittedBox(
+                        fit: BoxFit.none,
+                        child: SizedBox(
+                          height: 44,
+                          width: 140,
+                          child: CustomButton(
+                            text: 'Cancel',
+                            onTap: () => Navigator.pop(context),
+                          ),
+                        ),
+                      ),
+                    ),
 
-    // Kondisi Terisi: Tombol Cancel & Save Berdampingan
-    secondChild: Container(
-      height: 80, // 🔥 Beri ruang atas-bawah agar glow tidak terpotong
-      alignment: Alignment.center,
-      child: FittedBox( // 🔥 Mencegah error Overflow saat animasi transisi berjalan
-        fit: BoxFit.none,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 44,
-              width: 140,
-              child: CustomButton(
-                text: 'Cancel',
-                onTap: () => Navigator.pop(context),
-              ),
-            ),
-            const SizedBox(width: 32),
-            SizedBox(
-              height: 44,
-              width: 140,
-              child: CustomButton(
-                text: 'Save',
-                onTap: _handleSave,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ),
-),
+                    secondChild: Container(
+                      height: 80, 
+                      alignment: Alignment.center,
+                      child: FittedBox( 
+                        fit: BoxFit.none,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 44,
+                              width: 140,
+                              child: CustomButton(
+                                text: 'Cancel',
+                                onTap: () => Navigator.pop(context),
+                              ),
+                            ),
+                            const SizedBox(width: 32),
+                            SizedBox(
+                              height: 44,
+                              width: 140,
+                              child: CustomButton(
+                                text: 'Save',
+                                onTap: _handleSave,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 🔥 CHIP MOOD KAPSUL DENGAN BORDER EMAS STATIS (TIDAK BERUBAH WARNA)
+  Widget _buildMoodChip() {
+    // Memastikan teks berawalan huruf kapital (misal: "Amazing")
+    String formattedLabel = widget.moodLabel.isNotEmpty 
+        ? widget.moodLabel[0].toUpperCase() + widget.moodLabel.substring(1)
+        : '';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.25), // Latar gelap transparan solid
+        borderRadius: BorderRadius.circular(30), // Bentuk kapsul lonjong
+        border: Border.all(
+          color: const Color(0xFF7A5C3E).withOpacity(0.6), // Border tipis warna coklat emas statis
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            widget.mood,
+            height: 32,  
+            width: 32,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Mood',
+                style: TextStyle(
+                  color: Colors.white38, // Label "Mood" kecil di atas
+                  fontSize: 10,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                formattedLabel,
+                style: const TextStyle(
+                  color: Color(0xFFE8C37C), // Teks nama mood warna emas statis
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ],
       ),

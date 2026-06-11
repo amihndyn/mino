@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ProfileStatCard extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
+  final Color iconBackgroundColor;
   final String value;
   final String label;
 
@@ -10,6 +11,7 @@ class ProfileStatCard extends StatelessWidget {
     super.key,
     required this.icon,
     required this.iconColor,
+    required this.iconBackgroundColor,
     required this.value,
     required this.label,
   });
@@ -19,9 +21,7 @@ class ProfileStatCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-
         color: const Color(0xFF2B1D19).withOpacity(0.88),
-
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.18),
@@ -29,42 +29,34 @@ class ProfileStatCard extends StatelessWidget {
           ),
         ],
       ),
-
       padding: const EdgeInsets.all(18),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Container(
             width: 42,
             height: 42,
-
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.06),
+              color: iconBackgroundColor, // Menggunakan warna dinamis
             ),
-
             child: Icon(
               icon,
               color: iconColor,
+              size: 20, // Sedikit disesuaikan agar proporsional di dalam lingkaran
             ),
           ),
-
           const Spacer(),
-
           Text(
             value,
             style: const TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.w700,
               color: Color(0xFFF7EFE7),
-              letterSpacing: 1
+              letterSpacing: 1,
             ),
           ),
-
           const SizedBox(height: 4),
-
           Text(
             label,
             style: const TextStyle(

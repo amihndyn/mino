@@ -85,7 +85,19 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: const EdgeInsets.only(bottom: 120),
               child: Column(
                 children: [
-                  const CustomAppBar(title: 'Profile'),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0), // Horizontal padding dihapus agar benar-benar di tengah layar
+                    child: Center(
+                      child: Text(
+                        'Profile',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFF7EFE7), 
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
 
                   // 3. Pasang variabel avatar dan fungsi tap ke ProfileCard

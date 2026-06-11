@@ -140,10 +140,6 @@ class _ProgressPageState extends State<ProgressPage> with SingleTickerProviderSt
                   ),
                   const SizedBox(height: 26),
                   
-                  _isWeekly 
-                      ? const WeeklyReflection() 
-                      : MonthlyReflection(selectedMonth: _selectedMonth),
-                  
                   const SizedBox(height: 130), // Jarak aman untuk bottom navbar
                 ],
               ),

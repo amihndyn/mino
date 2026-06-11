@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => 
-            isLogin ? const HomePage() : const LoginPage(), // Biasanya jika isLogin true ke HomePage, jika false ke LoginPage
+            isLogin ? const HomePage() : const HomePage(), // Biasanya jika isLogin true ke HomePage, jika false ke LoginPage
 
         transitionDuration: const Duration(milliseconds: 800), 
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
