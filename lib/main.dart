@@ -10,7 +10,6 @@ import 'package:mino/core/presentation/auth/bloc/logout/logout_bloc.dart';
 import 'package:mino/core/presentation/auth/bloc/user_challenge/user_challenge_bloc.dart';
 import 'package:mino/core/presentation/home/bloc/focus_timer/focus_timer_bloc.dart';
 import 'package:mino/pages/auth/login_page.dart';
-import 'package:mino/models/profile_model.dart'; // 💡 Diambil dari main
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mino/providers/moodjournal_provider.dart';
@@ -21,13 +20,15 @@ import 'providers/habit_provider.dart';
 import 'providers/journal_provider.dart';
 import 'providers/mood_provider.dart';
 import 'providers/challenge_provider.dart';
-import 'providers/profile_provider.dart';
+import 'package:mino/core/data/provider/profile_provider.dart';
 import 'providers/theme_provider.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' as bloc; 
+import 'package:flutter_bloc/flutter_bloc.dart' as bloc;
 import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 
 import 'package:mino/core/data/datasource/focus_timer_remote_datasource.dart';
 import 'package:mino/core/data/repositories/focus_timer_repository.dart';
+import 'package:mino/core/data/datasource/profile_remote_datasource.dart';
+import 'package:mino/core/data/repositories/profile_repository.dart';
 
 import 'package:mino/core/data/datasource/reflection_remote_datasource.dart';
 import 'package:mino/core/data/repositories/reflection_repository.dart';
@@ -52,21 +53,9 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MoodProvider()),
         ChangeNotifierProvider(create: (_) => ChallengeProvider()),
 
-        // 💡 EKSEKUSI PROFILE_PROVIDER DARI MAIN (Dengan data default Nana)
+        // Profile Provider (API-based, tidak perlu set data default)
         ChangeNotifierProvider(
-          create: (_) {
-            final provider = ProfileProvider();
-            provider.setProfile(
-              ProfileModel(
-                name: 'Nana',
-                email: 'nanana.trkj2028@idn.ac.id',
-                avatar: 'assets/images/default.png',
-                streak: 0,
-                totalHabits: 0,
-              ),
-            );
-            return provider;
-          },
+          create: (_) => ProfileProvider(ProfileRepository(ProfileRemoteDatasource())),
         ),
 
         ChangeNotifierProvider(create: (_) => ThemeProvider()),

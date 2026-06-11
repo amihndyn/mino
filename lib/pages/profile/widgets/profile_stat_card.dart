@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
 class ProfileStatCard extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
+  final String imagePath;
   final String value;
   final String label;
 
   const ProfileStatCard({
     super.key,
-    required this.icon,
-    required this.iconColor,
+    required this.imagePath,
     required this.value,
     required this.label,
   });
@@ -18,58 +17,44 @@ class ProfileStatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-
-        color: const Color(0xFF2B1D19).withOpacity(0.88),
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.18),
-            blurRadius: 20,
-          ),
-        ],
+        color: Colors.transparent, // 🛠️ Warna background gelap sesuai screenshot
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.orange500, // 🛠️ Outline emas
+          width: 1.5,
+        ),
       ),
-
-      padding: const EdgeInsets.all(18),
-
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
-          Container(
-            width: 42,
-            height: 42,
-
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.06),
-            ),
-
-            child: Icon(
-              icon,
-              color: iconColor,
+          // 🛠️ Widget gambar pengganti Icon
+          Image.asset(
+            imagePath,
+            height: 48, // Sesuaikan ukurannya jika kalender.png terlalu besar/kecil
+            width: 48,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => const Icon(
+              Icons.image_not_supported,
+              color: Colors.transparent,
             ),
           ),
-
-          const Spacer(),
-
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFFF7EFE7),
-              letterSpacing: 1
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
+          const SizedBox(height: 12),
           Text(
             label,
             style: const TextStyle(
-              color: Color(0xFF9F8572),
-              fontSize: 15,
+              color: AppColors.orange100, // Teks label warna terang
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              color: AppColors.orange600, // Teks value warna emas
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
             ),
           ),
         ],
