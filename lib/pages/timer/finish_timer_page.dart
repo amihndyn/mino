@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/widgets/button/custom_button.dart'; // Sesuaikan path CustomButton milikmu
 
 class FinishTimerPage extends StatelessWidget {
@@ -13,7 +14,7 @@ class FinishTimerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF140C08), // Warna dasar default
+      backgroundColor: AppColors.coklat900, // Warna dasar default
       body: Stack(
         children: [
           // ── Background Utama ───────────────────────────────────────
@@ -30,7 +31,8 @@ class FinishTimerPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Spacer(),
+                  // Mendorong seluruh konten sedikit ke bawah dari status bar agar seimbang
+                  const SizedBox(height: 40),
 
                   // ── 1. Teks Judul dan Subjudul ──
                   const Text(
@@ -52,23 +54,28 @@ class FinishTimerPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  // Jarak dari teks menuju gambar karakter
+                  const SizedBox(height: 30),
 
-                  // ── 2. Gambar Karakter Selesai ──
-                  SvgPicture.asset(
-                    'assets/images/enam.svg', 
-                    height: 550,
+                  // ── 2. Gambar Karakter Selesai (Dioptimalkan ukurannya) ──
+                  Expanded(
+                    child: SvgPicture.asset(
+                      'assets/images/enam.svg', 
+                      height: 280, // Diturunkan dari 550 agar ruang bernapas layar kembali normal
+                      fit: BoxFit.contain,
+                    ),
                   ),
 
-                  const SizedBox(height: 40),
+                  // Jarak dari gambar karakter ke kotak stat
+                  const SizedBox(height: 30),
 
-                  // ── 3. Barisan Kotak Statistik (Migrasi ke Ikon SVG) ──
+                  // ── 3. Barisan Kotak Statistik ──
                   Row(
                     children: [
                       // Kotak Kiri: Focus Duration
                       Expanded(
                         child: _buildStatCard(
-                          iconPath: 'assets/images/watch.png', // Diubah menjadi .png sesuai migrasi terbaru
+                          iconPath: 'assets/images/watch.png',
                           defaultIcon: Icons.alarm,
                           title: 'Focus Duration',
                           value: '$completedMinutes minutes',
@@ -80,27 +87,27 @@ class FinishTimerPage extends StatelessWidget {
                       // Kotak Kanan: Diamond Obtained
                       Expanded(
                         child: _buildStatCard(
-                          iconPath: 'assets/images/diamond.svg', // Diubah menjadi .svg
+                          iconPath: 'assets/images/diamond.svg',
                           defaultIcon: Icons.diamond,
-                          title: 'diamond obtained',
+                          title: 'Diamond Obtained',
                           value: '$completedMinutes diamond',
                         ),
                       ),
                     ],
                   ),
 
-                  const Spacer(),
+                  // Jarak aman sebelum tombol di bagian paling bawah
+                  const SizedBox(height: 40),
 
                   // ── 4. Tombol "I am great" ──
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 30),
+                    padding: const EdgeInsets.only(bottom: 20),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 40,
+                      height: 48, // Sedikit ditebalkan agar tombol lebih click-friendly
                       child: CustomButton(
                         text: 'I am great',
                         onTap: () {
-                          // Kembali ke halaman paling awal (Home)
                           Navigator.of(context).popUntil((route) => route.isFirst);
                         },
                       ),
@@ -123,45 +130,58 @@ class FinishTimerPage extends StatelessWidget {
     required String value,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: const Color(0xFF261912).withOpacity(0.5), // Ditambahkan sedikit background gelap tipis agar kotak stat terbaca jelas
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFE8A838).withValues(alpha: 0.3),
+          color: const Color(0xFFE8A838).withAlpha((0.3 * 255).toInt()),
           width: 1.5,
         ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Ikon SVG dengan Fallback Icon bawaan Flutter jika error/tidak ditemukan
-          SvgPicture.asset(
-            iconPath,
-            height: 32,
-            width: 32,
-            placeholderBuilder: (context) => Icon(
-              defaultIcon, 
-              color: const Color(0xFFE8A838), 
-              size: 32,
-            ),
-          ),
+          // Pengecekan tipe berkas aset (jika PNG gunakan Image, jika SVG gunakan SvgPicture)
+          iconPath.endsWith('.svg')
+              ? SvgPicture.asset(
+                  iconPath,
+                  height: 32,
+                  width: 32,
+                  placeholderBuilder: (context) => Icon(
+                    defaultIcon, 
+                    color: const Color(0xFFE8A838), 
+                    size: 32,
+                  ),
+                )
+              : Image.asset(
+                  iconPath,
+                  height: 32,
+                  width: 32,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    defaultIcon,
+                    color: const Color(0xFFE8A838),
+                    size: 32,
+                  ),
+                ),
           const SizedBox(height: 12),
           // Judul
           Text(
             title,
+            textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.white70,
               fontSize: 12,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           // Nilai
           Text(
             value,
+            textAlign: TextAlign.center,
             style: const TextStyle(
               color: Color(0xFFE8A838),
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
             ),
           ),

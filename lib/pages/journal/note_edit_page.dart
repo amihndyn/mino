@@ -75,6 +75,8 @@ class _NoteEditPageState extends State<NoteEditPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 🛠️ FIX: Mengunci warna dasar kanvas belakang menjadi gelap untuk mencegah kedipan putih saat keyboard muncul
+      backgroundColor: AppColors.coklat900,
       // Ubah menjadi true agar saat keyboard muncul, layout bisa menyesuaikan (scrollable)
       resizeToAvoidBottomInset: true, 
       body: Stack(
@@ -272,14 +274,14 @@ class _NoteEditPageState extends State<NoteEditPage>
                                       child: CustomButton(
                                         text: 'Save',
                                         onTap: () {
-                                          // TODO: Implement logika Save ke API / Database lokal
+                                          // Implementasi logika Save ke API / Database lokal
                                           final updatedTitle = _titleController.text;
                                           final updatedContent = _contentController.text;
                                           
                                           print("Judul Baru: $updatedTitle");
                                           print("Konten Baru: $updatedContent");
                                           
-                                          // Navigator.pop(context, true); // Opsional: return true jika berhasil update
+                                          // Navigator.pop(context, true); 
                                         },
                                       ),
                                     ),

@@ -33,6 +33,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/flag.png
   AssetGenImage get flag => const AssetGenImage('assets/icons/flag.png');
 
+  /// File path: assets/icons/gender.png
+  AssetGenImage get gender => const AssetGenImage('assets/icons/gender.png');
+
   /// List of all assets
   List<dynamic> get values => [
     appIcon,
@@ -41,6 +44,7 @@ class $AssetsIconsGen {
     centang,
     diamond,
     flag,
+    gender,
   ];
 }
 
@@ -58,6 +62,9 @@ class $AssetsImagesGen {
   AssetGenImage get astronout =>
       const AssetGenImage('assets/images/astronout.png');
 
+  /// File path: assets/images/bMood.jpeg
+  AssetGenImage get bMood => const AssetGenImage('assets/images/bMood.jpeg');
+
   /// File path: assets/images/bad.png
   AssetGenImage get bad => const AssetGenImage('assets/images/bad.png');
 
@@ -71,6 +78,9 @@ class $AssetsImagesGen {
   AssetGenImage get bgLogin =>
       const AssetGenImage('assets/images/bg_login.png');
 
+  /// File path: assets/images/biru.png
+  AssetGenImage get biru => const AssetGenImage('assets/images/biru.png');
+
   /// File path: assets/images/blog.png
   AssetGenImage get blog => const AssetGenImage('assets/images/blog.png');
 
@@ -79,6 +89,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/cat.png
   AssetGenImage get cat => const AssetGenImage('assets/images/cat.png');
+
+  /// File path: assets/images/centang.png
+  AssetGenImage get centang => const AssetGenImage('assets/images/centang.png');
 
   /// File path: assets/images/challenge.png
   AssetGenImage get challenge =>
@@ -192,6 +205,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/img_jurnal.svg
   String get imgJurnalSvg => 'assets/images/img_jurnal.svg';
 
+  /// File path: assets/images/ini.png
+  AssetGenImage get ini => const AssetGenImage('assets/images/ini.png');
+
   /// File path: assets/images/jam.png
   AssetGenImage get jam => const AssetGenImage('assets/images/jam.png');
 
@@ -277,8 +293,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/okey.png
   AssetGenImage get okey => const AssetGenImage('assets/images/okey.png');
 
+  /// File path: assets/images/panah.png
+  AssetGenImage get panah => const AssetGenImage('assets/images/panah.png');
+
   /// File path: assets/images/phones.png
   AssetGenImage get phones => const AssetGenImage('assets/images/phones.png');
+
+  /// File path: assets/images/piala.png
+  AssetGenImage get piala => const AssetGenImage('assets/images/piala.png');
 
   /// File path: assets/images/pilates.png
   AssetGenImage get pilatesPng =>
@@ -533,13 +555,16 @@ class $AssetsImagesGen {
     affirmation,
     amazing,
     astronout,
+    bMood,
     bad,
     bed,
     berlin,
     bgLogin,
+    biru,
     blog,
     book,
     cat,
+    centang,
     challenge,
     clean,
     cleans,
@@ -575,6 +600,7 @@ class $AssetsImagesGen {
     hairSvg,
     imgJurnalPng,
     imgJurnalSvg,
+    ini,
     jam,
     kalenderPng,
     kalenderSvg,
@@ -602,7 +628,9 @@ class $AssetsImagesGen {
     okay,
     okeyCopy,
     okey,
+    panah,
     phones,
+    piala,
     pilatesPng,
     pilatesSvg,
     planPng,

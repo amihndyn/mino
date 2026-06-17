@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mino/core/constants/app_colors.dart';
 
-class ActivityItemCard extends StatelessWidget { // 🔥 1. UBAH KE STATELESSWIDGET AGAR DIKENDALIKAN OLEH BLOC
+class ActivityItemCard extends StatelessWidget {
   final String title;
   final String? emoji;
   final String? imageAsset;
-  final bool isCompleted; // 🔥 2. TERIMA STATUS LANGSUNG DARI MODEL LARAVEL
-  final VoidCallback? onToggle; // 🔥 3. CALLBACK BARU UNTUK AKSI CENTANG
+  final bool isCompleted; 
+  final VoidCallback? onToggle; 
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
   const ActivityItemCard({
     super.key,
     required this.title,
-    required this.isCompleted, // Wajib diisi dari data habits list
+    required this.isCompleted, 
     this.emoji,
     this.imageAsset,
     this.onToggle,
@@ -24,7 +24,7 @@ class ActivityItemCard extends StatelessWidget { // 🔥 1. UBAH KE STATELESSWID
 
   @override
   Widget build(BuildContext context) {
-    const Color cardBgColor = Color(0xffF6E5CD);
+    const Color cardBgColor = AppColors.orange200;
     const Color darkBrownColor = Color(0xff422E22);
     
     const Color editBtnBgColor = Color(0xFFCFCFCF); 
@@ -59,6 +59,8 @@ class ActivityItemCard extends StatelessWidget { // 🔥 1. UBAH KE STATELESSWID
     }
 
     return Slidable(
+      // 💡 REKOMENDASI: Jika memungkinkan di list parent-nya, gunakan ID dari database 
+      // sebagai ValueKey, contoh: ValueKey(habitId) supaya instansiasinya unik.
       key: ValueKey(title),
       endActionPane: ActionPane(
         motion: const ScrollMotion(),
@@ -135,31 +137,36 @@ class ActivityItemCard extends StatelessWidget { // 🔥 1. UBAH KE STATELESSWID
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   letterSpacing: 1,
-                  // 🔥 4. TAMBAHKAN EFEK CORET CORET JIKA SAKLAR COMPLETED AKTIF
                   decoration: isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
                 ),
               ),
             ),
+            
+            /// 🔥 PERBAIKAN UTAMA: GestureDetector Ceklis & Unceklis
             GestureDetector(
-              onTap: onToggle, // 🔥 5. JALANKAN FUNGSINYA KE BLOC SAAT DI-TAP
-              child: Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: darkBrownColor,
-                    width: 2.2,
+              onTap: onToggle, 
+              behavior: HitTestBehavior.opaque, // 💡 Menjamin seluruh area kotak transparan peka sentuhan
+              child: Padding(
+                padding: const EdgeInsets.all(8.0), // 💡 Memberikan ruang (hitbox) ekstra untuk jempol pengguna
+                child: Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: darkBrownColor,
+                      width: 2.2,
+                    ),
+                    color: isCompleted ? darkBrownColor : Colors.transparent,
                   ),
-                  color: isCompleted ? darkBrownColor : Colors.transparent,
+                  child: isCompleted
+                      ? const Icon(
+                          Icons.check,
+                          color: cardBgColor,
+                          size: 18,
+                        )
+                      : null,
                 ),
-                child: isCompleted
-                    ? const Icon(
-                        Icons.check,
-                        color: cardBgColor,
-                        size: 18,
-                      )
-                    : null,
               ),
             ),
           ],

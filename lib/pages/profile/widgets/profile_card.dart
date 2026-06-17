@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mino/theme/tokens.dart';
 import 'package:provider/provider.dart';
-import 'package:mino/core/data/provider/profile_provider.dart';
+import 'package:mino/providers/profile_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -19,7 +19,7 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Ambil data nama dari provider
-    final profile = context.watch<ProfileProvider>().profileData?.user;
+    final profile = context.watch<ProfileProvider>().profile;
     final String displayName = profile?.name ?? 'Miner';
 
     return Padding(
@@ -86,7 +86,7 @@ class ProfileCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w900,
-                color: coklat800,
+                color: coklat800, // Menggunakan token warna bawaanmu
               ),
             ),
 
@@ -127,24 +127,23 @@ class ProfileCard extends StatelessWidget {
         imageUrl: avatarPath,
         fit: BoxFit.cover,
         placeholder: (context, url) => Image.asset(
-          'assets/images/default.png',
-          fit: BoxFit.contain,
+          'assets/images/prof.png',
+          fit: BoxFit.cover,
         ),
         errorWidget: (context, url, error) => Image.asset(
-          'assets/images/default.png',
-          fit: BoxFit.contain,
+          'assets/images/prof.png',
+          fit: BoxFit.cover,
         ),
       );
     } else {
-      return Padding(
-        padding: const EdgeInsets.all(24),
-        child: Image.asset(
-          avatarPath,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => Image.asset(
-            'assets/images/default.png',
-            fit: BoxFit.contain,
-          ),
+      // 🔥 FIX: Menghapus Padding(24) dan mengubah fit menjadi BoxFit.cover 
+      // agar gambar dari avatar chooser memenuhi lingkaran secara proporsional.
+      return Image.asset(
+        avatarPath,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Image.asset(
+          'assets/images/prof.png',
+          fit: BoxFit.cover,
         ),
       );
     }

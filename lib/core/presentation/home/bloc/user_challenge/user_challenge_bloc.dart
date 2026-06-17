@@ -77,5 +77,22 @@ class UserChallengeBloc extends Bloc<UserChallengeEvent, UserChallengeState> {
         },
       );
     });
+
+    // 5. HANDLER HAPUS TANTANGAN (DELETE)
+    on<_DeleteChallenge>((event, emit) async {
+      emit(const _Loading()); // Sesuai dengan state internal Freezed-mu
+      
+      // 🔥 FIX: Menggunakan _repository (bukan challengeRepository)
+      final result = await _repository.deleteUserChallenge(event.id);
+      
+      await result.fold(
+        // 🔥 FIX: Menyesuaikan handling error sesuai standarmu (failureMessage berupa String)
+        (failureMessage) async => emit(_Error(failureMessage)),
+        (success) async {
+          // Setelah sukses menghapus di Laravel, panggil helper reload datamu
+          await _reloadDataAfterAction(emit);
+        },
+      );
+    });
   }
 }

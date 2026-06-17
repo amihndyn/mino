@@ -6,6 +6,9 @@ import 'package:mino/pages/mood/widgets/mood_grid.dart';
 import 'package:mino/core/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
+// Sesuaikan path import ini dengan lokasi file PopUpConfirmation kamu
+import 'package:mino/widgets/popUp/pop_up_info.dart'; 
+
 class MoodPage extends StatefulWidget {
   const MoodPage({super.key});
 
@@ -26,87 +29,24 @@ class _MoodScreenState extends State<MoodPage> {
 
   void _onNext() {
     if (_selectedMood == null) {
-      // ── Tampilkan Custom Popup Peringatan ──
+      // ── Tampilkan PopUpConfirmation ──
       showDialog<void>(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext dialogContext) {
-          return Dialog(
-            backgroundColor: Colors.transparent,
-            child: SizedBox(
-              width: 280,
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: AppColors.coklat900,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: AppColors.orange500.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.4),
-                      blurRadius: 16,
-                      spreadRadius: 5,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/images/mood_warning.png',
-                      height: 50,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.sentiment_satisfied_alt_rounded,
-                        color: Color(0xFFE8A838),
-                        size: 50,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Mood Required',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Please select your mood first\nbefore continuing.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(dialogContext),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color: AppColors.orange500,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Text(
-                          'OK',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+          return PopUpConfirmation(
+            title: 'Mood Required',
+            description: 'Please select your mood first\nbefore continuing.',
+            isSingleButton: true,
+            rightButtonText: 'OK',
+            onRightTap: () => Navigator.pop(dialogContext),
+            topIcon: Image.asset(
+              'assets/images/mood_warning.png',
+              height: 50,
+              errorBuilder: (context, error, stackTrace) => const Icon(
+                Icons.sentiment_satisfied_alt_rounded,
+                color: Color(0xFFE8A838),
+                size: 50,
               ),
             ),
           );
@@ -115,11 +55,10 @@ class _MoodScreenState extends State<MoodPage> {
       return;
     }
 
-
     // Kirim event save ke bloc
     context.read<MoodJournalProvider>().setMood(_selectedMood!);
 
-    // 2. Pindah halaman ke JournalingPage menggunakan Navigator.push biasa
+    // Pindah halaman ke JournalingPage
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const JournalingPage()),
@@ -129,7 +68,7 @@ class _MoodScreenState extends State<MoodPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 🔥 Bungkus body dengan BlocListener untuk memantau status penyimpanan data ke Laravel
+      backgroundColor: AppColors.coklat900,
       body: Stack(
         children: [
           // Background utama

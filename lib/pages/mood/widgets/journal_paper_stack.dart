@@ -37,7 +37,11 @@ class JournalPaperStack extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.orange100, // Ganti dengan kode warna cokelat muda Figma-mu jika ada
                   borderRadius: BorderRadius.circular(8), // ── 2. Radius diubah jadi 8
-                  border: Border.all(color: AppColors.coklat900),
+                  border: Border.all(
+                    color: AppColors.coklat900,
+                    width: 2, // 🛠️ FIX: Ditambahkan ketebalan 2 agar konsisten dengan kertas depan
+                    strokeAlign: BorderSide.strokeAlignInside,
+                  ),
                 ),
               ),
             ),

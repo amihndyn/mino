@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/core/data/model/response/dashboard_response.dart'; // Impor model TodayHabit
 import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 import 'package:mino/pages/habit/edit_uniqur_habit_page.dart';
 import 'package:mino/pages/home/widgets/activity_item_card.dart';
 import 'package:mino/pages/habit/widgets/delete_habit_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:mino/providers/habit_provider.dart'; // Sesuaikan path provider-mu ya!
+import 'package:mino/providers/habit_provider.dart';
 
 class DailyActivitiesSection extends StatelessWidget {
-  final List<dynamic> habits; // Data berupa list of TodayHabit dari API
+  // 🟢 PERBAIKAN 1: Gunakan tipe data spesifik TodayHabit agar autocompletion aman
+  final List<TodayHabit> habits; 
 
   const DailyActivitiesSection({
     super.key,
@@ -17,30 +19,29 @@ class DailyActivitiesSection extends StatelessWidget {
   });
 
   // Fungsi pembantu perpindahan ke halaman Edit
-  void _handleEdit(BuildContext context, dynamic habitItem) async {
+  void _handleEdit(BuildContext context, TodayHabit habitItem) async {
     final String currentTitle = habitItem.habitName ?? '';
     final int habitId = habitItem.userHabitId ?? 0;
 
-    // Buka halaman EditHabitPage dan tunggu user menekan tombol "Save"
-    final updatedTitle = await Navigator.push<String>(
+    // 🟢 PERBAIKAN 2: Sesuaikan parameter EditHabitPage dengan parameter aslinya (butuh habitId)
+    final updatedTitle = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
-        builder: (context) => EditHabitPage(habitName: currentTitle),
+        builder: (context) => EditHabitPage(
+          habitId: habitId,
+          habitName: currentTitle,
+        ),
       ),
     );
 
-    // Jika user menekan Save dan namanya berubah, kirim ke BLoC / API!
-    if (updatedTitle != null && updatedTitle != currentTitle && context.mounted) {
-      debugPrint("Kirim edit ke server! Nama baru: $updatedTitle");
-      
-      // 🔥 AKTIFKAN EVENT BLOC UNTUK EDIT:
-      context.read<DashboardBloc>().add(DashboardEvent.editHabit(habitId, updatedTitle));
+    // Jika proses edit berhasil (return true), trigger ambil data terbaru dari server
+    if (updatedTitle == true && context.mounted) {
+      context.read<DashboardBloc>().add(const DashboardEvent.fetchDashboardData());
     }
   }
 
   // Fungsi pembantu menampilkan pop-up konfirmasi hapus
-  void _handleDelete(BuildContext context, dynamic habitItem) async {
-    final String currentTitle = habitItem.habitName ?? '';
+  void _handleDelete(BuildContext context, TodayHabit habitItem) async {
     final int habitId = habitItem.userHabitId ?? 0;
 
     final bool? confirmDelete = await showDialog<bool>(
@@ -50,7 +51,7 @@ class DailyActivitiesSection extends StatelessWidget {
     );
 
     if (confirmDelete == true && context.mounted) {
-      // 🔥 AKTIFKAN: Kirim event hapus data ke BLoC
+      // Pastikan event deleteHabit sudah terdaftar di Bloc kamu, atau panggil repository eksternal
       context.read<DashboardBloc>().add(DashboardEvent.deleteHabit(habitId));
     }
   }
@@ -84,33 +85,32 @@ class DailyActivitiesSection extends StatelessWidget {
           final String title = item.habitName ?? 'No Title';
           final bool isCompleted = item.isCompletedToday ?? false;
           
-          // 🔥 PERBAIKAN IKON DINAMIS: 
-          // 1. Tanya ke HabitProvider, "Eh, habit dengan nama ini path gambarnya apa?"
+          // Ambil path ikon dari provider
           final String? iconPath = context.read<HabitProvider>().getIconPath(title);
-          
-          // 2. Jika ketemu, pakai gambar itu. Jika null (Custom), pakai gambar Bintang!
           final String assetPath = iconPath ?? 'assets/images/stars.png'; 
 
           return Padding(
             padding: const EdgeInsets.only(bottom: 14),
             child: ActivityItemCard(
               title: title,
-              imageAsset: assetPath, // Kirim path gambar yang sudah dinamis ke Card
+              imageAsset: assetPath,
               isCompleted: isCompleted,
               onToggle: () {
-                // 🔥 PERBAIKAN UTAMA: Sekarang mengirimkan id dan status boolean-nya saat ini (isCompleted)
+                // 🟢 PERBAIKAN 3: Pengaman mounted ditambahkan sebelum mengeksekusi BLoC
+                if (!context.mounted) return;
+
                 context.read<DashboardBloc>().add(
-                  DashboardEvent.toggleHabit(
-                    item.userHabitId ?? 0, 
-                    isCompleted,
-                  ),
-                );
+                      DashboardEvent.toggleHabit(
+                        item.userHabitId ?? 0, 
+                        isCompleted,
+                      ),
+                    );
               },
               onEdit: () => _handleEdit(context, item),
               onDelete: () => _handleDelete(context, item),
             ),
           );
-        }).toList(),
+        }), // 🟢 .toList() dihapus karena spread operator (...) otomatis mengekstrak elemen Iterable ke dalam kluster Column children
       ],
     );
   }

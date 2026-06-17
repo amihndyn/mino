@@ -12,6 +12,10 @@ class JournalProvider extends ChangeNotifier {
 
   // FETCH DATA DARI API MOCK
   Future<void> fetchJournals() async {
+    // 🛠️ FIX UTAMA: Jika _journals sudah ada isinya (artinya user baru menambah note lokal),
+    // jangan timpa lagi list-nya dengan data default dari API Mock agar note baru tidak hilang.
+    if (_journals.isNotEmpty) return;
+
     _isLoading = true;
     notifyListeners();
 

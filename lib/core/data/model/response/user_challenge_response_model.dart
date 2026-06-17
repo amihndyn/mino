@@ -56,18 +56,36 @@ class UserChallenge {
       UserChallenge.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
+factory UserChallenge.fromMap(Map<String, dynamic> json) => UserChallenge(
+      id: json["id"] is String
+          ? int.parse(json["id"])
+          : (json["id"] ?? 0),
 
-  factory UserChallenge.fromMap(Map<String, dynamic> json) => UserChallenge(
-        id: json["id"] ?? 0,
-        challengeId: json["challenge_id"] ?? 0,
-        name: json["name"] ?? '',
-        description: json["description"] ?? '',
-        progressDays: json["progress_days"] ?? 0,
-        requiredDays: json["required_days"] ?? 0,
-        status: json["status"] ?? 'active',
-        lastProgressDate: json["last_progress_date"],
-        isCheckedToday: json["is_checked_today"] ?? false,
-      );
+      challengeId: json["challenge_id"] is String
+          ? int.parse(json["challenge_id"])
+          : (json["challenge_id"] ?? 0),
+
+      name: json["name"] ?? '',
+
+      description: json["description"] ?? '',
+
+      progressDays: json["progress_days"] is String
+          ? int.parse(json["progress_days"])
+          : (json["progress_days"] ?? 0),
+
+      requiredDays: json["required_days"] is String
+          ? int.parse(json["required_days"])
+          : (json["required_days"] ?? 0),
+
+      status: json["status"] ?? 'active',
+
+      lastProgressDate: json["last_progress_date"],
+
+      isCheckedToday: json["is_checked_today"] is bool
+          ? json["is_checked_today"]
+          : (json["is_checked_today"] == 1 ||
+              json["is_checked_today"] == '1'),
+    );
 
   Map<String, dynamic> toMap() => {
         "id": id,

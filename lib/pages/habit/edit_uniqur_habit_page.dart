@@ -4,13 +4,17 @@ import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/core/constants/app_text_styles.dart';
 import 'package:mino/pages/habit/widgets/create_habit_card.dart';
 import 'package:mino/widgets/button/custom_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 
 class EditHabitPage extends StatefulWidget {
-  final String habitName; // Wajib diisi saat mau mengedit
+  final int habitId;
+  final String habitName;
 
   const EditHabitPage({
-    super.key, 
-    required this.habitName, 
+    super.key,
+    required this.habitId,
+    required this.habitName,
   });
 
   @override
@@ -98,8 +102,18 @@ class _EditHabitPageState extends State<EditHabitPage> {
                             child: CustomButton(
                               text: "Save",
                               onTap: () {
-                                print("Habit Diupdate: ${habitController.text}");
-                                Navigator.pop(context, habitController.text);
+                                final newName = habitController.text.trim();
+
+                                if (newName.isEmpty) return;
+
+                                context.read<DashboardBloc>().add(
+                                  DashboardEvent.editHabit(
+                                    widget.habitId,
+                                    newName,
+                                  ),
+                                );
+
+                                Navigator.pop(context, true);
                               },
                             ),
                           ),

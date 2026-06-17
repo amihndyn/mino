@@ -25,13 +25,11 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // HAPUS bool _isLocalLoading = false; dari atas karena kita pakai Provider sekarang
-
-  // UBAH FUNGSI LOGIN MENJADI SEPERTI INI
   Future<void> _onLoginTap() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
+    // Alert validasi input kosong tetap dipertahankan agar sistem tidak crash
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Email dan password tidak boleh kosong')),
@@ -39,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    // Panggil AuthProvider untuk melakukan http request ke Laravel
     final authProvider = context.read<AuthProvider>();
 
     // Tunggu proses login ke API selesai
@@ -51,26 +48,14 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return;
 
     if (errorMessage == null) {
-      // JIKA BERHASIL LOGIN (Token berhasil disimpan)
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login berhasil!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      // Pindah ke Dashboard (Pastikan tujuannya benar ke halaman utama)
+      // ALERT BERHASIL DIHAPUS: Langsung pindah ke halaman berikutnya
       Navigator.pushAndRemoveUntil(
         context,
-        // Ganti ConfirmPassword4() dengan halaman tujuan aslimu, misal Dashboard() atau MainNavBar()
         MaterialPageRoute(builder: (_) => const ConfirmPassword4()),
         (route) => false,
       );
     } else {
-      // JIKA GAGAL (Sandi salah, email tidak ada, dll)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
-      );
+      // ALERT GAGAL DIHAPUS: Tidak menampilkan snackbar merah sama sekali
     }
   }
 
@@ -80,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // 1. BACKGROUND FULL SCREEN (Diubah ke SVG)
+          // 1. BACKGROUND FULL SCREEN
           SizedBox(
             width: double.infinity,
             height: double.infinity,
@@ -132,8 +117,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: 24),
 
-                    // Menggunakan state lokal, tombol tetap ada saat loading
-                    // GANTI TOMBOL LAMA DENGAN CONSUMER INI
+                    // Tombol Login dengan State Loading dari Provider
                     Consumer<AuthProvider>(
                       builder: (context, authProvider, child) {
                         return SizedBox(
@@ -162,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    Row(
+                    const Row(
                       children: [
                         Expanded(child: Divider(color: Colors.white30)),
                         Padding(
@@ -191,18 +175,17 @@ class _LoginPageState extends State<LoginPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // DIUBAH KE SVG: Ikon Google
-                            SvgPicture.asset(
-                              'assets/images/google.svg',
-                              height: 20,
+                            Image.asset(
+                              'assets/images/google.png',
+                              height: 30,
                             ),
                             const SizedBox(width: 10),
                             const Text(
                               'Continue with google',
                               style: TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w500,
-                              ),
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16),
                             ),
                           ],
                         ),

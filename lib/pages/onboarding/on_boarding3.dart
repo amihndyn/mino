@@ -4,23 +4,23 @@ import 'package:mino/pages/auth/login_page.dart';
 import 'package:mino/pages/home/home_page.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mino/core/constants/app_colors.dart';
+
 class OnBoarding3 extends StatelessWidget {
   const OnBoarding3({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Mencegah kedip putih
+      backgroundColor: AppColors.coklat900, // Mencegah kedip putih
       body: Stack(
         children: [
           // ── Background Utama (Diubah ke SVG) ───────────────────────
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
-          
+
           // ── Ilustrasi Onboarding (Diubah ke SVG) ───────────────────
           Positioned.fill(
             child: SvgPicture.asset(
@@ -29,7 +29,7 @@ class OnBoarding3 extends StatelessWidget {
               alignment: Alignment.center,
             ),
           ),
-          
+
           // ── Efek Gradient Overlay ──────────────────────────────────
           Positioned.fill(
             child: Container(
@@ -48,7 +48,7 @@ class OnBoarding3 extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // ── Konten Teks & Tombol Kontrol ───────────────────────────
           SafeArea(
             child: Padding(
@@ -85,15 +85,34 @@ class OnBoarding3 extends StatelessWidget {
                     width: double.infinity,
                     child: CustomButton(
                       text: "Let's Get Started",
-                      onTap: () {
+                      // 1. Ubah onTap menjadi async
+                      onTap: () async {
+                        // 2. Simpan status isFirstTime menjadi false
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('isFirstTime', false);
+
+                        // 3. Pastikan context masih valid
+                        if (!context.mounted) return;
+
                         // Transisi Fade yang mulus sebelum ke LoginPage
                         Navigator.pushAndRemoveUntil(
                           context,
                           PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => const LoginPage(),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return FadeTransition(opacity: animation, child: child);
-                            },
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    const LoginPage(),
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
                           ),
                           (route) => false,
                         );

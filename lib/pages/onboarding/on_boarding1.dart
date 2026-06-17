@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
 import 'package:mino/pages/onboarding/on_boarding2.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mino/core/constants/app_colors.dart';
 
 class OnBoarding1 extends StatelessWidget {
   const OnBoarding1({super.key});
@@ -10,7 +11,7 @@ class OnBoarding1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Mencegah kedip putih
+      backgroundColor: AppColors.coklat900, // Mencegah kedip putih
       body: Stack(
         children: [
           // ── Background Utama (Diubah ke SVG) ───────────────────────

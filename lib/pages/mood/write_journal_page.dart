@@ -1,10 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:mino/pages/home/home_page.dart'; 
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:mino/core/constants/app_colors.dart';
-
-// ... kode import tetap sama ...
 
 class WriteJournalScreen extends StatefulWidget {
   const WriteJournalScreen({super.key});
@@ -50,34 +47,33 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
     super.dispose();
   }
 
-  // MODIFIKASI: Mengembalikan data ke halaman JournalingPage
-void _handleSave() {
+  // 🔥 Langsung simpan dan tutup halaman tanpa popup
+  void _handleSave() {
     final Map<String, String> journalData = {
       "title": _titleController.text.trim(),
       "content": _contentController.text.trim(),
     };
     
-    Navigator.pop(context, journalData); // 🔥 Kembalikan map data ke penekan tombol awal
+    // Kembalikan map data ke layar sebelumnya
+    Navigator.pop(context, journalData);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Diubah ke true agar layout menyesuaikan keyboard
+      backgroundColor: AppColors.coklat900,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/images/bg_login.png', fit: BoxFit.cover),
           ),
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                
+
                 // Input Judul
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -102,7 +98,11 @@ void _handleSave() {
                         fontWeight: FontWeight.bold,
                       ),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(left: 16, top: 2, bottom: 4),
+                      contentPadding: EdgeInsets.only(
+                        left: 16,
+                        top: 2,
+                        bottom: 4,
+                      ),
                     ),
                   ),
                 ),
@@ -112,31 +112,36 @@ void _handleSave() {
                 // Kertas Input Isi Jurnal
                 Center(
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.85, 
-                    height: MediaQuery.of(context).size.height * 0.48, 
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    height: MediaQuery.of(context).size.height * 0.48,
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
                         Transform.rotate(
-                          angle: -6 * (math.pi / 180), 
+                          angle: -6 * (math.pi / 180),
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 12, right: 8),
                             decoration: BoxDecoration(
                               color: const Color(0xFFF2E2C9),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: darkBrownBorder, width: borderWidth),
+                              border: Border.all(
+                                color: darkBrownBorder,
+                                width: borderWidth,
+                              ),
                             ),
                           ),
                         ),
-                        
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF7EAD3), 
+                            color: const Color(0xFFF7EAD3),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: darkBrownBorder, width: borderWidth),
+                            border: Border.all(
+                              color: darkBrownBorder,
+                              width: borderWidth,
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
+                                color: Colors.black.withOpacity(0.2),
                                 blurRadius: 12,
                                 offset: const Offset(0, 6),
                               ),
@@ -156,9 +161,9 @@ void _handleSave() {
                               height: 1.5,
                             ),
                             decoration: const InputDecoration(
-                              hintText: 'Write your thoughts here...', // Diubah agar berbeda dengan judul
+                              hintText: 'Write your thoughts here...',
                               hintStyle: TextStyle(
-                                color: Colors.black26, 
+                                color: Colors.black26,
                                 fontSize: 16,
                               ),
                               contentPadding: EdgeInsets.all(24),
@@ -180,9 +185,8 @@ void _handleSave() {
                     crossFadeState: _isButtonsRowVisible
                         ? CrossFadeState.showSecond
                         : CrossFadeState.showFirst,
-
                     firstChild: Container(
-                      height: 80, 
+                      height: 80,
                       alignment: Alignment.center,
                       child: FittedBox(
                         fit: BoxFit.none,
@@ -196,11 +200,10 @@ void _handleSave() {
                         ),
                       ),
                     ),
-
                     secondChild: Container(
-                      height: 80, 
+                      height: 80,
                       alignment: Alignment.center,
-                      child: FittedBox( 
+                      child: FittedBox(
                         fit: BoxFit.none,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -219,7 +222,7 @@ void _handleSave() {
                               width: 140,
                               child: CustomButton(
                                 text: 'Save',
-                                onTap: _handleSave,
+                                onTap: _handleSave, 
                               ),
                             ),
                           ],

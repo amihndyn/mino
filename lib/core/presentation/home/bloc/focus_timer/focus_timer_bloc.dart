@@ -14,11 +14,15 @@ class FocusTimerBloc extends Bloc<FocusTimerEvent, FocusTimerState> {
     // HANDLER 1: START FOCUS
     on<_StartFocus>((event, emit) async {
       emit(const _Loading());
-      final result = await _repository.startFocus(userHabitId: event.userHabitId);
-      
+
+      final result = await _repository.startFocus(
+        userHabitId: event.userHabitId,
+        userChallengeId: event.userChallengeId,
+      );
+
       result.fold(
         (failure) => emit(_Error(failure)),
-        (timerId) => emit(_Started(timerId)), // Simpan ID timer di state
+        (timerId) => emit(_Started(timerId)),
       );
     });
 

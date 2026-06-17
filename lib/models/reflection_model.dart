@@ -17,8 +17,14 @@ class ReflectionModel {
 
   factory ReflectionModel.fromJson(Map<String, dynamic> json) {
     return ReflectionModel(
-      id: json['id'] ?? 0,
-      userId: json['user_id'] ?? 0,
+      id: json['id'] is String
+          ? int.parse(json['id'])
+          : (json['id'] ?? 0),
+
+      userId: json['user_id'] is String
+          ? int.parse(json['user_id'])
+          : (json['user_id'] ?? 0),
+
       date: json['date'] ?? '',
       title: json['title'] ?? 'Daily Reflection',
       content: json['content'] ?? '',

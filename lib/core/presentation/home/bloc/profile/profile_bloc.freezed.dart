@@ -113,10 +113,7 @@ return updateProfile(_that);case _:
 final _that = this;
 switch (_that) {
 case _UpdateProfile():
-return updateProfile(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return updateProfile(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -175,10 +172,7 @@ return updateProfile(_that.request,_that.imagePath);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( ProfileRequestModel request,  String? imagePath)  updateProfile,}) {final _that = this;
 switch (_that) {
 case _UpdateProfile():
-return updateProfile(_that.request,_that.imagePath);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return updateProfile(_that.request,_that.imagePath);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

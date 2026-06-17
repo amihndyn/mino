@@ -31,10 +31,10 @@ class _JournalingPageState extends State<JournalingPage> {
   Color _getMoodColor(String mood) {
     switch (mood.toLowerCase()) {
       case 'amazing': return const Color(0xFFE8A838);
-      case 'good': return const Color(0xFF4CAF50);
-      case 'okey': return const Color(0xFF2196F3);
-      case 'unusual': return const Color(0xFF9C27B0);
-      case 'bad': return const Color(0xFFE53935);
+      case 'good': return const Color(0xFFE8A838);
+      case 'okey': return const Color(0xFFE8A838);
+      case 'unusual': return const Color(0xFFE8A838);
+      case 'bad': return const Color(0xFFE8A838);
       default: return const Color(0xFFE8A838);
     }
   }
@@ -69,6 +69,8 @@ class _JournalingPageState extends State<JournalingPage> {
     final selectedMood = moodJournalProvider.selectedMood ?? 'Good';
 
     return Scaffold(
+      // 🛠️ FIX: Mengunci warna dasar kanvas belakang menjadi cokelat gelap untuk mencegah kedipan putih saat keyboard naik
+      backgroundColor: AppColors.coklat900,
       resizeToAvoidBottomInset: true, 
       body: BlocListener<ReflectionBloc, ReflectionState>(
         listener: (context, state) {
@@ -76,10 +78,7 @@ class _JournalingPageState extends State<JournalingPage> {
             loading: () => setState(() => _isLoading = true),
             saveSuccess: (reflection) {
               // 🔒 Biarkan _isLoading tetap TRUE di sini agar layar tetap nge-block putih/loading
-              
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Reflection successfully saved!')),
-              );
+              // Alert sukses telah dihapus
 
               final String finalTitle = reflection.title ?? _titleController.text;
               final String finalContent = reflection.content ?? _noteController.text;

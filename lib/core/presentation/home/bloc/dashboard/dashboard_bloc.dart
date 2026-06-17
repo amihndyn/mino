@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mino/core/data/model/response/dashboard_response.dart';
 import 'package:mino/core/data/repositories/dashboard_repository.dart';
-import 'package:mino/core/data/datasource/dashboard_local_datasource.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -10,82 +9,105 @@ part 'dashboard_bloc.freezed.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final DashboardRepository _dashboardRepository;
-  final DashboardLocalDatasource _localDatasource = DashboardLocalDatasource.instance;
-
-  // 🔥 Tambahkan variabel ini untuk mengingat ID bulan yang sedang aktif di UI
   int? _currentSelectedMonthId;
 
-  DashboardBloc(this._dashboardRepository) : super(_Initial()) {
-    
-    // Helper function untuk mengambil data ulang secara benar
-    Future<void> _reloadDataAfterAction(Emitter<DashboardState> emit) async {
-      // Kita panggil repository getDashboard dengan membawa ID bulan yang sedang aktif!
-      final result = await _dashboardRepository.getDashboard(month: _currentSelectedMonthId);
-      result.fold(
-        (failureMessage) => emit(_Error(failureMessage)),
-        (dashboardData) => emit(_Success(dashboardData)),
-      );
+  DashboardBloc(this._dashboardRepository)
+    : super(const DashboardState.initial()) {
+    on<_FetchDashboardData>(_onFetchDashboardData);
+    on<_ToggleHabit>(_onToggleHabit);
+    on<_AddHabit>(_onAddHabit);
+    on<_DeleteHabit>(_onDeleteHabit);
+    on<_EditHabit>(_onEditHabit);
+  }
+
+  Future<void> _onFetchDashboardData(
+    _FetchDashboardData event,
+    Emitter<DashboardState> emit,
+  ) async {
+    emit(const DashboardState.loading());
+
+    _currentSelectedMonthId = event.month;
+
+    final result = await _dashboardRepository.getDashboard(month: event.month);
+
+    result.fold(
+      (failure) => emit(DashboardState.error(failure)),
+      (data) => emit(DashboardState.success(data)),
+    );
+  }
+
+  // 2. Buat fungsi untuk menangani penambahan habit
+  Future<void> _onAddHabit(
+    _AddHabit event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      // Panggil fungsi addHabit di repository kamu (sesuaikan nama fungsinya dengan yang ada di Laravel/Repo kamu)
+      await _dashboardRepository.addHabit(event.name); 
+
+      // Setelah berhasil add, reload data dashboard otomatis
+      await _reloadData(emit);
+    } catch (e) {
+      emit(DashboardState.error(e.toString()));
     }
+  }
 
-    // 1. FETCH UTAMA
-    on<_FetchDashboardData>((event, emit) async {
-      emit(_Loading());
-      
-      // 🔥 Simpan ID bulan yang sedang direquest ke dalam variabel private bloc
-      _currentSelectedMonthId = event.month;
-
-      final result = await _dashboardRepository.getDashboard(month: event.month);
-      
-      result.fold(
-        (failureMessage) => emit(_Error(failureMessage)),
-        (dashboardData) => emit(_Success(dashboardData)),
+  Future<void> _onToggleHabit(
+    _ToggleHabit event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      await _dashboardRepository.toggleHabitStatus(
+        event.userHabitId,
+        event.currentStatus,
       );
-    });
 
-    // 2. HANDLER TOGGLE STATUS CENTANG HABIT
-    on<_ToggleHabit>((event, emit) async {
-      final result = await _dashboardRepository.toggleHabitStatus(event.userHabitId, event.currentStatus);
-      
-      await result.fold(
-        (failureMessage) async => emit(_Error(failureMessage)),
-        (success) async {
-          // 🔥 Ambil data terupdate dari server/lokal secara cerdas sesuai bulan yang aktif
-          await _reloadDataAfterAction(emit);
-        },
-      );
-    });
+      await _reloadData(emit);
+    } catch (e) {
+      emit(DashboardState.error(e.toString()));
+    }
+  }
 
-    // 3. HANDLER HAPUS HABIT
-    on<_DeleteHabit>((event, emit) async {
-      final result = await _dashboardRepository.deleteHabit(event.userHabitId);
-      await result.fold(
-        (failureMessage) async => emit(_Error(failureMessage)),
-        (success) async {
-          await _reloadDataAfterAction(emit);
-        },
-      );
-    });
+  Future<void> _onDeleteHabit(
+    _DeleteHabit event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      emit(const DashboardState.loading());
 
-    // 4. HANDLER TAMBAH/CREATE HABIT
-    on<_AddHabit>((event, emit) async {
-      final result = await _dashboardRepository.addHabit(event.name);
-      await result.fold(
-        (failureMessage) async => emit(_Error(failureMessage)),
-        (success) async {
-          await _reloadDataAfterAction(emit);
-        },
-      );
-    });
+      await _dashboardRepository.deleteHabit(event.userHabitId);
 
-    // 5. HANDLER EDIT HABIT
-    on<_EditHabit>((event, emit) async {
-      final result = await _dashboardRepository.editHabit(event.userHabitId, event.newName);
-      await result.fold(
-        (failureMessage) async => emit(_Error(failureMessage)),
-        (success) async {
-          await _reloadDataAfterAction(emit);
-        },
-      );
-    });
+      await _reloadData(emit);
+    } catch (e) {
+      emit(DashboardState.error(e.toString()));
+    }
+  }
+
+  Future<void> _onEditHabit(
+    _EditHabit event,
+    Emitter<DashboardState> emit,
+  ) async {
+    try {
+      emit(const DashboardState.loading());
+
+      await _dashboardRepository.editHabit(event.userHabitId, event.newName);
+      await _reloadData(emit);
+    } catch (e) {
+      emit(DashboardState.error(e.toString()));
+    }
+  }
+
+  /// ========================
+  /// RELOAD DATA (FIXED SAFE)
+  /// ========================
+  Future<void> _reloadData(Emitter<DashboardState> emit) async {
+    final result = await _dashboardRepository.getDashboard(
+      month: _currentSelectedMonthId ?? 1,
+    );
+
+    result.fold(
+      (failure) => emit(DashboardState.error(failure)),
+      (data) => emit(DashboardState.success(data)),
+    );
   }
 }

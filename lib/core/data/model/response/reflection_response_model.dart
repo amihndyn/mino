@@ -56,16 +56,29 @@ class Reflection {
   String toJson() => json.encode(toMap());
 
   factory Reflection.fromMap(Map<String, dynamic> json) => Reflection(
-    id: json["id"],
-    userId: json["user_id"],
-    userHabitId: json["user_habit_id"],
+    id: json["id"] is String
+        ? int.parse(json["id"])
+        : json["id"],
+
+    userId: json["user_id"] is String
+        ? int.parse(json["user_id"])
+        : json["user_id"],
+
+    userHabitId: json["user_habit_id"] == null
+        ? null
+        : (json["user_habit_id"] is String
+            ? int.parse(json["user_habit_id"])
+            : json["user_habit_id"]),
+
     date: json["date"],
     title: json["title"],
     content: json["content"],
     mood: json["mood"],
+
     createdAt: json["created_at"] == null
         ? null
         : DateTime.parse(json["created_at"]),
+
     updatedAt: json["updated_at"] == null
         ? null
         : DateTime.parse(json["updated_at"]),

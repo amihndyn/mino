@@ -6,7 +6,6 @@ import 'package:mino/core/data/model/request/user_challenge_request_model.dart';
 import 'package:mino/core/data/model/response/user_challenge_response_model.dart';
 
 class UserChallengeRemoteDatasource {
-  
   // Helper internal untuk mengambil header dengan token otomatis
   Future<Map<String, String>> _getHeaders() async {
     final authData = await AuthLocalDatasource().getAuthData();
@@ -28,7 +27,9 @@ class UserChallengeRemoteDatasource {
 
       if (response.statusCode == 200) {
         // Parsing response menggunakan format UserChallengeResponseModel kamu
-        final responseModel = UserChallengeResponseModel.fromJson(response.body);
+        final responseModel = UserChallengeResponseModel.fromJson(
+          response.body,
+        );
         return responseModel.data;
       } else {
         throw Exception('Gagal mengambil data tantangan');
@@ -48,11 +49,14 @@ class UserChallengeRemoteDatasource {
         body: requestModel.toJson(),
       );
 
-      if (response.statusCode == 201) {
+      // Ubah bagian ini di UserChallengeRemoteDatasource
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Gagal mengikuti tantangan baru');
+        throw Exception(
+          errorData['message'] ?? 'Gagal mengikuti tantangan baru',
+        );
       }
     } catch (e) {
       throw Exception(e.toString());
@@ -72,11 +76,14 @@ class UserChallengeRemoteDatasource {
 
       if (response.statusCode == 200) {
         return UserChallenge.fromMap(resBody['data']);
-      } else if (response.statusCode == 400 && resBody['status'] == 'failed_streak') {
+      } else if (response.statusCode == 400 &&
+          resBody['status'] == 'failed_streak') {
         // Lempar pesan custom ini agar dibaca BLoC untuk memicu dialog revive
         throw Exception('failed_streak');
       } else {
-        throw Exception(resBody['message'] ?? 'Gagal mencentang tantangan harian');
+        throw Exception(
+          resBody['message'] ?? 'Gagal mencentang tantangan harian',
+        );
       }
     } catch (e) {
       throw Exception(e.toString());
@@ -98,6 +105,27 @@ class UserChallengeRemoteDatasource {
         return UserChallenge.fromMap(resBody['data']);
       } else {
         throw Exception(resBody['message'] ?? 'Gagal memulihkan tantangan');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  /// 5. DELETE /api/user-challenges/{id} — Menghapus/keluar dari tantangan
+  Future<String> deleteUserChallenge(int id) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.delete(
+        Uri.parse('${Variable.baseUrl}/api/user-challenges/$id'),
+        headers: headers,
+      );
+
+      final resBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return resBody['message'] ?? 'Challenge berhasil dihapus';
+      } else {
+        throw Exception(resBody['message'] ?? 'Gagal menghapus challenge');
       }
     } catch (e) {
       throw Exception(e.toString());

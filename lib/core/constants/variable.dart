@@ -1,4 +1,3 @@
 class Variable {
-  static const String baseUrl = 'http://192.168.0.100:8000';
-
+  static const String baseUrl = 'https://api.mino-habit.my.id';
 }

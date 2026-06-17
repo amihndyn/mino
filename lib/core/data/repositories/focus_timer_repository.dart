@@ -6,10 +6,17 @@ class FocusTimerRepository {
 
   FocusTimerRepository({required this.remoteDatasource});
 
-  Future<Either<String, int>> startFocus({int? userHabitId}) async {
+  Future<Either<String, int>> startFocus({
+    int? userHabitId,
+    int? userChallengeId,
+  }) async {
     try {
-      final result = await remoteDatasource.startFocus(userHabitId: userHabitId);
-      return Right(result); // Mengembalikan Timer ID
+      final result = await remoteDatasource.startFocus(
+        userHabitId: userHabitId,
+        userChallengeId: userChallengeId,
+      );
+
+      return Right(result);
     } catch (e) {
       return Left(e.toString());
     }

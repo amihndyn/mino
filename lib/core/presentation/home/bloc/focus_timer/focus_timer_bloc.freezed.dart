@@ -122,10 +122,10 @@ return completeFocus(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? userHabitId)?  startFocus,TResult Function( int timerId,  int durationMinutes)?  completeFocus,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? userHabitId,  int? userChallengeId)?  startFocus,TResult Function( int timerId,  int durationMinutes)?  completeFocus,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StartFocus() when startFocus != null:
-return startFocus(_that.userHabitId);case _CompleteFocus() when completeFocus != null:
+return startFocus(_that.userHabitId,_that.userChallengeId);case _CompleteFocus() when completeFocus != null:
 return completeFocus(_that.timerId,_that.durationMinutes);case _:
   return orElse();
 
@@ -144,10 +144,10 @@ return completeFocus(_that.timerId,_that.durationMinutes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? userHabitId)  startFocus,required TResult Function( int timerId,  int durationMinutes)  completeFocus,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? userHabitId,  int? userChallengeId)  startFocus,required TResult Function( int timerId,  int durationMinutes)  completeFocus,}) {final _that = this;
 switch (_that) {
 case _StartFocus():
-return startFocus(_that.userHabitId);case _CompleteFocus():
+return startFocus(_that.userHabitId,_that.userChallengeId);case _CompleteFocus():
 return completeFocus(_that.timerId,_that.durationMinutes);case _:
   throw StateError('Unexpected subclass');
 
@@ -165,10 +165,10 @@ return completeFocus(_that.timerId,_that.durationMinutes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? userHabitId)?  startFocus,TResult? Function( int timerId,  int durationMinutes)?  completeFocus,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? userHabitId,  int? userChallengeId)?  startFocus,TResult? Function( int timerId,  int durationMinutes)?  completeFocus,}) {final _that = this;
 switch (_that) {
 case _StartFocus() when startFocus != null:
-return startFocus(_that.userHabitId);case _CompleteFocus() when completeFocus != null:
+return startFocus(_that.userHabitId,_that.userChallengeId);case _CompleteFocus() when completeFocus != null:
 return completeFocus(_that.timerId,_that.durationMinutes);case _:
   return null;
 
@@ -181,10 +181,11 @@ return completeFocus(_that.timerId,_that.durationMinutes);case _:
 
 
 class _StartFocus implements FocusTimerEvent {
-  const _StartFocus({this.userHabitId});
+  const _StartFocus({this.userHabitId, this.userChallengeId});
   
 
  final  int? userHabitId;
+ final  int? userChallengeId;
 
 /// Create a copy of FocusTimerEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -196,16 +197,16 @@ _$StartFocusCopyWith<_StartFocus> get copyWith => __$StartFocusCopyWithImpl<_Sta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StartFocus&&(identical(other.userHabitId, userHabitId) || other.userHabitId == userHabitId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StartFocus&&(identical(other.userHabitId, userHabitId) || other.userHabitId == userHabitId)&&(identical(other.userChallengeId, userChallengeId) || other.userChallengeId == userChallengeId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userHabitId);
+int get hashCode => Object.hash(runtimeType,userHabitId,userChallengeId);
 
 @override
 String toString() {
-  return 'FocusTimerEvent.startFocus(userHabitId: $userHabitId)';
+  return 'FocusTimerEvent.startFocus(userHabitId: $userHabitId, userChallengeId: $userChallengeId)';
 }
 
 
@@ -216,7 +217,7 @@ abstract mixin class _$StartFocusCopyWith<$Res> implements $FocusTimerEventCopyW
   factory _$StartFocusCopyWith(_StartFocus value, $Res Function(_StartFocus) _then) = __$StartFocusCopyWithImpl;
 @useResult
 $Res call({
- int? userHabitId
+ int? userHabitId, int? userChallengeId
 });
 
 
@@ -233,9 +234,10 @@ class __$StartFocusCopyWithImpl<$Res>
 
 /// Create a copy of FocusTimerEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? userHabitId = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? userHabitId = freezed,Object? userChallengeId = freezed,}) {
   return _then(_StartFocus(
 userHabitId: freezed == userHabitId ? _self.userHabitId : userHabitId // ignore: cast_nullable_to_non_nullable
+as int?,userChallengeId: freezed == userChallengeId ? _self.userChallengeId : userChallengeId // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }

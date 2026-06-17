@@ -1,145 +1,164 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:mino/models/challenge_data.dart';
+import 'package:mino/providers/challenge_provider.dart';
+import 'package:mino/core/presentation/home/bloc/user_challenge/user_challenge_bloc.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
-import 'package:mino/widgets/navbar/bottom_navbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
-
+import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/widgets/popUP/pop_up_berhasil.dart'; 
+import 'package:mino/widgets/popUp/pop_up_gagal.dart';
 
 class ChallengeDetailPage extends StatefulWidget {
-  final ChallengeData challenge;
+  final int challengeId;
 
-  const ChallengeDetailPage({
-    super.key,
-    required this.challenge,
-  });
+  const ChallengeDetailPage({super.key, required this.challengeId});
 
   @override
   State<ChallengeDetailPage> createState() => _ChallengeDetailPageState();
 }
 
 class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
+  ChallengeData? lockedChallenge;
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = context.read<ChallengeProvider>();
+    lockedChallenge = provider.getChallengeById(widget.challengeId);
+  }
+
+  // ── FUNGSI ANIMASI TOP SLIDE POPUP & AUTO CLOSE ──
+  void _showTopNotification({required BuildContext context, required Widget child}) {
+    bool isClosed = false; 
+
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black.withOpacity(0.2), 
+      transitionDuration: const Duration(milliseconds: 400), 
+      pageBuilder: (dialogContext, anim1, anim2) {
+        return const SizedBox.shrink();
+      },
+      transitionBuilder: (dialogContext, anim1, anim2, widgetChild) {
+        final tween = Tween<Offset>(begin: const Offset(0, -1), end: const Offset(0, 0));
+        
+        return SlideTransition(
+          position: tween.animate(CurvedAnimation(parent: anim1, curve: Curves.easeOutBack)),
+          child: SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Material(
+                  color: Colors.transparent,
+                  child: child,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((_) {
+      isClosed = true;
+    });
+
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (!isClosed && context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final challengeProvider = context.watch<ChallengeProvider>();
+    final currentChallenge = lockedChallenge ?? challengeProvider.getChallengeById(widget.challengeId);
+
+    if (currentChallenge == null) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Text('Challenge not found', style: TextStyle(color: Colors.white)),
+        ),
+      );
+    }
 
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.coklat900,
       body: Stack(
         children: [
-          /// Background
+          // Background Image
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_login.png',
               fit: BoxFit.cover,
+              gaplessPlayback: true,
             ),
           ),
-
-          /// Overlay
-          Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(0.35),
-            ),
-          ),
-
+          
           SafeArea(
-            bottom: false,
             child: Column(
               children: [
                 CustomAppBar(
-                  title: widget.challenge.title,
-                 
+                  title: currentChallenge.title,
+                  showBackButton: true,
                 ),
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.all(24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 24),
-
-                        /// Banner Challenge
-                        Container(
-                          width: double.infinity,
-                          height: 300,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.08),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.4),
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(24),
-                            child: _buildChallengeImage(widget.challenge.detailImageAsset),
-                          ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: _buildChallengeImage(currentChallenge.detailImageAsset),
                         ),
-
-                        const SizedBox(height: 20),
-
-                        /// Reward & Duration Chips (Migrasi ke .png)
+                        const SizedBox(height: 24),
+                        
                         Row(
                           children: [
                             _buildChip(
                               assetPath: 'assets/images/diamond.png',
-                              label: '+${widget.challenge.diamondReward}',
-                              textColor: const Color(0xff18C3F7),
-                              bgColor: const Color(0xff1A365D).withOpacity(0.6),
+                              label: '${currentChallenge.diamondReward} Diamonds',
+                              textColor: const Color(0xFFE6A84A),
+                              bgColor: const Color(0xFFE6A84A).withAlpha((0.12 * 255).toInt()),
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: 12),
                             _buildChip(
-                              assetPath: 'assets/images/redflag.png',
-                              label: '${widget.challenge.durationDays} days',
-                              textColor: const Color(0xffFF6B6B),
-                              bgColor: const Color(0xff5C251E).withOpacity(0.6),
+                              assetPath: 'assets/images/calendar.png',
+                              label: '${currentChallenge.durationDays} Days',
+                              textColor: Colors.white,
+                              bgColor: Colors.white.withAlpha((0.1 * 255).toInt()),
                             ),
                           ],
                         ),
-
-                        const SizedBox(height: 18),
-
-                        /// Date Info
-                        Text(
-                          widget.challenge.dateInfo,
+                        const SizedBox(height: 24),
+                        
+                        const Text(
+                          'Description',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
-                            fontSize: 13,
-                          ),
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        /// Title
-                        Text(
-                          widget.challenge.title,
-                          style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 30,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-
-                        const SizedBox(height: 16),
-
-                        /// Description
+                        const SizedBox(height: 12),
                         Text(
-                          widget.challenge.description,
+                          currentChallenge.description,
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.75),
-                            fontSize: 15,
-                            height: 1.7,
+                            color: Colors.white.withAlpha((0.75 * 255).toInt()),
+                            fontSize: 14,
+                            height: 1.6,
                           ),
                         ),
-
-                        const SizedBox(height: 150),
+                        // Dikurangi dikit jarak scroll bawahnya karena tombolnya sudah turun
+                        const SizedBox(height: 80), 
                       ],
                     ),
                   ),
@@ -147,41 +166,72 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
               ],
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-              child: Row(
-                children: [
-                  /// TOMBOL UTAMA: Add to Routine
-                 Expanded(
-  child: SizedBox(
-    height: 50,
-    child: CustomButton(
-      text: 'Add to my routine',
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '"${widget.challenge.title}" has been added to your routine!',
+
+          // ── BLOCK BUTTON UTAMA DENGAN POPUP KUSTOM ──
+          Positioned(
+            bottom: 30, // 🛠️ DIUBAH DI SINI (Dari 100 ke 30 agar lebih ke bawah)
+            left: 24,
+            right: 24,
+            child: BlocConsumer<UserChallengeBloc, UserChallengeState>(
+              listener: (context, state) {
+                state.maybeWhen(
+                  success: (_) {
+                    _showTopNotification(
+                      context: context,
+                      child: PopUpBerhasil(
+                        message: '"${currentChallenge.title}" has been added to your routine!',
+                        onClose: () => Navigator.of(context, rootNavigator: true).pop(),
+                      ),
+                    );
+                  },
+                  error: (message) {
+                    _showTopNotification(
+                      context: context,
+                      child: PopUpGagal(
+                        message: message, 
+                        onClose: () => Navigator.of(context, rootNavigator: true).pop(),
+                      ),
+                    );
+                  },
+                  orElse: () {},
+                );
+              },
+              builder: (context, state) {
+                bool alreadyAdded = false;
+
+                state.maybeWhen(
+                  success: (userChallengesList) {
+                    alreadyAdded = userChallengesList.any((uc) => uc.challengeId == currentChallenge.id);
+                  },
+                  orElse: () {},
+                );
+
+                return SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: CustomButton(
+                    text: alreadyAdded ? 'Already in My Routine ' : 'Add to my routine',
+                    onTap: () {
+                      if (alreadyAdded) {
+                        _showTopNotification(
+                          context: context,
+                          child: PopUpGagal(
+                            message: 'This challenge is already in your routine!',
+                            onClose: () => Navigator.of(context, rootNavigator: true).pop(),
+                          ),
+                        );
+                        return;
+                      }
+
+                      context.read<UserChallengeBloc>().add(
+                            UserChallengeEvent.joinChallenge(currentChallenge.id),
+                          );
+                    },
+                  ),
+                );
+              },
             ),
           ),
-        );
-      },
-    ),
-  ),
-),
-                  const SizedBox(width: 12),
-                ],
-              ),
-            ),
-          ),
-          BottomNavbar(currentIndex: 2),
         ],
       ),
     );
@@ -200,12 +250,23 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(assetPath, width: 16, height: 16),
+          Image.asset(
+            assetPath,
+            width: 16,
+            height: 16,
+            errorBuilder: (context, error, stackTrace) =>
+                Icon(Icons.star, size: 16, color: textColor),
+          ),
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: textColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
           ),
         ],
       ),
@@ -213,14 +274,22 @@ class _ChallengeDetailPageState extends State<ChallengeDetailPage> {
   }
 
   Widget _buildChallengeImage(String assetPath) {
-  final imagePath = assetPath.isNotEmpty
-      ? assetPath
-      : widget.challenge.imageAsset;
-
-  return Image.asset(
-  imagePath,
-  fit: BoxFit.cover,
-  alignment: Alignment.topCenter,
-);
-}
+    final imagePath = assetPath.isNotEmpty ? assetPath : 'assets/images/clean.png';
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
+      width: double.infinity,
+      height: 200,
+      alignment: Alignment.topCenter,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          height: 200,
+          color: Colors.white12,
+          child: const Center(
+            child: Icon(Icons.image, size: 50, color: Colors.white30),
+          ),
+        );
+      },
+    );
+  }
 }

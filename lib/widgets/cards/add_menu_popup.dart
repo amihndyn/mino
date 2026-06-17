@@ -69,7 +69,7 @@ class AddMenuPopup extends StatelessWidget {
                   angle: 0.5,
                   child: MenuPopupCard(
                     title: "Add Reflection",
-                    subtitle: "Reflect on your day, mood, and feelings",
+                    subtitle: "Add your reflections for today",
                     color: const Color(0xFFAC87E4),
                     imageAsset: 'assets/images/cat.png',
                     imageHeight: 65, // Misalnya cat.png ingin dibuat lebih besar

@@ -5,7 +5,7 @@ class ChooseAvatarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final avatars = [
+    final avatars= [
       'assets/images/man.png',
       'assets/images/astronout.png',
       'assets/images/woman.png',

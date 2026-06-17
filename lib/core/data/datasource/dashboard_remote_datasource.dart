@@ -45,13 +45,18 @@ class DashboardRemoteDatasource {
     }
   }
 
-  // 🔥 PERBAIKAN TOGGLE HABIT
-  Future<bool> toggleHabitStatus(int userHabitId) async {
+// 🔥 MODIFIKASI TOGGLE HABIT AGAR BISA CHECK & UNCHECK SEKALIGUS
+  Future<bool> toggleHabitStatus(int userHabitId, bool isCompleted) async {
     try {
       final authData = await AuthLocalDatasource().getAuthData();
 
+      // Tentukan URL secara dinamis berdasarkan status 'isCompleted' saat ini
+      final endpointPath = isCompleted 
+          ? '/api/user-habits/uncheck/$userHabitId' 
+          : '/api/user-habits/check/$userHabitId';
+
       final response = await http.post(
-        Uri.parse('${Variable.baseUrl}/api/user-habits/check/$userHabitId'),
+        Uri.parse('${Variable.baseUrl}$endpointPath'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Accept': 'application/json',

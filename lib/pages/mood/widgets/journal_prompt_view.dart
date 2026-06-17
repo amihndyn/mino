@@ -22,6 +22,12 @@ class JournalPromptView extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFF6E3BC), 
         borderRadius: BorderRadius.circular(24), 
+        // 🛠️ FIX: Tambahkan stroke border inside 2px warna coklat900 agar konsisten dengan komponen Figma lainnya
+        border: Border.all(
+          color: AppColors.coklat900,
+          width: 2,
+          strokeAlign: BorderSide.strokeAlignInside,
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

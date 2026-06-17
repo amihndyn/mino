@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Tambahkan import ini
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 import 'package:provider/provider.dart';
 
@@ -13,8 +13,45 @@ import 'widgets/unique_habit_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 
+// ── 🔥 IMPORT TEMPLATE POPUP KAMU DENGAN BENAR ──
+import 'package:mino/widgets/popUp/pop_up_berhasil.dart'; 
+import 'package:mino/widgets/popUp/pop_up_gagal.dart';    
+
 class PilihHabitPage extends StatelessWidget {
   const PilihHabitPage({super.key});
+
+  // ── 🛠️ WIDGET HELPER: ANIMASI SLIDE DOWN DARI ATAS LAYAR ──
+  void _showTopNotification(BuildContext context, Widget child) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black.withOpacity(0.2), 
+      transitionDuration: const Duration(milliseconds: 400), 
+      pageBuilder: (context, anim1, anim2) {
+        return const SizedBox.shrink();
+      },
+      transitionBuilder: (context, anim1, anim2, widgetChild) {
+        final tween = Tween<Offset>(begin: const Offset(0, -1), end: const Offset(0, 0));
+        
+        return SlideTransition(
+          position: tween.animate(CurvedAnimation(parent: anim1, curve: Curves.easeOutBack)),
+          child: SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Material(
+                  color: Colors.transparent,
+                  child: child,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +62,7 @@ class PilihHabitPage extends StatelessWidget {
           return Scaffold(
             body: Stack(
               children: [
-                /// 1. Background Image (Diubah ke SVG)
+                /// 1. Background Image
                 Positioned.fill(
                   child: Image.asset(
                     'assets/images/bg_login.png',
@@ -44,14 +81,12 @@ class PilihHabitPage extends StatelessWidget {
                         child: Container(
                           width: double.infinity,
                           decoration: const BoxDecoration(
-                            color:
-                                AppColors.orange100, // Warna solid base konten
+                            color: AppColors.orange100, 
                             borderRadius: BorderRadius.vertical(
                               top: Radius.circular(32),
                             ),
                           ),
                           child: SingleChildScrollView(
-                            // Padding ekstra di bawah agar konten terakhir tidak tertutup tombol
                             padding: const EdgeInsets.only(
                               left: 20,
                               right: 20,
@@ -109,7 +144,6 @@ class PilihHabitPage extends StatelessWidget {
                                       habits: section.value,
                                       selectedHabits: provider.selectedHabits,
                                       onSelect: (value) {
-                                        // 🔥 LANGKAH 1: Ambil data dashboard saat ini dari DashboardBloc
                                         final dashboardState = context
                                             .read<DashboardBloc>()
                                             .state;
@@ -117,48 +151,38 @@ class PilihHabitPage extends StatelessWidget {
 
                                         dashboardState.maybeWhen(
                                           success: (response) {
-                                            // Kumpulkan semua nama habit yang sudah nampang di halaman utama hari ini
-                                            currentHabitNames =
-                                                response.dashboard?.todayHabits
-                                                    ?.map(
-                                                      (h) => h.habitName ?? '',
-                                                    )
-                                                    .where(
-                                                      (name) => name.isNotEmpty,
-                                                    )
-                                                    .toList() ??
-                                                [];
+                                            currentHabitNames = response
+                                                    .dashboard?.todayHabits
+                                                    ?.map((h) => h.habitName ?? '')
+                                                    .where((name) => name.isNotEmpty)
+                                                    .toList() ?? [];
                                           },
                                           orElse: () {},
                                         );
 
-                                        // 🔥 LANGKAH 2: Validasi pencegahan duplikasi nama habit template
-                                        // Jika status habit sudah dipilih sebelumnya (ingin membatalkan pilihan/uncheck), loloskan validasi
-                                        if (provider.selectedHabits.contains(
-                                          value,
-                                        )) {
+                                        if (provider.selectedHabits.contains(value)) {
                                           provider.toggleHabit(value);
-                                        } else if (provider
-                                            .isHabitAlreadyExists(
-                                              value,
-                                              currentHabitNames,
-                                            )) {
-                                          // ❌ Jika sudah ada di Dashboard, munculkan peringatan SnackBar
-                                          ScaffoldMessenger.of(
+                                        } else if (provider.isHabitAlreadyExists(
+                                          value,
+                                          currentHabitNames,
+                                        )) {
+                                          // ❌ KONDISI GAGAL: PopUpGagal Bahasa Inggris
+                                          _showTopNotification(
                                             context,
-                                          ).clearSnackBars(); // Bersihkan snackbar lama agar tidak menumpuk
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Habit "$value" sudah terdaftar di Dashboard hari ini!',
-                                              ),
-                                              backgroundColor: Colors.redAccent,
+                                            PopUpGagal(
+                                              message: 'Habit "$value" is already on your Dashboard today!',
+                                              onClose: () => Navigator.of(context).pop(),
                                             ),
                                           );
+
+                                          // Hilang sendiri dalam 1.5 detik
+                                          Future.delayed(const Duration(milliseconds: 1500), () {
+                                            if (context.mounted) {
+                                              Navigator.of(context).pop();
+                                            }
+                                          });
+
                                         } else {
-                                          // ✅ Jika belum ada di Dashboard, masukkan ke list pilihan
                                           provider.toggleHabit(value);
                                         }
                                       },
@@ -181,18 +205,15 @@ class PilihHabitPage extends StatelessWidget {
                     right: 0,
                     bottom: 0,
                     child: Container(
-                      // Gunakan gradient untuk transisi halus, menutupi item list di belakangnya
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            AppColors.orange100.withOpacity(
-                              0.0,
-                            ), // Transparan di atas
+                            AppColors.orange100.withOpacity(0.0), 
                             AppColors.orange100.withOpacity(0.8),
-                            AppColors.orange100, // Solid di bawah
-                            AppColors.orange100, // Pastikan benar-benar solid
+                            AppColors.orange100, 
+                            AppColors.orange100, 
                           ],
                           stops: const [0.0, 0.2, 0.5, 1.0],
                         ),
@@ -200,7 +221,7 @@ class PilihHabitPage extends StatelessWidget {
                       padding: const EdgeInsets.only(
                         left: 24,
                         right: 24,
-                        top: 32, // Jarak ekstra di atas tombol untuk efek fade
+                        top: 32, 
                         bottom: 34,
                       ),
                       child: SafeArea(
@@ -208,28 +229,33 @@ class PilihHabitPage extends StatelessWidget {
                         child: CustomButton(
                           text: "Add Selected Habits",
                           onTap: () {
-                            // 1. Ambil daftar habit yang dicentang
                             final selectedList = provider.selectedHabits;
 
-                            // 2. Looping: Kirim setiap nama habit ke Laravel via BLoC
+                            // Kirim data ke Laravel via BLoC
                             for (String habitName in selectedList) {
                               context.read<DashboardBloc>().add(
-                                DashboardEvent.addHabit(habitName),
-                              );
+                                    DashboardEvent.addHabit(habitName),
+                                  );
                             }
 
-                            // 3. Tampilkan pesan sukses
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  '${selectedList.length} Habit berhasil ditambahkan!',
-                                ),
-                                backgroundColor: Colors.green,
+                            // 🎉 KONDISI BERHASIL: PopUpBerhasil Bahasa Inggris
+                            _showTopNotification(
+                              context,
+                              PopUpBerhasil(
+                                message: '${selectedList.length} successfully added!',
+                                onClose: () => Navigator.of(context).pop(),
                               ),
                             );
 
-                            // 4. Kembali ke halaman Dashboard Utama
-                            Navigator.pop(context);
+                            // Jeda 1.5 detik (1500ms) lalu popup hilang dan balik ke Dashboard
+                            Future.delayed(const Duration(milliseconds: 1500), () {
+                              if (context.mounted) {
+                                if (Navigator.canPop(context)) {
+                                  Navigator.pop(context); // Tutup top alert popup
+                                }
+                                Navigator.pop(context); // Balik ke Dashboard utama
+                              }
+                            });
                           },
                         ),
                       ),

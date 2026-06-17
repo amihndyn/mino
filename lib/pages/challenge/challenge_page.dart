@@ -1,150 +1,170 @@
-import 'package:flutter/material.dart';
-import 'package:mino/widgets/appbars/custom_appbar.dart';
-import 'package:mino/widgets/navbar/bottom_navbar.dart';
+// import 'package:flutter/material.dart';
+// import 'package:mino/widgets/appbars/custom_appbar.dart';
+// import 'package:mino/widgets/navbar/bottom_navbar.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:mino/core/presentation/home/bloc/user_challenge/user_challenge_bloc.dart';
+// import 'package:mino/core/data/model/response/user_challenge_response_model.dart';
 
-class ChallengePage extends StatelessWidget {
-  const ChallengePage({super.key});
+// class ChallengePage extends StatefulWidget {
+//   const ChallengePage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBody: true,
+//   @override
+//   State<ChallengePage> createState() => _ChallengePageState();
+// }
 
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.cover,
-            ),
-          ),
+// class _ChallengePageState extends State<ChallengePage> {
 
-          SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                CustomAppBar(
-                  title: 'Challenges',
-                  showBackButton: false,
-                ),
+//   @override
+//   void initState() {
+//     super.initState();
 
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+//     context.read<UserChallengeBloc>().add(
+//       const UserChallengeEvent.fetchUserChallenges(),
+//     );
+//   }
+//   @override
+//   Widget build(BuildContext context) {
 
-                        const Text(
-                          'Active Challenge',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+//     return Scaffold(
+//       // 🛠️ FIX: Mengunci warna kanvas belakang agar tidak berkedip putih saat transisi page
+//       backgroundColor: const Color(0xFF1A110A),
+//       extendBody: true,
+//       body: Stack(
+//         children: [
+//           Positioned.fill(
+//             child: Image.asset(
+//               'assets/images/bg_login.png',
+//               fit: BoxFit.cover,
+//             ),
+//           ),
+//           SafeArea(
+//             child: Column(
+//               children: [
+//                 CustomAppBar(
+//                   title: 'My Routine', // Mengubah judul menjadi dinamis
+//                   showBackButton: false,
+//                 ),
+//                 Expanded(
+//   child: BlocBuilder<UserChallengeBloc, UserChallengeState>(
+//     builder: (context, state) {
+//       return state.when(
+//         initial: () => const SizedBox(),
 
-                        const SizedBox(height: 16),
+//         loading: () => const Center(
+//           child: CircularProgressIndicator(),
+//         ),
 
-                        _challengeCard(
-                          title: '7 Days Focus Challenge',
-                          subtitle:
-                              'Stay productive and focused everyday ✨',
-                          progress: 0.7,
-                        ),
+//         error: (message) => Center(
+//           child: Text(
+//             message,
+//             style: const TextStyle(color: Colors.white),
+//           ),
+//         ),
 
-                        const SizedBox(height: 30),
+//         needRevive: (_, message) => Center(
+//           child: Text(
+//             message,
+//             style: const TextStyle(color: Colors.orange),
+//           ),
+//         ),
 
-                        const Text(
-                          'Recommended',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+//         success: (challenges) {
+//           if (challenges.isEmpty) {
+//             return const Center(
+//               child: Text(
+//                 'No Challenges Yet',
+//                 style: TextStyle(color: Colors.white),
+//               ),
+//             );
+//           }
 
-                        const SizedBox(height: 16),
+//           return ListView.builder(
+//             padding: const EdgeInsets.all(20),
+//             itemCount: challenges.length,
+//             itemBuilder: (context, index) {
+//               final challenge = challenges[index];
 
-                        _challengeCard(
-                          title: 'Morning Routine',
-                          subtitle:
-                              'Build healthy habits every morning 🌞',
-                          progress: 0.3,
-                        ),
+//               return Padding(
+//                 padding: const EdgeInsets.only(bottom: 12),
+//                 child: _challengeCard(challenge),
+//               );
+//             },
+//           );
+//         },
+//       );
+//     },
+//   ),
+// ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//       bottomNavigationBar: BottomNavbar(
+//         currentIndex: 2,
+//       ),
+//     );
+//   }
 
-                        const SizedBox(height: 12),
+//   Widget _challengeCard(UserChallenge challenge) {
+//   final progress =
+//       challenge.requiredDays == 0
+//           ? 0.0
+//           : challenge.progressDays / challenge.requiredDays;
 
-                        _challengeCard(
-                          title: 'Reading Challenge',
-                          subtitle:
-                              'Read at least 10 pages everyday 📚',
-                          progress: 0.5,
-                        ),
+//   return Container(
+//     padding: const EdgeInsets.all(18),
+//     decoration: BoxDecoration(
+//       color: Colors.black.withOpacity(0.25),
+//       borderRadius: BorderRadius.circular(20),
+//       border: Border.all(
+//         color: Colors.white.withOpacity(0.08),
+//       ),
+//     ),
+//     child: Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Text(
+//           challenge.name,
+//           style: const TextStyle(
+//             color: Colors.white,
+//             fontSize: 18,
+//             fontWeight: FontWeight.w700,
+//           ),
+//         ),
 
-                        const SizedBox(height: 120),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+//         const SizedBox(height: 6),
 
-      bottomNavigationBar: BottomNavbar(
-        currentIndex: 2,
-      ),
-    );
-  }
+//         Text(
+//           challenge.description,
+//           style: const TextStyle(
+//             color: Colors.white70,
+//             fontSize: 13,
+//           ),
+//         ),
 
-  Widget _challengeCard({
-    required String title,
-    required String subtitle,
-    required double progress,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.25),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.08),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+//         const SizedBox(height: 16),
 
-          const SizedBox(height: 6),
+//         Text(
+//           "${challenge.progressDays}/${challenge.requiredDays} Days",
+//           style: const TextStyle(
+//             color: Colors.white54,
+//           ),
+//         ),
 
-          Text(
-            subtitle,
-            style: const TextStyle(
-              color: Colors.white70,
-            ),
-          ),
+//         const SizedBox(height: 8),
 
-          const SizedBox(height: 16),
-
-          LinearProgressIndicator(
-            value: progress,
-            minHeight: 8,
-            borderRadius: BorderRadius.circular(10),
-            backgroundColor: Colors.white12,
-          ),
-        ],
-      ),
-    );
-  }
-}
+//         ClipRRect(
+//           borderRadius: BorderRadius.circular(10),
+//           child: LinearProgressIndicator(
+//             value: progress,
+//             minHeight: 8,
+//             backgroundColor: Colors.white12,
+//             color: const Color(0xFFE6A84A),
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
+// }

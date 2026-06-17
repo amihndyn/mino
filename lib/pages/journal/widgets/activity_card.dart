@@ -1,13 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
-// 🔥 Ganti import progress_model dummy ke file model dashboard kamu
-import 'package:mino/core/data/model/response/dashboard_response.dart';
+import 'package:mino/core/data/model/response/dashboard_response.dart'; // Menggunakan model asli dari backend
 
 class ActivityCard extends StatelessWidget {
   final bool isWeekly;
   final String selectedMonth;
-  final Progress? currentProgressData; // 🔥 Diubah dari MonthData? menjadi Progress?
+  final Progress? currentProgressData; 
   final VoidCallback onMonthPickerTap;
 
   const ActivityCard({
@@ -20,8 +19,16 @@ class ActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. 🔥 Ambil data mingguan dari backend (jika null, buat array kosong)
-    final List<double> chartData = currentProgressData?.weeklyBars ?? [];
+    // 1. Ambil data mentah asli dari properti backend Laravel
+    final List<double> rawData = isWeekly
+        ? (currentProgressData?.weeklyBars ?? [])
+        : (currentProgressData?.monthlyBars ?? []);
+
+    // 🔥 PERBAIKAN UTAMA: Jika data Laravel kosong/null, paksa buat array berisi nilai 0.0 
+    // supaya jumlah 'length' terpenuhi, sehingga teks hari dan "Week 1-4" TETAP DI-RENDER.
+    final List<double> chartData = rawData.isNotEmpty 
+        ? rawData 
+        : (isWeekly ? List.filled(7, 0.0) : List.filled(4, 0.0));
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(32),
@@ -109,7 +116,6 @@ class ActivityCard extends StatelessWidget {
               const SizedBox(height: 28),
               SizedBox(
                 height: 220,
-                // 2. 🔥 Dua-duanya sekarang menggunakan data riil `chartData` dari Laravel
                 child: isWeekly
                     ? _buildWeeklyChart(chartData)
                     : _buildMonthlyChart(chartData),
@@ -122,9 +128,7 @@ class ActivityCard extends StatelessWidget {
   }
 
   Widget _buildWeeklyChart(List<double> weeklyData) {
-    // Label hari disesuaikan dengan data (jika backend mengirim 4 data, tampilkan 4 bar)
     final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    // 🔥 Sumbu Y diubah menjadi persentase agar singkron dengan data riil 0.0 - 1.0
     final yAxisLabels = ['100%', '75%', '50%', '25%', '0%'];
 
     return IntrinsicHeight(
@@ -158,7 +162,6 @@ class ActivityCard extends StatelessWidget {
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 400),
                       width: 28,
-                      // 🔥 Pengali diubah ke 160 agar tinggi Bar maksimal pas di 160px
                       height: (weeklyData[index] * 160).clamp(0.0, 160.0),
                       decoration: const BoxDecoration(
                         color: AppColors.orange800,
@@ -183,7 +186,6 @@ class ActivityCard extends StatelessWidget {
   }
 
   Widget _buildMonthlyChart(List<double> barData) {
-    // 🔥 Disesuaikan dengan data 4 minggu terakhir dari backend
     final weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
     final yAxisLabels = ['100%', '75%', '50%', '25%', '0%'];
 
@@ -217,8 +219,7 @@ class ActivityCard extends StatelessWidget {
                   children: [
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 400),
-                      width: 45, // Dipersempit sedikit agar pas dengan layout 4 bar
-                      // 🔥 Pengali diubah ke 160 agar singkron dengan skala persentase
+                      width: 45,
                       height: (barData[index] * 160).clamp(0.0, 160.0),
                       decoration: const BoxDecoration(
                         color: AppColors.orange800,

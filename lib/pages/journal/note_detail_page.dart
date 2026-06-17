@@ -1,6 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
+import 'package:mino/pages/journal/journal_page.dart';
+import 'package:mino/pages/journal/journal_parent_screen.dart';
+import 'package:mino/pages/journal/note_list_page.dart';
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 
@@ -63,6 +66,8 @@ class _NoteDetailPageState extends State<NoteDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 🛠️ FIX: Mengunci warna dasar kanvas belakang menjadi gelap untuk mencegah kedipan putih
+      backgroundColor: AppColors.coklat900,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -229,19 +234,25 @@ class _NoteDetailPageState extends State<NoteDetailPage>
                             ),
                           ),
 
-                          const SizedBox(height: 90,), 
+                          const Spacer(), 
                           
                           // ── 5. Custom Button Area ───────────
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 44),
                             child: CustomButton(
-                              text: 'Edit Note',
-                              onTap: () { // 🔥 Sekarang sudah menggunakan onTap
-                                // Aksi edit note ditaruh di sini
+                              text: 'View full reflection',
+                              onTap: () { 
+                                // Navigasi dialihkan ke JournalParentScreen agar tetap berada dalam arsitektur tab utama
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const JournalParentScreen(),
+                                  ),
+                                );
                               },
                             ),
                           ),
-                                           
+                                             
                           const SizedBox(height: 24), 
                         ],
                       ),

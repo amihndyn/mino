@@ -5,8 +5,7 @@ import 'package:mino/core/data/model/response/dashboard_response.dart';
 
 class DashboardLocalDatasource {
   DashboardLocalDatasource._init();
-  static final DashboardLocalDatasource instance =
-      DashboardLocalDatasource._init();
+  static final DashboardLocalDatasource instance = DashboardLocalDatasource._init();
 
   static Database? _database;
 
@@ -19,16 +18,16 @@ class DashboardLocalDatasource {
     return _database!;
   }
 
-Future<Database> _initDB() async {
+  Future<Database> _initDB() async {
     final path = await getDatabasesPath();
     final databasePath = '$path/mino_dashboard.db';
-    // Diubah ke version: 2 karena ada struktur kolom baru untuk Progress
-    return openDatabase(databasePath, version: 2, onCreate: _createDB, onUpgrade: _onUpgrade);
+    // 🔥 FIX: Diubah ke versi 3 karena ada struktur kolom baru untuk Progress Bulanan
+    return openDatabase(databasePath, version: 3, onCreate: _createDB, onUpgrade: _onUpgrade);
   }
 
-  // Tambahkan fungsi onUpgrade jika user lama melakukan update database
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
+    // 🔥 FIX: Jika user punya DB lama (v1 atau v2), drop dan create ulang agar kolom baru masuk
+    if (oldVersion < 3) {
       await db.execute('DROP TABLE IF EXISTS $tableSummary');
       await db.execute('DROP TABLE IF EXISTS $tableHabits');
       await _createDB(db, newVersion);
@@ -46,11 +45,14 @@ Future<Database> _initDB() async {
         focus_minutes_today INTEGER,
         has_reflected_today INTEGER,
         last_updated_date TEXT,
-        -- 🔥 KOLOM BARU UNTUK FITUR PROGRESS
         progress_month TEXT,
         weekly_goal_percent REAL,
         monthly_goal_percent REAL,
-        weekly_bars_json TEXT 
+        weekly_bars_json TEXT,
+        -- 🔥 FIX: KOLOM BARU UNTUK PROGRESS BULANAN & FILTER BULAN
+        selected_month_id INTEGER,
+        monthly_bars_json TEXT,
+        all_months_json TEXT
       )
     ''');
 
@@ -64,7 +66,7 @@ Future<Database> _initDB() async {
     ''');
   }
 
-  // 🔥 UPDATE PROSES CACHE AGAR DATA PROGRESS IKUT TERSIMPAN
+  // 🔥 FIX: PROSES CACHE SEKARANG MENYIMPAN DATA BULANAN UTUH
   Future<void> cacheDashboard(DashboardResponseModel responseModel) async {
     final db = await instance.database;
     final dashboard = responseModel.dashboard;
@@ -75,6 +77,11 @@ Future<Database> _initDB() async {
     await db.delete(tableSummary);
     await db.delete(tableHabits);
 
+    // Encode objek list ke bentuk String JSON agar bisa masuk SQLite
+    String weeklyBarsJson = jsonEncode(dashboard.progress?.weeklyBars ?? []);
+    String monthlyBarsJson = jsonEncode(dashboard.progress?.monthlyBars ?? []);
+    String allMonthsJson = jsonEncode(dashboard.progress?.allMonths?.map((e) => e.toMap()).toList() ?? []);
+
     await db.insert(tableSummary, {
       'id': 1,
       'user_name': dashboard.user?.name ?? 'User',
@@ -84,11 +91,14 @@ Future<Database> _initDB() async {
       'focus_minutes_today': dashboard.summary?.focusMinutesToday ?? 0,
       'has_reflected_today': (dashboard.summary?.hasReflectedToday ?? false) ? 1 : 0,
       'last_updated_date': todayDate,
-      // 🔥 SIMPAN PROGRESS NYATA DARI LARAVEL KE SQLITE
       'progress_month': dashboard.progress?.month ?? '',
       'weekly_goal_percent': dashboard.progress?.weeklyGoalPercent ?? 0.0,
       'monthly_goal_percent': dashboard.progress?.monthlyGoalPercent ?? 0.0,
-      'weekly_bars_json': jsonEncode(dashboard.progress?.weeklyBars ?? []), // Di-encode jadi String JSON
+      'weekly_bars_json': weeklyBarsJson,
+      // 🔥 FIX: MASUKKAN DATA BULANAN KE SQLITE
+      'selected_month_id': dashboard.progress?.selectedMonthId,
+      'monthly_bars_json': monthlyBarsJson,
+      'all_months_json': allMonthsJson,
     });
 
     if (dashboard.todayHabits != null) {
@@ -103,7 +113,7 @@ Future<Database> _initDB() async {
     }
   }
 
-  // 🔥 UPDATE AMBIL DATA LOCAL (OFFLINE)
+  // 🔥 FIX: AMBIL DATA LOCAL OFFLINE SEKARANG MENGEMBALIKAN PROGRESS BULANAN UTUH
   Future<Either<String, DashboardResponseModel>> getLocalDashboard() async {
     try {
       final db = await instance.database;
@@ -124,7 +134,6 @@ Future<Database> _initDB() async {
           {
             'habits_completed_today': 0,
             'last_updated_date': todayDate,
-            // Saat ganti hari offline, persen hari ini disesuaikan
             'weekly_goal_percent': 0.0, 
           },
           where: 'id = ?',
@@ -138,9 +147,15 @@ Future<Database> _initDB() async {
       final List<Map<String, dynamic>> habitMaps = await db.query(tableHabits);
       final List<TodayHabit> habitsList = habitMaps.map((e) => TodayHabit.fromLocalMap(e)).toList();
 
-      // Decode kembali list array diagram mingguan dari SQLITE String
-      List<dynamic> decodedBars = jsonDecode(localSummary['weekly_bars_json'] ?? '[]');
-      List<double> weeklyBarsList = decodedBars.map((e) => (e as num).toDouble()).toList();
+      // 🔥 FIX: Decode kembali data grafik mingguan dan bulanan dari SQLite String
+      List<dynamic> decodedWeeklyBars = jsonDecode(localSummary['weekly_bars_json'] ?? '[]');
+      List<double> weeklyBarsList = decodedWeeklyBars.map((e) => (e as num).toDouble()).toList();
+
+      List<dynamic> decodedMonthlyBars = jsonDecode(localSummary['monthly_bars_json'] ?? '[]');
+      List<double> monthlyBarsList = decodedMonthlyBars.map((e) => (e as num).toDouble()).toList();
+
+      List<dynamic> decodedAllMonths = jsonDecode(localSummary['all_months_json'] ?? '[]');
+      List<AllMonth> allMonthsList = decodedAllMonths.map((e) => AllMonth.fromMap(e)).toList();
 
       final dashboardResponse = DashboardResponseModel(
         status: "success",
@@ -155,12 +170,15 @@ Future<Database> _initDB() async {
             focusMinutesToday: localSummary['focus_minutes_today'],
             hasReflectedToday: localSummary['has_reflected_today'] == 1,
           ),
-          // 🔥 KEMBALIKAN DATA PROGRESS DARI SQLITE LOKAL KETIKA OFFLINE
+          // 🔥 FIX: Mengembalikan object progress secara lengkap saat offline
           progress: Progress(
             month: localSummary['progress_month'],
+            selectedMonthId: localSummary['selected_month_id'],
             weeklyGoalPercent: localSummary['weekly_goal_percent'],
             monthlyGoalPercent: localSummary['monthly_goal_percent'],
             weeklyBars: weeklyBarsList,
+            monthlyBars: monthlyBarsList,
+            allMonths: allMonthsList,
           ),
           todayHabits: habitsList,
         ),
@@ -172,129 +190,71 @@ Future<Database> _initDB() async {
     }
   }
 
-  // 🔥 3. OFFLINE TOGGLE STATUS HABIT
-  // 🔥 UPDATE FUNGSI TOGGLE DI DASHBOARD LOCAL DATASOURCE
-  Future<bool> toggleLocalHabitStatus(
-    int userHabitId,
-    bool currentStatus,
-  ) async {
+  // --- Fungsi toggleLocalHabitStatus, addLocalHabit, editLocalHabit, deleteLocalHabit tetap sama ---
+  Future<bool> toggleLocalHabitStatus(int userHabitId, bool currentStatus) async {
     try {
       final db = await instance.database;
       int newStatus = currentStatus ? 0 : 1;
+      await db.update(tableHabits, {'is_completed_today': newStatus}, where: 'user_habit_id = ?', whereArgs: [userHabitId]);
 
-      // 1. Update status habit-nya
-      await db.update(
-        tableHabits,
-        {'is_completed_today': newStatus},
-        where: 'user_habit_id = ?',
-        whereArgs: [userHabitId],
-      );
-
-      // 2. Update hitungan summary & DIAMOND secara lokal
-      final List<Map<String, dynamic>> summaryMaps = await db.query(
-        tableSummary,
-        where: 'id = ?',
-        whereArgs: [1],
-      );
+      final List<Map<String, dynamic>> summaryMaps = await db.query(tableSummary, where: 'id = ?', whereArgs: [1]);
       if (summaryMaps.isNotEmpty) {
         int currentCompleted = summaryMaps.first['habits_completed_today'] ?? 0;
-        int currentDiamonds =
-            summaryMaps.first['diamonds'] ?? 0; // 🔥 Ambil diamond saat ini
+        int currentDiamonds = summaryMaps.first['diamonds'] ?? 0;
 
-        // Jika status awal FALSE (berarti sekarang dicentang/selesai), DIAMOND TAMBAH 10
-        // Jika status awal TRUE (berarti centang dibatalkan), DIAMOND KURANG 10
-        int newCompleted = currentStatus
-            ? (currentCompleted - 1)
-            : (currentCompleted + 1);
-        int newDiamonds = currentStatus
-            ? (currentDiamonds - 10)
-            : (currentDiamonds +
-                  10); // 💎 Sesuaikan hadiah diamond projekmu di sini
+        int newCompleted = currentStatus ? (currentCompleted - 1) : (currentCompleted + 1);
+        int newDiamonds = currentStatus ? (currentDiamonds - 10) : (currentDiamonds + 10);
 
         await db.update(
           tableSummary,
           {
             'habits_completed_today': newCompleted < 0 ? 0 : newCompleted,
-            'diamonds': newDiamonds < 0
-                ? 0
-                : newDiamonds, // 🔥 UPDATE UTAMA: Diamond ikut disimpan ke SQLite
+            'diamonds': newDiamonds < 0 ? 0 : newDiamonds,
           },
           where: 'id = ?',
           whereArgs: [1],
         );
       }
-
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  // 🔥 4. OFFLINE ADD HABIT
   Future<bool> addLocalHabit(String name) async {
     try {
       final db = await instance.database;
-      await db.insert(tableHabits, {
-        'habit_name': name,
-        'streak': 0,
-        'is_completed_today': 0,
-      });
-
-      // Update total habit di summary lokal
-      await db.rawUpdate(
-        'UPDATE $tableSummary SET habits_total = habits_total + 1 WHERE id = 1',
-      );
+      await db.insert(tableHabits, {'habit_name': name, 'streak': 0, 'is_completed_today': 0});
+      await db.rawUpdate('UPDATE $tableSummary SET habits_total = habits_total + 1 WHERE id = 1');
       return true;
     } catch (e) {
       return false;
     }
   }
 
-  // 🔥 5. OFFLINE EDIT HABIT
   Future<bool> editLocalHabit(int userHabitId, String newName) async {
     try {
       final db = await instance.database;
-      final result = await db.update(
-        tableHabits,
-        {'habit_name': newName},
-        where: 'user_habit_id = ?',
-        whereArgs: [userHabitId],
-      );
+      final result = await db.update(tableHabits, {'habit_name': newName}, where: 'user_habit_id = ?', whereArgs: [userHabitId]);
       return result > 0;
     } catch (e) {
       return false;
     }
   }
 
-  // 🔥 6. OFFLINE DELETE HABIT
   Future<bool> deleteLocalHabit(int userHabitId) async {
     try {
       final db = await instance.database;
-
-      // Ambil data untuk tahu status kelayakannya sebelum dihapus
-      final List<Map<String, dynamic>> habit = await db.query(
-        tableHabits,
-        where: 'user_habit_id = ?',
-        whereArgs: [userHabitId],
-      );
+      final List<Map<String, dynamic>> habit = await db.query(tableHabits, where: 'user_habit_id = ?', whereArgs: [userHabitId]);
       if (habit.isEmpty) return false;
       bool isCompleted = habit.first['is_completed_today'] == 1;
 
-      await db.delete(
-        tableHabits,
-        where: 'user_habit_id = ?',
-        whereArgs: [userHabitId],
-      );
+      await db.delete(tableHabits, where: 'user_habit_id = ?', whereArgs: [userHabitId]);
 
-      // Kurangi habits_total & habits_completed jika yang dihapus statusnya sudah kelar hari ini
       if (isCompleted) {
-        await db.rawUpdate(
-          'UPDATE $tableSummary SET habits_total = habits_total - 1, habits_completed_today = habits_completed_today - 1 WHERE id = 1',
-        );
+        await db.rawUpdate('UPDATE $tableSummary SET habits_total = habits_total - 1, habits_completed_today = habits_completed_today - 1 WHERE id = 1');
       } else {
-        await db.rawUpdate(
-          'UPDATE $tableSummary SET habits_total = habits_total - 1 WHERE id = 1',
-        );
+        await db.rawUpdate('UPDATE $tableSummary SET habits_total = habits_total - 1 WHERE id = 1');
       }
       return true;
     } catch (e) {

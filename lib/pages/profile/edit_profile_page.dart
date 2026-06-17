@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:mino/core/data/provider/profile_provider.dart';
-
+import 'package:mino/providers/profile_provider.dart';
+import 'package:mino/models/profile_model.dart';
+import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:mino/widgets/button/custom_button.dart';
 
 import 'package:mino/widgets/appbars/custom_appbar.dart';
 import 'package:mino/core/data/model/request/profile_request_model.dart';
-import 'package:mino/core/data/model/response/profile_response_model.dart'; // Sesuaikan jika nama kelas model berbeda
+import 'package:mino/core/constants/app_colors.dart';
+
+// ── 🔥 IMPORT TEMPLATE POPUP KAMU DENGAN BENAR ──
+import 'package:mino/widgets/popUp/pop_up_berhasil.dart'; // Sesuaikan folder popup_berhasil.dart
+import 'package:mino/widgets/popUp/pop_up_gagal.dart';    // Sesuaikan folder popup_gagal.dart
 
 class EditProfilePage extends StatefulWidget {
-  final UserProfile user;
+  final ProfileModel user;
   const EditProfilePage({super.key, required this.user});
 
   @override
@@ -30,20 +37,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    // 1. Masukkan data dinamis dari 'widget.user' ke dalam controller
-    _nameController = TextEditingController(text: widget.user.name ?? '');
+    _nameController = TextEditingController(text: widget.user.name);
     _dobController = TextEditingController(text: widget.user.ttl ?? ''); 
-    _emailController = TextEditingController(text: widget.user.email ?? '');
+    _emailController = TextEditingController(text: widget.user.email);
 
-    // 2. Setup Dropdown Gender (Cek apakah valid agar tidak error)
     if (widget.user.gender != null && _genderOptions.contains(widget.user.gender)) {
       _selectedGender = widget.user.gender;
     } else {
-      _selectedGender = null; // Biarkan null jika kosong, agar muncul tulisan hint
+      _selectedGender = null; 
     }
 
-    // 3. Setup Avatar (Pakai foto dari API jika ada, jika tidak pakai default)
-    _selectedAvatar = widget.user.photoUrl ?? 'assets/images/default.png';
+    _selectedAvatar = widget.user.avatar; 
   }
 
   @override
@@ -54,29 +58,45 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.dispose();
   }
 
-  void _onChangeProfilePicture() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Buka galeri/kamera (Fitur segera hadir)'),
-        backgroundColor: const Color(0xFF3A2823),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        behavior: SnackBarBehavior.floating,
-      ),
+  // ── WIDGET HELPER: ANIMASI SLIDE DOWN DARI ATAS LAYAR ──
+  void _showTopNotification(Widget child) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black.withOpacity(0.2), 
+      transitionDuration: const Duration(milliseconds: 400), 
+      pageBuilder: (context, anim1, anim2) {
+        return const SizedBox.shrink();
+      },
+      transitionBuilder: (context, anim1, anim2, widgetChild) {
+        final tween = Tween<Offset>(begin: const Offset(0, -1), end: const Offset(0, 0));
+        
+        return SlideTransition(
+          position: tween.animate(CurvedAnimation(parent: anim1, curve: Curves.easeOutBack)),
+          child: SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Material(
+                  color: Colors.transparent,
+                  child: child,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
+  // ── FUNGSI SAVE CHANGES BARU ──
   void _onSaveChanges() async {
+    FocusScope.of(context).unfocus(); 
+
     final profileProvider = Provider.of<ProfileProvider>(context, listen: false);
 
-    // Bungkus inputan user ke dalam Request Model
-    final requestData = ProfileRequestModel(
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      gender: _selectedGender,
-      ttl: _dobController.text.trim(),
-    );
-
-    // Tampilkan loading dialog agar user tahu proses sedang berjalan
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -85,81 +105,92 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
     );
 
-    // Kirim data ke Provider (imagePath diisi null karena fitur kamera belum siap)
-    final isSuccess = await profileProvider.updateProfile(requestData, null);
+    String? uploadPath;
+    String? avatarValue;
+
+    if (_selectedAvatar.startsWith('assets/images/prof.png')) {
+      try {
+        final byteData = await rootBundle.load(_selectedAvatar);
+        final fileName = _selectedAvatar.split('/').last;
+        
+        final tempDir = await getTemporaryDirectory();
+        final tempFile = File('${tempDir.path}/$fileName');
+        
+        await tempFile.writeAsBytes(byteData.buffer.asUint8List(
+          byteData.offsetInBytes, 
+          byteData.lengthInBytes,
+        ));
+        
+        uploadPath = tempFile.path; 
+        avatarValue = fileName;
+      } catch (e) {
+        if (mounted) Navigator.of(context).pop(); 
+        _showTopNotification(
+          PopUpGagal(
+            message: 'Gagal memproses file gambar avatar.',
+            onClose: () => Navigator.of(context).pop(), 
+          ),
+        );
+        return;
+      }
+    } else if (_selectedAvatar.startsWith('http')) {
+      uploadPath = null; 
+      avatarValue = _selectedAvatar.split('/').last; 
+    } else {
+      uploadPath = null;
+      avatarValue = null;
+    }
+
+    final requestData = ProfileRequestModel(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      gender: _selectedGender,
+      ttl: _dobController.text.trim(),
+      avatar: avatarValue,
+    );
+
+    final isSuccess = await profileProvider.updateProfile(
+      requestData,
+      uploadPath,
+    );
 
     // Tutup loading dialog
-    if (mounted) Navigator.pop(context);
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
 
     // Handling hasil response
     if (isSuccess) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Profil berhasil diperbarui!'),
-            backgroundColor: Colors.green.shade800,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            behavior: SnackBarBehavior.floating,
+        // 🎉 PANGGIL TEMPLATE POPUP BERHASIL YANG PUTIH-HITAM
+        _showTopNotification(
+          PopUpBerhasil(
+            message: "Profile Updated Successfully!",
+            onClose: () => Navigator.of(context).pop(), 
           ),
         );
-        Navigator.pop(context); // Kembali ke halaman profil utama
+
+        // Jeda 2 detik agar notif terbaca sebelum kembali
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context); // Tutup popup di atas jika masih ada
+            }
+            Navigator.pop(context, true); // Balik ke halaman sebelumnya
+          }
+        });
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(profileProvider.errorMessage ?? 'Gagal memperbarui profil'),
-            backgroundColor: Colors.red.shade800,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            behavior: SnackBarBehavior.floating,
+        // ❌ PANGGIL TEMPLATE POPUP GAGAL YANG PUTIH-HITAM
+        _showTopNotification(
+          PopUpGagal(
+            message: profileProvider.errorMessage ?? 'Gagal memperbarui profil. Coba lagi.',
+            onClose: () => Navigator.of(context).pop(), 
           ),
         );
       }
     }
-  }
-
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF3A2823),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text(
-            'Log Out',
-            style: TextStyle(
-              color: Color(0xFFF2D1A2),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: const Text(
-            'Apakah kamu yakin ingin keluar dari aplikasi?',
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Batal', style: TextStyle(color: Colors.grey)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // context.read<LogoutBloc>().add(const LogoutEvent.logout());
-              },
-              child: const Text(
-                'Ya, Keluar',
-                style: TextStyle(
-                  color: Colors.redAccent,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -169,7 +200,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.coklat900,
       body: Stack(
         children: [
           // BACKGROUND IMAGE
@@ -192,7 +223,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   const CustomAppBar(title: 'Profile'),
                   const SizedBox(height: 16),
 
-                  // ── CARD ATAS (AVATAR + NAMA + KAMERA) ──
+                  // ── CARD ATAS (AVATAR STATIS + NAMA) ──
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Container(
@@ -222,46 +253,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xFFF3E7D7),
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.4),
-                                    width: 2,
-                                  ),
+                          Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFFF3E7D7),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.15),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
                                 ),
-                                child: ClipOval(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Image.asset(
-                                      _selectedAvatar,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
+                              ],
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.4),
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                _selectedAvatar,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => Image.asset(
+                                  'assets/images/prof.png',
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: _onChangeProfilePicture,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: textDark,
-                                  ),
-                                  child: const Icon(
-                                    Icons.camera_alt_outlined,
-                                    color: themeGold,
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -284,11 +303,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     controller: _nameController,
                     icon: Icons.person_outline,
                     onChanged: (value) {
-                      setState(() {}); // Agar nama di atas card berubah live saat diketik
+                      setState(() {}); 
                     },
                   ),
 
-                  // DROPDOWN KHUSUS GENDER
                   _buildDropdownField(
                     value: _selectedGender,
                     imagePath: 'assets/icons/gender.png',
@@ -304,38 +322,37 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     controller: _dobController,
                     icon: Icons.cake_outlined,
                   ),
+                  
+                  // 👇 Bagian Email Field yang sudah disesuaikan
                   _buildTextField(
                     controller: _emailController,
                     icon: Icons.mail_outline,
                     keyboardType: TextInputType.emailAddress,
-                  ),
+                    readOnly: true, 
+                    onTap: () {
+                      // Flag agar pop-up tidak pop dua kali kalau ditutup manual
+                      bool isDialogOpen = true; 
 
-                  const SizedBox(height: 24),
-
-                  // ── TOMBOL LOG OUT ──
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: _showLogoutDialog,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(Icons.logout, color: themeGold),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Log Out',
-                              style: TextStyle(
-                                color: themeGold,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                      _showTopNotification(
+                        PopUpGagal(
+                          message: 'Email address cannot be changed.', // 👈 Bahasa Inggris
+                          onClose: () {
+                            if (isDialogOpen) {
+                              isDialogOpen = false;
+                              Navigator.of(context).pop(); 
+                            }
+                          }, 
                         ),
-                      ),
-                    ),
+                      );
+
+                      // 👈 Hilang otomatis dalam 1.5 detik (1500 milidetik)
+                      Future.delayed(const Duration(milliseconds: 1500), () {
+                        if (mounted && isDialogOpen) {
+                          isDialogOpen = false;
+                          Navigator.of(context).pop(); 
+                        }
+                      });
+                    },
                   ),
 
                   const SizedBox(height: 40),
@@ -360,12 +377,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // ── WIDGET HELPER: TEXT FIELD BIASA ──
+  // WIDGET HELPER
   Widget _buildTextField({
     required TextEditingController controller,
     required IconData icon,
     TextInputType keyboardType = TextInputType.text,
     ValueChanged<String>? onChanged,
+    bool readOnly = false, 
+    VoidCallback? onTap,
   }) {
     const Color themeGold = Color(0xFFE2AC6B);
 
@@ -375,6 +394,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         controller: controller,
         keyboardType: keyboardType,
         onChanged: onChanged,
+        readOnly: readOnly, 
+        onTap: onTap,       
         style: const TextStyle(
           color: themeGold,
           fontSize: 16,
@@ -399,7 +420,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // ── WIDGET HELPER: DROPDOWN GENDER ──
   Widget _buildDropdownField({
     required String? value,
     required String imagePath,
@@ -454,7 +474,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             value: item,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(item),
+              child: Text(
+                item,
+                style: const TextStyle(color: themeGold),
+              ),
             ),
           );
         }).toList(),

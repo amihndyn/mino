@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mino/core/constants/app_colors.dart';
-import 'package:mino/core/constants/app_text_styles.dart';
-import 'package:mino/models/journal_entry_model.dart';
+import 'package:intl/intl.dart'; 
+import 'package:mino/core/data/model/response/reflection_response_model.dart';
+
+// ✅ Import Flutter SVG dihapus karena tidak digunakan lagi
 
 class JournalCard extends StatefulWidget {
-  final JournalEntry entry;
+  final Reflection entry; 
   final VoidCallback? onSeeNote;
 
   const JournalCard({
@@ -20,184 +21,186 @@ class JournalCard extends StatefulWidget {
 class _JournalCardState extends State<JournalCard> {
   bool _isPressed = false;
 
+  String _formatApiDate(String? apiDate) {
+    if (apiDate == null || apiDate.isEmpty) return "No Date";
+    
+    try {
+      DateTime parsedDate = DateTime.parse(apiDate);
+      return DateFormat("EEEE, d MMMM yyyy").format(parsedDate);
+    } catch (e) {
+      return apiDate;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.sizeOf(context).width;
+    final double scale = (screenWidth / 375).clamp(0.8, 1.2);
+
+    final String moodString = widget.entry.mood?.toLowerCase() ?? "good";
+    String emojiAsset = 'assets/images/good.png';
+    String moodLabelText = "Good";
+
+    if (moodString == 'amazing') {
+      emojiAsset = 'assets/images/amazing.png';
+      moodLabelText = "Amazing";
+    } else if (moodString == 'good') {
+      emojiAsset = 'assets/images/good.png';
+      moodLabelText = "Good";
+    } else if (moodString == 'okey' || moodString == 'neutral') {
+      emojiAsset = 'assets/images/okey.png'; 
+      moodLabelText = "Okey";
+    } else if (moodString == 'unusual') {
+      emojiAsset = 'assets/images/unusual.png';
+      moodLabelText = "Unusual";
+    } else if (moodString == 'bad') {
+      emojiAsset = 'assets/images/bad.png';
+      moodLabelText = "Bad";
+    }
+
+    final String formattedDate = _formatApiDate(widget.entry.date);
+
+    // Variabel bantuan untuk radius agar konsisten
+    final BorderRadius cardRadius = BorderRadius.circular(28 * scale);
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) => setState(() => _isPressed = false),
       onTapCancel: () => setState(() => _isPressed = false),
       onTap: widget.onSeeNote,
       child: AnimatedScale(
-        scale: _isPressed ? 0.97 : 1.0,
+        scale: _isPressed ? 0.98 : 1.0,
         duration: const Duration(milliseconds: 100),
         child: Container(
-          // Kembali ke ukuran compact (vertical 10)
-          padding: const EdgeInsets.symmetric(
-            vertical: 10,
-            horizontal: 12,
-          ),
+          width: double.infinity,
+          // ✅ Padding dikembalikan ke Container utama
+          padding: EdgeInsets.all(20 * scale), 
           decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: cardRadius, 
             border: Border.all(
-              color: AppColors.orange400,
-              width: 1.2,
+              color: const Color(0xFFE6A84A).withValues(alpha: 0.5), 
+              width: 1.5 * scale,
             ),
-            // Tetap mempertahankan shadow halus
+            // 🔥 PERUBAHAN DISINI: Menggunakan bgMood.png sebagai background
+            image: const DecorationImage(
+              image: AssetImage('assets/images/bMood.jpeg'), 
+              fit: BoxFit.cover,
+            ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.15),
-                blurRadius: 16,
-                offset: const Offset(0, 8),
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 12 * scale,
+                offset: Offset(0, 6 * scale),
               ),
             ],
           ),
+          // ✅ Struktur ClipRRect dan Stack dihapus, kembali ke Column langsung
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // =====================
-              // HEADER (HARI & TANGGAL)
-              // =====================
+              Text(
+                formattedDate,
+                style: TextStyle(
+                  fontSize: 15 * scale, 
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFFF5E6D3),
+                ),
+              ),
+              SizedBox(height: 10 * scale),
+              
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Text(
-                    widget.entry.dayName,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.orange100,
-                      letterSpacing: 1
+                  Container(
+                    width: 58 * scale,  
+                    height: 58 * scale, 
+                    padding: EdgeInsets.all(2 * scale),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: const Color(0xFFE6A84A).withValues(alpha: 0.4),
+                        width: 1.5 * scale,
+                      ),
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        emojiAsset, 
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                          Icons.sentiment_neutral_rounded,
+                          color: Colors.white70,
+                          size: 36 * scale,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 14 * scale),
+                  
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'mood today',
+                          style: TextStyle(
+                            fontSize: 11 * scale, 
+                            fontFamily: 'Poppins',
+                            color: const Color(0xFFE6A84A),
+                          ),
+                        ),
+                        SizedBox(height: 2 * scale),
+                        Text(
+                          moodLabelText, 
+                          style: TextStyle(
+                            fontSize: 22 * scale, 
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ),
                   
-                  // Jarak horizontal antara hari dan tanggal
-                  const SizedBox(width: 8), 
-
-                  Text(
-                    '${widget.entry.dayNumber}',
-                    style: AppTextStyles.pageTitleBold.copyWith(
-                      color: AppColors.orange100,
-                      fontSize: 20, // Ukuran compact
-                      letterSpacing: 1
+                  SizedBox(width: 10 * scale),
+                  
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 14 * scale, 
+                      vertical: 8 * scale,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF8C6439).withValues(alpha: 0.8),
+                      borderRadius: BorderRadius.circular(20 * scale),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'see my note ',
+                          style: TextStyle(
+                            fontSize: 11 * scale,
+                            fontFamily: 'Poppins',
+                            color: const Color(0xFFF5E6D3),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '›',
+                          style: TextStyle(
+                            fontSize: 12 * scale,
+                            fontFamily: 'Poppins',
+                            color: const Color(0xFFF5E6D3),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-
-              const SizedBox(height: 12),
-
-              // =====================
-              // MOOD CARD
-              // =====================
-              // =====================
-              // MOOD CARD
-              // =====================
-              Container(
-                width: 104,  // 🔥 UBAH DARI double.infinity MENJADI 104
-                height: 159, // 🔥 TAMBAHKAN TINGGI 159 DI SINI
-                padding: const EdgeInsets.symmetric(vertical: 10), // Jika terlalu sesak, padding vertical bisa dikurangi/dihapus
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: AppColors.orange400.withValues(alpha: 0.6),
-                    width: 1,
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.white.withValues(alpha: 0.06),
-                      AppColors.white.withValues(alpha: 0.01),
-                    ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.black.withValues(alpha: 0.12),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center, // 🔥 UBAH KE CENTER agar isi mood pas di tengah kotak 159px
-                  children: [
-                    Text(
-                      'Mood',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.orange400,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 1
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    
-                    Image.asset(
-                      widget.entry.moodEmoji,
-                      width: 48, 
-                      height: 48,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.sentiment_neutral_rounded,
-                        color: Colors.grey,
-                        size: 32,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 6),
-                    Text(
-                      widget.entry.moodLabel,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.sectionTitleBold.copyWith(
-                        color: AppColors.orange400,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Jarak diperkecil sedikit agar tidak rentan overflow di layar kecil
-              const SizedBox(height: 16),
-
-              // =====================
-              // BUTTON SEE MY NOTE
-              // =====================
-              Container(
-                width: 132,  // 🔥 Lebar menjadi 132
-                height: 39,  // 🔥 Tinggi menjadi 39
-                alignment: Alignment.center, // 🌟 Memastikan isi tombol tetap di tengah
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: AppColors.orange400.withValues(alpha: 0.25),
-                    width: 1,
-                  ),
-                  color: AppColors.white.withValues(alpha: 0.04),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center, // 🌟 Menjaga row tetap di tengah
-                  children: [
-                    Text(
-                      'See my note',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.orange400,
-                        fontSize: 13,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    const Icon(
-                      Icons.chevron_right_rounded,
-                      size: 18,
-                      color: AppColors.orange400,
-                    ),
-                  ],
-                ),
-              )
             ],
           ),
         ),

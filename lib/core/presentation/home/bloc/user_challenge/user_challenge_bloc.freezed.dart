@@ -55,7 +55,7 @@ extension UserChallengeEventPatterns on UserChallengeEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _FetchUserChallenges value)?  fetchUserChallenges,TResult Function( _JoinChallenge value)?  joinChallenge,TResult Function( _CheckInChallenge value)?  checkInChallenge,TResult Function( _ReviveChallenge value)?  reviveChallenge,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _FetchUserChallenges value)?  fetchUserChallenges,TResult Function( _JoinChallenge value)?  joinChallenge,TResult Function( _CheckInChallenge value)?  checkInChallenge,TResult Function( _ReviveChallenge value)?  reviveChallenge,TResult Function( _DeleteChallenge value)?  deleteChallenge,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -63,7 +63,8 @@ return started(_that);case _FetchUserChallenges() when fetchUserChallenges != nu
 return fetchUserChallenges(_that);case _JoinChallenge() when joinChallenge != null:
 return joinChallenge(_that);case _CheckInChallenge() when checkInChallenge != null:
 return checkInChallenge(_that);case _ReviveChallenge() when reviveChallenge != null:
-return reviveChallenge(_that);case _:
+return reviveChallenge(_that);case _DeleteChallenge() when deleteChallenge != null:
+return deleteChallenge(_that);case _:
   return orElse();
 
 }
@@ -81,7 +82,7 @@ return reviveChallenge(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _FetchUserChallenges value)  fetchUserChallenges,required TResult Function( _JoinChallenge value)  joinChallenge,required TResult Function( _CheckInChallenge value)  checkInChallenge,required TResult Function( _ReviveChallenge value)  reviveChallenge,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _FetchUserChallenges value)  fetchUserChallenges,required TResult Function( _JoinChallenge value)  joinChallenge,required TResult Function( _CheckInChallenge value)  checkInChallenge,required TResult Function( _ReviveChallenge value)  reviveChallenge,required TResult Function( _DeleteChallenge value)  deleteChallenge,}){
 final _that = this;
 switch (_that) {
 case _Started():
@@ -89,7 +90,8 @@ return started(_that);case _FetchUserChallenges():
 return fetchUserChallenges(_that);case _JoinChallenge():
 return joinChallenge(_that);case _CheckInChallenge():
 return checkInChallenge(_that);case _ReviveChallenge():
-return reviveChallenge(_that);case _:
+return reviveChallenge(_that);case _DeleteChallenge():
+return deleteChallenge(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -106,7 +108,7 @@ return reviveChallenge(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _FetchUserChallenges value)?  fetchUserChallenges,TResult? Function( _JoinChallenge value)?  joinChallenge,TResult? Function( _CheckInChallenge value)?  checkInChallenge,TResult? Function( _ReviveChallenge value)?  reviveChallenge,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _FetchUserChallenges value)?  fetchUserChallenges,TResult? Function( _JoinChallenge value)?  joinChallenge,TResult? Function( _CheckInChallenge value)?  checkInChallenge,TResult? Function( _ReviveChallenge value)?  reviveChallenge,TResult? Function( _DeleteChallenge value)?  deleteChallenge,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -114,7 +116,8 @@ return started(_that);case _FetchUserChallenges() when fetchUserChallenges != nu
 return fetchUserChallenges(_that);case _JoinChallenge() when joinChallenge != null:
 return joinChallenge(_that);case _CheckInChallenge() when checkInChallenge != null:
 return checkInChallenge(_that);case _ReviveChallenge() when reviveChallenge != null:
-return reviveChallenge(_that);case _:
+return reviveChallenge(_that);case _DeleteChallenge() when deleteChallenge != null:
+return deleteChallenge(_that);case _:
   return null;
 
 }
@@ -131,14 +134,15 @@ return reviveChallenge(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  fetchUserChallenges,TResult Function( int challengeId)?  joinChallenge,TResult Function( int id)?  checkInChallenge,TResult Function( int id)?  reviveChallenge,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  fetchUserChallenges,TResult Function( int challengeId)?  joinChallenge,TResult Function( int id)?  checkInChallenge,TResult Function( int id)?  reviveChallenge,TResult Function( int id)?  deleteChallenge,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _FetchUserChallenges() when fetchUserChallenges != null:
 return fetchUserChallenges();case _JoinChallenge() when joinChallenge != null:
 return joinChallenge(_that.challengeId);case _CheckInChallenge() when checkInChallenge != null:
 return checkInChallenge(_that.id);case _ReviveChallenge() when reviveChallenge != null:
-return reviveChallenge(_that.id);case _:
+return reviveChallenge(_that.id);case _DeleteChallenge() when deleteChallenge != null:
+return deleteChallenge(_that.id);case _:
   return orElse();
 
 }
@@ -156,14 +160,15 @@ return reviveChallenge(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  fetchUserChallenges,required TResult Function( int challengeId)  joinChallenge,required TResult Function( int id)  checkInChallenge,required TResult Function( int id)  reviveChallenge,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  fetchUserChallenges,required TResult Function( int challengeId)  joinChallenge,required TResult Function( int id)  checkInChallenge,required TResult Function( int id)  reviveChallenge,required TResult Function( int id)  deleteChallenge,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _FetchUserChallenges():
 return fetchUserChallenges();case _JoinChallenge():
 return joinChallenge(_that.challengeId);case _CheckInChallenge():
 return checkInChallenge(_that.id);case _ReviveChallenge():
-return reviveChallenge(_that.id);case _:
+return reviveChallenge(_that.id);case _DeleteChallenge():
+return deleteChallenge(_that.id);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +185,15 @@ return reviveChallenge(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  fetchUserChallenges,TResult? Function( int challengeId)?  joinChallenge,TResult? Function( int id)?  checkInChallenge,TResult? Function( int id)?  reviveChallenge,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  fetchUserChallenges,TResult? Function( int challengeId)?  joinChallenge,TResult? Function( int id)?  checkInChallenge,TResult? Function( int id)?  reviveChallenge,TResult? Function( int id)?  deleteChallenge,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _FetchUserChallenges() when fetchUserChallenges != null:
 return fetchUserChallenges();case _JoinChallenge() when joinChallenge != null:
 return joinChallenge(_that.challengeId);case _CheckInChallenge() when checkInChallenge != null:
 return checkInChallenge(_that.id);case _ReviveChallenge() when reviveChallenge != null:
-return reviveChallenge(_that.id);case _:
+return reviveChallenge(_that.id);case _DeleteChallenge() when deleteChallenge != null:
+return deleteChallenge(_that.id);case _:
   return null;
 
 }
@@ -449,6 +455,72 @@ class __$ReviveChallengeCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
   return _then(_ReviveChallenge(
+null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _DeleteChallenge implements UserChallengeEvent {
+  const _DeleteChallenge(this.id);
+  
+
+ final  int id;
+
+/// Create a copy of UserChallengeEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeleteChallengeCopyWith<_DeleteChallenge> get copyWith => __$DeleteChallengeCopyWithImpl<_DeleteChallenge>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeleteChallenge&&(identical(other.id, id) || other.id == id));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'UserChallengeEvent.deleteChallenge(id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeleteChallengeCopyWith<$Res> implements $UserChallengeEventCopyWith<$Res> {
+  factory _$DeleteChallengeCopyWith(_DeleteChallenge value, $Res Function(_DeleteChallenge) _then) = __$DeleteChallengeCopyWithImpl;
+@useResult
+$Res call({
+ int id
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeleteChallengeCopyWithImpl<$Res>
+    implements _$DeleteChallengeCopyWith<$Res> {
+  __$DeleteChallengeCopyWithImpl(this._self, this._then);
+
+  final _DeleteChallenge _self;
+  final $Res Function(_DeleteChallenge) _then;
+
+/// Create a copy of UserChallengeEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(_DeleteChallenge(
 null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,
   ));

@@ -4,7 +4,7 @@ import 'package:mino/core/data/repositories/dashboard_repository.dart';
 import 'package:mino/core/presentation/home/bloc/dashboard/dashboard_bloc.dart';
 // 🔥 1. TAMBAHKAN IMPORT DATASOURCE INI AGAR BISA DIMASUKKAN KE REPOSITORY
 import 'package:mino/core/data/datasource/dashboard_remote_datasource.dart';
-
+import 'package:mino/core/constants/app_colors.dart';
 import 'package:mino/pages/journal/journal_page.dart';
 import 'package:mino/pages/journal/progress_page.dart';
 import 'package:mino/widgets/navbar/bottom_navbar.dart';
@@ -37,7 +37,8 @@ class _JournalParentScreenState extends State<JournalParentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      // 🛠️ FIX: Mengunci warna dasar kanvas belakang menjadi gelap untuk mencegah kedipan putih
+      backgroundColor: AppColors.coklat900,
       extendBody: true,
       body: Stack(
         children: [

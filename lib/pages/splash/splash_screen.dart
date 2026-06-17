@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; 
 import 'package:mino/core/data/datasource/auth_local_datasource.dart';
 import 'package:mino/pages/home/home_page.dart';
+import 'package:mino/core/constants/app_colors.dart';
 // TODO: Sesuaikan path ini dengan lokasi LoginPage di projek Anda
 import 'package:mino/pages/auth/login_page.dart'; 
 
@@ -65,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, 
+      backgroundColor: AppColors.coklat900,
       body: Stack(
         children: [
           // Background Utama

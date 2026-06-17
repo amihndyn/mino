@@ -19,7 +19,7 @@ class HabitProvider extends ChangeNotifier {
     ],
     "Start living healthier": [
       {"title": "Wake up early", "icon": "assets/images/wakeUp.png"},
-      {"title": "Drink water", "icon": "assets/images/drink.png"},
+      {"title": "Drink water", "icon": "assets/images/water.png"},
       {"title": "Take vitamin", "icon": "assets/images/vitamin.png"},
       {"title": "Eat fruit", "icon": "assets/images/fruits.png"},
       {"title": "Eat vegetables", "icon": "assets/images/salad.png"},

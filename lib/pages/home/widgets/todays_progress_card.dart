@@ -1,8 +1,9 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:mino/core/constants/app_colors.dart';
 
 class TodaysProgressCard extends StatelessWidget {
-  // 🔥 1. Terima parameter data progress riil dari Bloc/Laravel
+  // ── DATA PROGRESS RIIL DARI BLOC / PROVIDER ──
   final int completedHabits;
   final int totalHabits;
   final int completedChallenges;
@@ -18,10 +19,14 @@ class TodaysProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🔥 2. Hitung persentase total secara matematis & otomatis
+    // ── KALKULASI PERSENTASE GABUNGAN OTOMATIS ──
     final int totalTasks = totalHabits + totalChallenges;
     final int completedTasks = completedHabits + completedChallenges;
-    final int percentage = totalTasks == 0 ? 0 : ((completedTasks / totalTasks) * 100).round();
+    
+    // Diproteksi clamp(0, 100) agar angka persentase tidak minus atau lebih dari 100%
+    final int percentage = totalTasks == 0 
+        ? 0 
+        : ((completedTasks / totalTasks) * 100).round().clamp(0, 100);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 32),
@@ -48,7 +53,7 @@ class TodaysProgressCard extends StatelessWidget {
         margin: const EdgeInsets.all(1), 
         padding: const EdgeInsets.symmetric(vertical: 21, horizontal: 25),
         width: double.infinity,
-        // 2. KONTAINER DALAM: Warna utama widget
+        // 2. KONTAINER DALAM: Warna latar utama maskot widget
         decoration: BoxDecoration(
           color: AppColors.coklat800, 
           borderRadius: BorderRadius.circular(11), 
@@ -82,32 +87,45 @@ class TodaysProgressCard extends StatelessWidget {
             // --- PROGRESS SECTION ---
             Row(
               children: [
-                // 1. Persentase Lingkaran (Kiri) - Dioptimalkan agar Teks Dinamis Seimbang
-                Container(
-                  margin: const EdgeInsets.only(right: 23),
-                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 22),
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage("https://storage.googleapis.com/tagjs-prod.appspot.com/v1/6xlrx1RpIF/tk18z1w9_expires_30_days.png"),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  child: Text(
-                    "$percentage%", // 🔥 3. Nilai persentase dinamis hasil kalkulasi database
-                    style: const TextStyle(
-                      color: Color(0xFFE6A84A),
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                    ),
+                // 1. Persentase Lingkaran (Kiri)
+                SizedBox(
+                  width: 85,
+                  height: 85,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Lingkaran Progress dengan CustomPainter
+                      SizedBox(
+                        width: 85,
+                        height: 85,
+                        child: CustomPaint(
+                          painter: _CircularProgressPainter(
+                            percentage: percentage.toDouble(),
+                          ),
+                        ),
+                      ),
+                      
+                      // Teks Persentase di Tengah Lingkaran
+                      Text(
+                        "$percentage%", 
+                        style: const TextStyle(
+                          color: Color(0xFFE6A84A),
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
-                // 2. Detail Progress (Kanan)
+                const SizedBox(width: 23),
+
+                // 2. Detail Rincian Tugas (Kanan)
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Habit Completed
+                      // Rincian Habit Completed
                       Row(
                         children: [
                           SizedBox(
@@ -119,13 +137,12 @@ class TodaysProgressCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 23),
-                          // 🔥 4. HAPUS kata 'const' di depan Column agar anak-anaknya bisa menerima data dinamis
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "$completedHabits/$totalHabits", // 🔥 5. Rasio habit dinamis
+                                  "$completedHabits/$totalHabits", // 🟢 Jumlah habit riil & dinamis
                                   style: const TextStyle(
                                     color: AppColors.orange300,
                                     fontSize: 12,
@@ -145,9 +162,10 @@ class TodaysProgressCard extends StatelessWidget {
                           ),
                         ],
                       ),
+                      
                       const SizedBox(height: 20),
 
-                      // Challenge Completed
+                      // Rincian Challenge Completed
                       Row(
                         children: [
                           SizedBox(
@@ -159,13 +177,12 @@ class TodaysProgressCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 23),
-                          // 🔥 6. HAPUS kata 'const' di depan Column ini juga
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "$completedChallenges/$totalChallenges", // 🔥 7. Rasio challenge dinamis
+                                  "$completedChallenges/$totalChallenges", // 🟢 Jumlah challenge riil & dinamis
                                   style: const TextStyle(
                                     color: AppColors.orange300,
                                     fontSize: 12,
@@ -195,4 +212,47 @@ class TodaysProgressCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CircularProgressPainter extends CustomPainter {
+  final double percentage;
+
+  _CircularProgressPainter({required this.percentage});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 1. Setting warna track lingkaran kosong (Gelap transparan)
+    Paint backgroundPaint = Paint()
+      ..color = const Color(0xFFE6A84A).withOpacity(0.15) 
+      ..strokeWidth = 8.0
+      ..style = PaintingStyle.stroke;
+
+    // 2. Setting warna isi progress bar (Warna Emas Jingga)
+    Paint progressPaint = Paint()
+      ..color = AppColors.orange300
+      ..strokeWidth = 8.0
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round; 
+
+    Offset center = Offset(size.width / 2, size.height / 2);
+    double radius = (size.width / 2) - 4; 
+
+    // Gambar lingkaran dasar
+    canvas.drawCircle(center, radius, backgroundPaint);
+
+    // Hitung lengkungan radial sudut berdasarkan persen tugas
+    double startAngle = -math.pi / 2; // Dimulai tepat dari jam 12 atas
+    double sweepAngle = 2 * math.pi * (percentage / 100).clamp(0.0, 1.0);
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      progressPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
